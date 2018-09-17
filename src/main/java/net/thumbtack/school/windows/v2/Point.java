@@ -37,19 +37,17 @@ public class Point {
   }
 
   public boolean isVisibleOnDesktop(Desktop desktop) {
-    boolean isVisible = false;
     if (0<=x && x<desktop.getWidth() && 0<=y && y<desktop.getHeight()){
-      isVisible= true;
+      return true;
     }
-    return isVisible;
+    return false;
   }
 
   public boolean isNotVisibleOnDesktop(Desktop desktop) {
-    boolean isVisible = false;
     if (0>x || x>=desktop.getWidth() || 0>y || y>=desktop.getHeight()){
-      isVisible = true;
+      return true;
     }
-    return isVisible;
+    return false;
   }
 
   @Override

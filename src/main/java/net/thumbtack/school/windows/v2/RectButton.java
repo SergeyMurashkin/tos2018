@@ -12,42 +12,30 @@ public class RectButton {
   private boolean active = true;
 
   public RectButton(Point topLeft, Point bottomRight, boolean active, String text) {
-    this.text=text;
-    this.topLeft=topLeft;
-    this.bottomRight=bottomRight;
-    this.active=active;
+    setTopLeft(topLeft);
+    setBottomRight(bottomRight);
+    this.active = active;
+    setText(text);
   }
 
   public RectButton(int xLeft, int yTop, int width, int height, boolean active, String text) {
+    setTopLeft(new Point(xLeft,yTop));
+    setBottomRight(new Point(xLeft+width-1,yTop+height-1));
+    this.active = active;
     this.text=text;
-    this.xLeft=xLeft;
-    this.yTop=yTop;
-    this.width=width;
-    this.height=height;
-    this.active=active;
-    Point tL = new Point(xLeft,yTop);
-    this.setTopLeft(tL);
-    Point bR = new Point(xLeft+width-1,yTop+height-1);
-    this.setBottomRight(bR);
   }
 
   public RectButton(Point topLeft, Point bottomRight, String text) {
+    setTopLeft(topLeft);
+    setBottomRight(bottomRight);
     this.text=text;
-    this.topLeft=topLeft;
-    this.bottomRight=bottomRight;
   }
 
 
   public RectButton(int xLeft, int yTop, int width, int height, String text) {
+    setTopLeft(new Point(xLeft,yTop));
+    setBottomRight(new Point(xLeft+width-1,yTop+height-1));
     this.text=text;
-    this.yTop=yTop;
-    this.xLeft=xLeft;
-    this.width=width;
-    this.height=height;
-    Point tL = new Point(xLeft,yTop);
-    this.setTopLeft(tL);
-    Point bR = new Point(xLeft+width-1,yTop+height-1);
-    this.setBottomRight(bR);
   }
 
   @Override
@@ -80,18 +68,7 @@ public class RectButton {
     return result;
   }
 
-  public int getxLeft() {
-    return xLeft;
-  }
-  public void setxLeft(int xLeft) {
-    this.xLeft = xLeft;
-  }
-  public int getyTop() {
-    return yTop;
-  }
-  public void setyTop(int yTop) {
-    this.yTop = yTop;
-  }
+
   public String getText() {
     return text;
   }
@@ -101,117 +78,88 @@ public class RectButton {
   public boolean isActive() { return active; }
   public void setActive(boolean active) { this.active = active; }
   public Point getTopLeft() { return topLeft; }
-  public void setTopLeft(Point topLeft) { this.topLeft = topLeft; }
+  public void setTopLeft(Point topLeft) {
+    this.topLeft = topLeft;
+    xLeft = topLeft.getX();
+    yTop = topLeft.getY(); }
   public Point getBottomRight() { return bottomRight; }
-  public void setBottomRight(Point bottomRight) { this.bottomRight = bottomRight; }
+  public void setBottomRight(Point bottomRight) {
+    this.bottomRight = bottomRight;
+    width = getBottomRight().getX()-getTopLeft().getX()+1;
+    height = getBottomRight().getY()-getTopLeft().getY()+1; }
 
   public int getWidth() {
-    width = getBottomRight().getX()- getTopLeft().getX()+1;
     return width; }
 
   public int getHeight() {
-    height = getBottomRight().getY()-getTopLeft().getY()+1;
     return height; }
 
   public void moveTo(int x, int y) {
-    int dx = x-getTopLeft().getX();
-    int dy = y-getTopLeft().getY();
-    Point bR = new Point(getBottomRight().getX()+dx,getBottomRight().getY()+dy);
-    this.setBottomRight(bR);
-    Point tL = new Point(x,y);
-    this.setTopLeft(tL);
+    setTopLeft(new Point(x,y));
+    setBottomRight(new Point(x+getWidth()-1,y+getHeight()-1));
   }
 
   public void moveTo(Point point) {
-    int dx = point.getX()-getTopLeft().getX();
-    int dy = point.getY()-getTopLeft().getY();
-    getBottomRight().setX(getBottomRight().getX()+dx);
-    getBottomRight().setY(getBottomRight().getY()+dy);
-    getTopLeft().setX(point.getX());
-    getTopLeft().setY(point.getY());
+    setTopLeft(point);
+    setBottomRight(new Point(point.getX()+getWidth()-1,point.getY()+getHeight()-1));
   }
 
   public void moveRel(int dx, int dy) {
-    topLeft.setX(topLeft.getX()+dx);
-    topLeft.setY(topLeft.getY()+dy);
-    bottomRight.setX(bottomRight.getX()+dx);
-    bottomRight.setY(bottomRight.getY()+dy);
+    setTopLeft(new Point(topLeft.getX()+dx,topLeft.getY()+dy));
+    setBottomRight(new Point(bottomRight.getX()+dx,bottomRight.getY()+dy));
   }
 
   public void resize(double ratio) {
-    width = (int) (ratio*(double)width);
-    if (width==0) {
-      width=1;
+    int newWidth = (int)((double)getWidth()*ratio);
+    if (newWidth==0) {
+      newWidth=1;
     }
-    height = (int) (ratio*(double)height);
-    if (height==0) {
-      height=1;
+    int newHeight = (int)((double)getHeight()*ratio);
+    if (newHeight==0) {
+      newHeight=1;
     }
-    Point bR = new Point(xLeft+width-1,yTop+height-1);
-    this.setBottomRight(bR);
+    setBottomRight(new Point(topLeft.getX()+newWidth-1,topLeft.getY()+newHeight-1));
   }
 
   public boolean isInside(int x, int y) {
-    boolean isInside = false;
-    if (xLeft<=x && x<(xLeft+width) && yTop<=y && y<(yTop+height)) {
-      isInside = true;
+    if (xLeft <= x && x < (xLeft + width) && yTop <= y && y < (yTop + height)) {
+      return true;
     }
-    return isInside;
+    return false;
   }
 
   public boolean isInside(Point point) {
-    boolean isInside = false;
     if (xLeft<=point.getX() && point.getX()<(xLeft+width) && yTop<=point.getY() && point.getY()<(yTop+height)) {
-      isInside = true;
+      return true;
     }
-    return isInside;
+    return false;
   }
 
   public boolean isIntersects(RectButton rectButton) {
-    Point lT = new Point(rectButton.xLeft,rectButton.yTop);
-    Point rT = new Point(rectButton.xLeft+rectButton.width-1,rectButton.yTop);
-    Point lB = new Point(rectButton.xLeft,rectButton.yTop+rectButton.height-1);
-    Point rB = new Point(rectButton.xLeft+rectButton.width-1,rectButton.yTop+rectButton.height-1);
-
-    Point lT2 = new Point(xLeft,yTop);
-    Point rT2 = new Point(xLeft+width-1,yTop);
-    Point lB2 = new Point(xLeft,yTop+height-1);
-    Point rB2 = new Point(xLeft+width-1,yTop+height-1);
-
-    boolean isIntersects = false;
-    if (isInside(lT)||isInside(rT)||isInside(lB)||isInside(rB)||
-            rectButton.isInside(lT2)|| rectButton.isInside(rT2)|| rectButton.isInside(lB2)|| rectButton.isInside(rB2)) {
-      isIntersects = true;
+    if (rectButton.getTopLeft().getX()+rectButton.width>getTopLeft().getX()&&
+            rectButton.getTopLeft().getX()<getTopLeft().getX()+width&&
+            rectButton.getTopLeft().getY()+rectButton.height>getTopLeft().getY()&&
+            rectButton.getTopLeft().getY()<getTopLeft().getY()+width){
+      return true;
     }
-    return isIntersects;
+    return false;
   }
 
   public boolean isInside(RectButton rectButton) {
-    Point lT = new Point(rectButton.xLeft,rectButton.yTop);
-    Point rT = new Point(rectButton.xLeft+rectButton.width-1,rectButton.yTop);
-    Point lB = new Point(rectButton.xLeft,rectButton.yTop+rectButton.height-1);
-    Point rB = new Point(rectButton.xLeft+rectButton.width-1,rectButton.yTop+rectButton.height-1);
-
-    boolean isInside = false;
-    if (isInside(lT)&&isInside(rT)&&isInside(lB)&&isInside(rB)) {
-      isInside = true;
+    if (rectButton.getTopLeft().getX()>=getTopLeft().getX()&&
+            rectButton.getTopLeft().getX()+rectButton.width<=getTopLeft().getX()+width&&
+            rectButton.getTopLeft().getY()>=getTopLeft().getY()&&
+            rectButton.getTopLeft().getY()+rectButton.height<=getTopLeft().getY()+height){
+      return true;
     }
-    return isInside;
+    return false;
   }
 
   public boolean isFullyVisibleOnDesktop(Desktop desktop) {
-    Point lT2 = new Point(xLeft,yTop);
-    Point rT2 = new Point(xLeft+width-1,yTop);
-    Point lB2 = new Point(xLeft,yTop+height-1);
-    Point rB2 = new Point(xLeft+width-1,yTop+height-1);
-
-    boolean isFullyVisibleOnDesktop = false;
-    if ( lT2.isVisibleOnDesktop(desktop)&& rT2.isVisibleOnDesktop(desktop)&&
-            lB2.isVisibleOnDesktop(desktop)&&rB2.isVisibleOnDesktop(desktop)) {
-      isFullyVisibleOnDesktop = true;
+    if ( topLeft.isVisibleOnDesktop(desktop)&& bottomRight.isVisibleOnDesktop(desktop)) {
+      return true;
     }
-          return isFullyVisibleOnDesktop;
-
+    return false;
   }
 
 

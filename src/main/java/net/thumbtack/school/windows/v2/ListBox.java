@@ -5,6 +5,7 @@ import net.thumbtack.school.base.StringOperations;
 import java.util.Arrays;
 
 public class ListBox {
+
   private int xLeft;
   private int yTop;
   private int width;

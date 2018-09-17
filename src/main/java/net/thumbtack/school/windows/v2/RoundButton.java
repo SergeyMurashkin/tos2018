@@ -10,29 +10,30 @@ public class RoundButton {
   private String text;
 
   public RoundButton(Point center, int radius, boolean active, String text) {
-    this.text=text;
-    this.center=center;
+    setCenter(center.getX(),center.getY());
     this.radius=radius;
     this.active=active;
-    xCenter = center.getX();
-    yCenter = center.getY();
+    this.text=text;
+
   }
 
   public RoundButton(int xCenter, int yCenter, int radius, boolean active, String text) {
-    this.text=text;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
+    setCenter(xCenter,yCenter);
     this.radius = radius;
     this.active = active;
-    center = new Point(xCenter,yCenter);
+    this.text=text;
   }
 
   public RoundButton(Point center, int radius, String text) {
-    this.text=text;
-    this.center = center;
+    setCenter(center.getX(),center.getY());
     this.radius = radius;
-    xCenter = center.getX();
-    yCenter = center.getY();
+    this.text=text;
+  }
+
+  public RoundButton(int xCenter, int yCenter, int radius, String text){
+    setCenter(xCenter,yCenter);
+    this.text=text;
+    this.radius = radius;
   }
 
 
@@ -62,13 +63,7 @@ public class RoundButton {
     return result;
   }
 
-  public RoundButton(int xCenter, int yCenter, int radius, String text){
-    this.text=text;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
-    this.radius = radius;
-    center = new Point(xCenter,yCenter);
-  }
+
 
   public String getText() {
     return text;
@@ -113,7 +108,7 @@ public class RoundButton {
   }
 
   public void moveRel(int dx, int dy) {
-    setCenter(xCenter+dx,yCenter+dy);
+    setCenter(getCenter().getX()+dx,getCenter().getY()+dy);
   }
 
   public void resize(double ratio) {
@@ -124,34 +119,30 @@ public class RoundButton {
   }
 
   public boolean isInside(int x, int y) {
-    boolean isInside = false;
     double dx = (double) xCenter-x;
     double dy = (double) yCenter-y;
     int l = (int) Math.sqrt(dx*dx+dy*dy);
     if (radius>=l) {
-      isInside=true;
+      return true;
     }
-    return isInside;
+    return false;
   }
 
   public boolean isInside(Point point) {
-    boolean isInside = false;
     double dx = (double) xCenter-point.getX();
     double dy = (double) yCenter-point.getY();
     int l = (int) Math.sqrt(dx*dx+dy*dy);
     if (radius>=l) {
-      isInside=true;
+      return true;
     }
-    return isInside;
+    return false;
   }
 
   public boolean isFullyVisibleOnDesktop(Desktop desktop) {
-
-    boolean isFullyVisibleOnDesktop = false;
-    if (radius<=xCenter && xCenter<desktop.getWidth()-radius && radius<=yCenter && yCenter<desktop.getHeight()-radius) {
-      isFullyVisibleOnDesktop = true;
+    if (radius<=xCenter && xCenter+radius<desktop.getWidth() && radius<=yCenter && yCenter+radius<desktop.getHeight()) {
+      return true;
     }
-    return isFullyVisibleOnDesktop;
+    return false;
 
   }
 
