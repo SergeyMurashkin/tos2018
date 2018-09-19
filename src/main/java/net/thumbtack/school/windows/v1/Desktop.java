@@ -1,49 +1,56 @@
 package net.thumbtack.school.windows.v1;
 
-import javax.swing.*;
-
 class Desktop {
 
-  private int width;
-  private int height;
+    private int width;
+    private int height;
 
-  public int getWidth() { return width; }
-  public void setWidth(int width) { this.width = width; }
-  public int getHeight() { return height; }
-  public void setHeight(int height) { this.height = height; }
+    public int getWidth() {
+	return width;
+    }
 
+    public void setWidth(int width) {
+	this.width = width;
+    }
 
-  public Desktop(int width, int height) {
-    setWidth(width);
-    setHeight(height);
-  }
+    public int getHeight() {
+	return height;
+    }
 
-  public Desktop () {
-    this(640,480);
-  }
+    public void setHeight(int height) {
+	this.height = height;
+    }
 
-  public int getArea() {
-    int area = getWidth()*getHeight();
-    return area;
-  }
+    public Desktop(int width, int height) {
+	setWidth(width);
+	setHeight(height);
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    public Desktop() {
+        this(640, 480);
+    }
 
-    Desktop desktop = (Desktop) o;
+    public int getArea() {
+	return getWidth() * getHeight();
+    }
 
-    if (width != desktop.width) return false;
-    return height == desktop.height;
-  }
+    @Override
+    public boolean equals(Object o) {
+	if (this == o) return true;
+	if (o == null || getClass() != o.getClass()) return false;
 
-  @Override
-  public int hashCode() {
-    int result = width;
-    result = 31 * result + height;
-    return result;
-  }
+	Desktop desktop = (Desktop) o;
+
+	if (width != desktop.width) return false;
+	return height == desktop.height;
+    }
+
+    @Override
+    public int hashCode() {
+	int result = width;
+	result = 31 * result + height;
+	return result;
+    }
 }
 
 

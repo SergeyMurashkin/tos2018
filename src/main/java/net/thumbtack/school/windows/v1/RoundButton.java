@@ -2,141 +2,112 @@ package net.thumbtack.school.windows.v1;
 
 public class RoundButton {
 
-  private Point center;
-  private int xCenter;
-  private int yCenter;
-  private int radius;
-  private boolean active = true;
+    private Point center;
+    private int radius;
+    private boolean active = true;
 
-  public RoundButton(Point center, int radius, boolean active) {
-    this.center=center;
-    this.radius=radius;
-    this.active=active;
-    xCenter = center.getX();
-    yCenter = center.getY();
-  }
-
-  public RoundButton(int xCenter, int yCenter, int radius, boolean active) {
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
-    this.radius = radius;
-    this.active = active;
-    center = new Point(xCenter,yCenter);
-  }
-
-  public RoundButton(Point center, int radius) {
-    this.center = center;
-    this.radius = radius;
-    xCenter = center.getX();
-    yCenter = center.getY();
-  }
-
-
-  public RoundButton(int xCenter, int yCenter, int radius){
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
-    this.radius = radius;
-    center = new Point(xCenter,yCenter);
-  }
-
-  public Point getCenter() {
-    return center;
-  }
-
-  public int getRadius() {
-    return radius;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setCenter(int x,int y) {
-    center = new Point(x,y);
-    xCenter=x;
-    yCenter=y;
-  }
-
-  public void setRadius(int radius) {
-    this.radius = radius;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
-  public void moveTo(int x, int y) {
-    setCenter(x,y);
-  }
-
-  public void moveTo(Point point) {
-    setCenter(point.getX(),point.getY());
-  }
-
-  public void moveRel(int dx, int dy) {
-    setCenter(xCenter+dx,yCenter+dy);
-  }
-
-  public void resize(double ratio) {
-    radius = (int)((double)radius*ratio);
-    if (radius<1) {
-      radius=1;
+    public RoundButton(Point center, int radius, boolean active) {
+	this.center = center;
+	this.radius = radius;
+	this.active = active;
     }
-  }
 
-  public boolean isInside(int x, int y) {
-    boolean isInside = false;
-    double dx = (double) xCenter-x;
-    double dy = (double) yCenter-y;
-    int l = (int) Math.sqrt(dx*dx+dy*dy);
-    if (radius>=l) {
-      isInside=true;
+    public RoundButton(int xCenter, int yCenter, int radius, boolean active) {
+	this.radius = radius;
+	this.active = active;
+	center = new Point(xCenter, yCenter);
     }
-    return isInside;
-  }
 
-  public boolean isInside(Point point) {
-    boolean isInside = false;
-    double dx = (double) xCenter-point.getX();
-    double dy = (double) yCenter-point.getY();
-    int l = (int) Math.sqrt(dx*dx+dy*dy);
-    if (radius>=l) {
-      isInside=true;
+    public RoundButton(Point center, int radius) {
+	this.center = center;
+	this.radius = radius;
     }
-    return isInside;
-  }
 
-  public boolean isFullyVisibleOnDesktop(Desktop desktop) {
-
-    boolean isFullyVisibleOnDesktop = false;
-    if (radius<=xCenter && xCenter<desktop.getWidth()-radius && radius<=yCenter && yCenter<desktop.getHeight()-radius) {
-      isFullyVisibleOnDesktop = true;
+    public RoundButton(int xCenter, int yCenter, int radius) {
+	this.radius = radius;
+	center = new Point(xCenter, yCenter);
     }
-    return isFullyVisibleOnDesktop;
 
-  }
+    public Point getCenter() {
+	return center;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    public int getRadius() {
+	return radius;
+    }
 
-    RoundButton that = (RoundButton) o;
+    public boolean isActive() {
+	return active;
+    }
 
-    if (xCenter != that.xCenter) return false;
-    if (yCenter != that.yCenter) return false;
-    if (radius != that.radius) return false;
-    if (active != that.active) return false;
-    return center != null ? center.equals(that.center) : that.center == null;
-  }
+    public void setCenter(int x, int y) {
+	center = new Point(x, y);
+    }
 
-  @Override
-  public int hashCode() {
-    int result = center != null ? center.hashCode() : 0;
-    result = 31 * result + xCenter;
-    result = 31 * result + yCenter;
-    result = 31 * result + radius;
-    result = 31 * result + (active ? 1 : 0);
-    return result;
-  }
+    public void setRadius(int radius) {
+	this.radius = radius;
+    }
+
+    public void setActive(boolean active) {
+	this.active = active;
+    }
+
+    public void moveTo(int x, int y) {
+	setCenter(x, y);
+    }
+
+    public void moveTo(Point point) {
+	setCenter(point.getX(), point.getY());
+    }
+
+    public void moveRel(int dx, int dy) {
+	setCenter(center.getX() + dx, center.getY() + dy);
+    }
+
+    public void resize(double ratio) {
+	radius = (int) ((double) radius * ratio);
+	if (radius < 1) {
+	    radius = 1;
+	}
+    }
+
+    public boolean isInside(int x, int y) {
+	double dx = (double) center.getX() - x;
+	double dy = (double) center.getY() - y;
+	int l = (int) Math.sqrt(dx * dx + dy * dy);
+	return radius >= l;
+    }
+
+    public boolean isInside(Point point) {
+	double dx = (double) center.getX() - point.getX();
+	double dy = (double) center.getY() - point.getY();
+	int l = (int) Math.sqrt(dx * dx + dy * dy);
+	return radius >= l;
+    }
+
+    public boolean isFullyVisibleOnDesktop(Desktop desktop) {
+	return radius <= center.getX() && center.getX() < desktop.getWidth() - radius
+		&& radius <= center.getY() && center.getY() < desktop.getHeight() - radius;
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+	if (this == o) return true;
+	if (o == null || getClass() != o.getClass()) return false;
+
+	RoundButton that = (RoundButton) o;
+
+	if (radius != that.radius) return false;
+	if (active != that.active) return false;
+	return center != null ? center.equals(that.center) : that.center == null;
+    }
+
+    @Override
+    public int hashCode() {
+	int result = center != null ? center.hashCode() : 0;
+	result = 31 * result + radius;
+	result = 31 * result + (active ? 1 : 0);
+	return result;
+    }
 }
