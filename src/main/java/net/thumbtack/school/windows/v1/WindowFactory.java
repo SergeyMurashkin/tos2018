@@ -7,35 +7,39 @@ public class WindowFactory {
     static int countWindow;
 
 
-    public static RectButton createRectButton(Point leftTop, Point rightBottom, boolean active) {
-	WindowFactory.countRectButton += 1;
-	RectButton rectButton = new RectButton(leftTop, rightBottom, active);
-	return rectButton;
+    public static RectButton createRectButton(Point leftTop,
+                                              Point rightBottom,
+                                              boolean active) {
+        WindowFactory.countRectButton += 1;
+        RectButton rectButton = new RectButton(leftTop, rightBottom, active);
+        return rectButton;
     }
 
-    public static RoundButton createRoundButton(Point center, int radius, boolean active) {
-	WindowFactory.countRoundButton += 1;
-	RoundButton roundButton = new RoundButton(center, radius, active);
-	return roundButton;
+    public static RoundButton createRoundButton(Point center,
+                                                int radius,
+                                                boolean active) {
+        WindowFactory.countRoundButton += 1;
+        RoundButton roundButton = new RoundButton(center, radius, active);
+        return roundButton;
     }
 
     public static int getRectButtonCount() {
-	return WindowFactory.countRectButton;
+        return WindowFactory.countRectButton;
     }
 
     public static int getRoundButtonCount() {
-	return WindowFactory.countRoundButton;
+        return WindowFactory.countRoundButton;
     }
 
     public static int getWindowCount() {
-	WindowFactory.countWindow = WindowFactory.countRectButton + WindowFactory.countRoundButton;
-	return WindowFactory.countWindow;
+        WindowFactory.countWindow = WindowFactory.countRectButton + WindowFactory.countRoundButton;
+        return WindowFactory.countWindow;
     }
 
     public static void reset() {
-	WindowFactory.countRectButton = 0;
-	WindowFactory.countRoundButton = 0;
-	WindowFactory.countWindow = 0;
+        WindowFactory.countRectButton = 0;
+        WindowFactory.countRoundButton = 0;
+        WindowFactory.countWindow = 0;
     }
 
 
