@@ -1,4 +1,4 @@
-package net.thumbtack.school.windows.v1;
+package net.thumbtack.school.windows.v3;
 
 public class Desktop {
 
@@ -12,6 +12,10 @@ public class Desktop {
 
     public Desktop() {
         this(640, 480);
+    }
+
+    public int getArea() {
+        return width * height;
     }
 
     public int getWidth() {
@@ -28,10 +32,6 @@ public class Desktop {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public int getArea() {
-        return getWidth() * getHeight();
     }
 
     @Override
