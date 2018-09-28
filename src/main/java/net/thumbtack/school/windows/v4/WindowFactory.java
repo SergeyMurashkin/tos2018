@@ -13,7 +13,7 @@ public class WindowFactory {
     public static RectButton createRectButton(Point leftTop,
                                               Point rightBottom,
                                               WindowState windowState,
-                                              String text) throws WindowException{
+                                              String text) throws WindowException {
         if (windowState == WindowState.DESTROYED) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
@@ -23,11 +23,10 @@ public class WindowFactory {
     }
 
 
-
     public static RoundButton createRoundButton(Point center,
                                                 int radius,
                                                 WindowState windowState,
-                                                String text) throws WindowException{
+                                                String text) throws WindowException {
         if (windowState == WindowState.DESTROYED) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
@@ -35,8 +34,6 @@ public class WindowFactory {
         RoundButton roundButton = new RoundButton(center, radius, windowState, text);
         return roundButton;
     }
-
-
 
     public static int getRectButtonCount() {
         return WindowFactory.countRectButton;
@@ -56,6 +53,5 @@ public class WindowFactory {
         WindowFactory.countRoundButton = 0;
         WindowFactory.countWindow = 0;
     }
-
 
 }

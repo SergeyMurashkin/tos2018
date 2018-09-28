@@ -29,7 +29,7 @@ public class ListBox extends RectWindow {
                    Point bottomRight,
                    String stateString,
                    String[] lines) throws WindowException {
-        if (stateString!=null&&stateString.compareTo("DESTROYED")==0) {
+        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
         setTopLeft(topLeft);
@@ -60,7 +60,7 @@ public class ListBox extends RectWindow {
                    int height,
                    String stateString,
                    String[] lines) throws WindowException {
-        if (stateString!=null&&stateString.compareTo("DESTROYED")==0) {
+        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
         setTopLeft(new Point(xLeft, yTop));

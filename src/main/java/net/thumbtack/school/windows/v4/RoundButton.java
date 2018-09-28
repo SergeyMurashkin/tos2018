@@ -25,8 +25,8 @@ public class RoundButton extends RoundWindow {
     public RoundButton(Point center,
                        int radius,
                        String stateString,
-                       String text) throws WindowException{
-        if (stateString!=null&&stateString.compareTo("DESTROYED")==0) {
+                       String text) throws WindowException {
+        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
         setCenter(center.getX(), center.getY());
@@ -39,7 +39,7 @@ public class RoundButton extends RoundWindow {
                        int yCenter,
                        int radius,
                        WindowState windowState,
-                       String text) throws WindowException{
+                       String text) throws WindowException {
         if (windowState == WindowState.DESTROYED) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
@@ -53,8 +53,8 @@ public class RoundButton extends RoundWindow {
                        int yCenter,
                        int radius,
                        String stateString,
-                       String text) throws WindowException{
-        if (stateString!=null&&stateString.compareTo("DESTROYED")==0) {
+                       String text) throws WindowException {
+        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
         setCenter(xCenter, yCenter);

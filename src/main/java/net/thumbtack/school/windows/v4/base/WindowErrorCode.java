@@ -6,15 +6,16 @@ public enum WindowErrorCode {
             "При изменении состояния состояние устанавливается в null.\n" +
             "Окно, находящееся в WindowState.DESTROYED, переводится в иное состояние."),
     WRONG_INDEX("Передан недопустимый индекс для массива строк."),
-    EMPTY_ARRAY("Массив строк равен null.");
+    EMPTY_ARRAY("Массив строк равен null."),
+    NULL_WINDOW("Попытка передать null вместо окна");
 
     private String errorString;
 
-    WindowErrorCode(String errorString){
+    WindowErrorCode(String errorString) {
         this.errorString = errorString;
     }
 
-    public String getErrorString(){
+    public String getErrorString() {
         return errorString;
     }
 }

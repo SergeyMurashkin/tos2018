@@ -20,7 +20,7 @@ public class RectButton3D extends RectButton {
                         Point bottomRight,
                         String stateString,
                         String text,
-                        int zHeight) throws WindowException{
+                        int zHeight) throws WindowException {
         super(topLeft, bottomRight, stateString, text);
         setZHeight(zHeight);
     }
@@ -31,7 +31,7 @@ public class RectButton3D extends RectButton {
                         int height,
                         WindowState windowState,
                         String text,
-                        int zHeight) throws WindowException{
+                        int zHeight) throws WindowException {
         super(xLeft, yTop, width, height, windowState, text);
         setZHeight(zHeight);
     }
@@ -42,7 +42,7 @@ public class RectButton3D extends RectButton {
                         int height,
                         String stateString,
                         String text,
-                        int zHeight) throws WindowException{
+                        int zHeight) throws WindowException {
         super(xLeft, yTop, width, height, stateString, text);
         setZHeight(zHeight);
     }

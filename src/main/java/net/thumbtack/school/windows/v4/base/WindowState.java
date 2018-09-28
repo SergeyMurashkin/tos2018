@@ -11,7 +11,7 @@ public enum WindowState {
                 && !stateString.equals(WindowState.INACTIVE.name())
                 && !stateString.equals(WindowState.DESTROYED.name())) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }else{
+        } else {
             return WindowState.valueOf(stateString);
         }
     }

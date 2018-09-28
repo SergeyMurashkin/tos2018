@@ -20,7 +20,7 @@ public class RadioButton extends RoundButton {
                        int radius,
                        String stateString,
                        String text,
-                       boolean checked) throws WindowException{
+                       boolean checked) throws WindowException {
         super(center, radius, stateString, text);
         setChecked(checked);
     }
@@ -30,7 +30,7 @@ public class RadioButton extends RoundButton {
                        int radius,
                        WindowState windowState,
                        String text,
-                       boolean checked) throws WindowException{
+                       boolean checked) throws WindowException {
         super(xCenter, yCenter, radius, windowState, text);
         setChecked(checked);
     }
@@ -40,7 +40,7 @@ public class RadioButton extends RoundButton {
                        int radius,
                        String stateString,
                        String text,
-                       boolean checked) throws WindowException{
+                       boolean checked) throws WindowException {
         super(xCenter, yCenter, radius, stateString, text);
         setChecked(checked);
     }
