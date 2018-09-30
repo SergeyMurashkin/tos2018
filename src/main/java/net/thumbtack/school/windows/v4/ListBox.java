@@ -16,12 +16,7 @@ public class ListBox extends RectWindow {
                    Point bottomRight,
                    WindowState windowState,
                    String[] lines) throws WindowException {
-        if (windowState == WindowState.DESTROYED) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(topLeft);
-        setBottomRight(bottomRight);
-        setState(windowState);
+       super(topLeft, bottomRight, windowState);
         setLines(lines);
     }
 
@@ -29,13 +24,7 @@ public class ListBox extends RectWindow {
                    Point bottomRight,
                    String stateString,
                    String[] lines) throws WindowException {
-        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(topLeft);
-        setBottomRight(bottomRight);
-        setState(WindowState.fromString(stateString));
-        setLines(lines);
+        this(topLeft, bottomRight,WindowState.fromString(stateString),lines);
     }
 
 
@@ -45,13 +34,7 @@ public class ListBox extends RectWindow {
                    int height,
                    WindowState windowState,
                    String[] lines) throws WindowException {
-        if (windowState == WindowState.DESTROYED) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(new Point(xLeft, yTop));
-        setBottomRight(new Point(xLeft + width - 1, yTop + height - 1));
-        setState(windowState);
-        setLines(lines);
+        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),windowState,lines);
     }
 
     public ListBox(int xLeft,
@@ -60,20 +43,14 @@ public class ListBox extends RectWindow {
                    int height,
                    String stateString,
                    String[] lines) throws WindowException {
-        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(new Point(xLeft, yTop));
-        setBottomRight(new Point(xLeft + width - 1, yTop + height - 1));
-        setState(WindowState.fromString(stateString));
-        setLines(lines);
+       this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),
+                WindowState.fromString(stateString), lines);
     }
 
     public ListBox(Point topLeft,
                    Point bottomRight,
                    String[] lines) {
-        setTopLeft(topLeft);
-        setBottomRight(bottomRight);
+        super(topLeft, bottomRight);
         setLines(lines);
     }
 
@@ -82,9 +59,7 @@ public class ListBox extends RectWindow {
                    int width,
                    int height,
                    String[] lines) {
-        setTopLeft(new Point(xLeft, yTop));
-        setBottomRight(new Point(xLeft + width - 1, yTop + height - 1));
-        setLines(lines);
+       this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),lines);
     }
 
     public String[] getLines() {
@@ -113,22 +88,19 @@ public class ListBox extends RectWindow {
         if (from < 0 || lines.length < to || from > to - 1) {
             throw new WindowException(WindowErrorCode.WRONG_INDEX);
         }
-        int j = 0;
-        String[] linesSlice = new String[to - from];
-        for (int i = from; i < to; i++) {
-            linesSlice[j] = lines[i];
-            j++;
-        }
-        return linesSlice;
+        String[] copyLines = new String[to-from];
+        System.arraycopy(lines, from, copyLines, 0, copyLines.length);
+        return copyLines;
     }
 
     public String getLine(int index) throws WindowException {
-        if (lines == null) {
+        try{
+            return lines[index];
+        } catch(NullPointerException ex) {
             throw new WindowException(WindowErrorCode.EMPTY_ARRAY);
-        }
-        if (index >= lines.length || index < 0) {
+        } catch(ArrayIndexOutOfBoundsException ex) {
             throw new WindowException(WindowErrorCode.WRONG_INDEX);
-        } else return lines[index];
+        }
     }
 
     public void setLine(int index, String line) throws WindowException {

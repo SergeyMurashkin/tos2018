@@ -14,7 +14,7 @@ public class ComboBox extends ListBox {
                     String[] lines,
                     Integer selected) throws WindowException {
         super(topLeft, bottomRight, windowState, lines);
-        super.setLines(lines);
+        setLines(lines);
         setSelected(selected);
     }
 
@@ -24,7 +24,7 @@ public class ComboBox extends ListBox {
                     String[] lines,
                     Integer selected) throws WindowException {
         super(topLeft, bottomRight, stateString, lines);
-        super.setLines(lines);
+        setLines(lines);
         setSelected(selected);
     }
 
@@ -36,7 +36,7 @@ public class ComboBox extends ListBox {
                     String[] lines,
                     Integer selected) throws WindowException {
         super(xLeft, yTop, width, height, windowState, lines);
-        super.setLines(lines);
+        setLines(lines);
         setSelected(selected);
     }
 
@@ -48,7 +48,7 @@ public class ComboBox extends ListBox {
                     String[] lines,
                     Integer selected) throws WindowException {
         super(xLeft, yTop, width, height, stateString, lines);
-        super.setLines(lines);
+        setLines(lines);
         setSelected(selected);
     }
 
@@ -57,7 +57,7 @@ public class ComboBox extends ListBox {
                     String[] lines,
                     Integer selected) throws WindowException {
         super(topLeft, bottomRight, lines);
-        super.setLines(lines);
+        setLines(lines);
         setSelected(selected);
     }
 
@@ -68,7 +68,7 @@ public class ComboBox extends ListBox {
                     String[] lines,
                     Integer selected) throws WindowException {
         super(xLeft, yTop, width, height, lines);
-        super.setLines(lines);
+        setLines(lines);
         setSelected(selected);
     }
 
@@ -77,27 +77,23 @@ public class ComboBox extends ListBox {
     }
 
     public void setSelected(Integer selected) throws WindowException {
-        if (getLines() == null && selected != null) {
-            throw new WindowException(WindowErrorCode.EMPTY_ARRAY);
-        }
-        if (selected != null && selected > getLines().length - 1
-                || selected != null && selected < 0) {
-            throw new WindowException(WindowErrorCode.WRONG_INDEX);
-        }
         if (selected == null) {
             this.selected = null;
         } else {
-            this.selected = selected;
+            if (getLines() == null) {
+                throw new WindowException(WindowErrorCode.EMPTY_ARRAY);
+            }
+            if ( selected >= getLines().length  ||  selected < 0) {
+                throw new WindowException(WindowErrorCode.WRONG_INDEX);
+            } else {
+                this.selected = selected;
+            }
         }
     }
 
     public void setLines(String[] lines) {
         super.setLines(lines);
-        try {
-            setSelected(null);
-        } catch (WindowException e) {
-            e.printStackTrace();
-        }
+        selected = null;
     }
 
     @Override

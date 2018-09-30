@@ -21,8 +21,7 @@ public class RadioButton extends RoundButton {
                        String stateString,
                        String text,
                        boolean checked) throws WindowException {
-        super(center, radius, stateString, text);
-        setChecked(checked);
+        this(center, radius, WindowState.fromString(stateString), text, checked);
     }
 
     public RadioButton(int xCenter,
@@ -31,8 +30,7 @@ public class RadioButton extends RoundButton {
                        WindowState windowState,
                        String text,
                        boolean checked) throws WindowException {
-        super(xCenter, yCenter, radius, windowState, text);
-        setChecked(checked);
+        this(new Point(xCenter, yCenter), radius, windowState, text, checked);
     }
 
     public RadioButton(int xCenter,
@@ -41,8 +39,7 @@ public class RadioButton extends RoundButton {
                        String stateString,
                        String text,
                        boolean checked) throws WindowException {
-        super(xCenter, yCenter, radius, stateString, text);
-        setChecked(checked);
+        this(new Point(xCenter, yCenter), radius, stateString, text, checked);
     }
 
     public RadioButton(Point center,
@@ -58,8 +55,7 @@ public class RadioButton extends RoundButton {
                        int radius,
                        String text,
                        boolean checked) {
-        super(xCenter, yCenter, radius, text);
-        setChecked(checked);
+        this(new Point(xCenter, yCenter), radius, text,checked);
     }
 
     public boolean isChecked() {

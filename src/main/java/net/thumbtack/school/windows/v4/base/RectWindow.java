@@ -8,6 +8,22 @@ public abstract class RectWindow extends Window {
     private Point topLeft;
     private Point bottomRight;
 
+    public RectWindow(Point topLeft,
+                      Point bottomRight,
+                      WindowState windowState) throws WindowException {
+        super(windowState);
+        setTopLeft(topLeft);
+        setBottomRight(bottomRight);
+    }
+
+
+    public RectWindow(Point topLeft,
+                      Point bottomRight) {
+        super();
+        setTopLeft(topLeft);
+        setBottomRight(bottomRight);
+    }
+
     public Point getTopLeft() {
         return topLeft;
     }
@@ -33,13 +49,13 @@ public abstract class RectWindow extends Window {
     }
 
     public void moveTo(int x, int y) {
-        setBottomRight(new Point(x + getWidth() - 1, y + getHeight() - 1));
-        setTopLeft(new Point(x, y));
+        bottomRight.moveTo(x + getWidth() - 1, y + getHeight() - 1);
+        topLeft.moveTo(x, y);
     }
 
     public void moveRel(int dx, int dy) {
-        setTopLeft(new Point(getTopLeft().getX() + dx, getTopLeft().getY() + dy));
-        setBottomRight(new Point(getBottomRight().getX() + dx, getBottomRight().getY() + dy));
+        topLeft.moveRel(dx, dy);
+        bottomRight.moveRel(dx, dy);
     }
 
     public void resize(double ratio) {
@@ -51,7 +67,7 @@ public abstract class RectWindow extends Window {
         if (newHeight == 0) {
             newHeight = 1;
         }
-        setBottomRight(new Point(getTopLeft().getX() + newWidth - 1, getTopLeft().getY() + newHeight - 1));
+        bottomRight.moveTo(getTopLeft().getX() + newWidth - 1, getTopLeft().getY() + newHeight - 1);
     }
 
     public boolean isInside(int x, int y) {

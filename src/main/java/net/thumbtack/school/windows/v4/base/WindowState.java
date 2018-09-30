@@ -6,13 +6,10 @@ public enum WindowState {
     DESTROYED;
 
     public static WindowState fromString(String stateString) throws WindowException {
-        if (stateString == null
-                || !stateString.equals(WindowState.ACTIVE.name())
-                && !stateString.equals(WindowState.INACTIVE.name())
-                && !stateString.equals(WindowState.DESTROYED.name())) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        } else {
+        try {
             return WindowState.valueOf(stateString);
+        } catch (NullPointerException | IllegalArgumentException ex) {
+            throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
     }
 

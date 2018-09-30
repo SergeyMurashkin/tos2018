@@ -8,6 +8,18 @@ public abstract class RoundWindow extends Window {
     private Point center;
     private int radius;
 
+    public RoundWindow(Point center, int radius) {
+        super();
+        setCenter(center);
+        setRadius(radius);
+    }
+
+    public RoundWindow(Point center, int radius, WindowState windowState) throws WindowException {
+        super(windowState);
+        setCenter(center);
+        setRadius(radius);
+    }
+
     public Point getCenter() {
         return center;
     }
@@ -21,15 +33,19 @@ public abstract class RoundWindow extends Window {
     }
 
     public void setCenter(int x, int y) {
-        center = new Point(x, y);
+        setCenter(new Point(x,y));
+    }
+
+    public void setCenter(Point center){
+        this.center = center;
     }
 
     public void moveTo(int x, int y) {
-        setCenter(x, y);
+        center.moveTo(x, y);
     }
 
     public void moveRel(int dx, int dy) {
-        setCenter(getCenter().getX() + dx, getCenter().getY() + dy);
+        center.moveRel(dx, dy);
     }
 
     public void resize(double ratio) {

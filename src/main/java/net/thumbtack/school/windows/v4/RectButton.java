@@ -13,12 +13,7 @@ public class RectButton extends RectWindow {
                       Point bottomRight,
                       WindowState windowState,
                       String text) throws WindowException {
-        if (windowState == WindowState.DESTROYED) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(topLeft);
-        setBottomRight(bottomRight);
-        setState(windowState);
+        super(topLeft, bottomRight, windowState);
         setText(text);
     }
 
@@ -26,13 +21,7 @@ public class RectButton extends RectWindow {
                       Point bottomRight,
                       String stateString,
                       String text) throws WindowException{
-        if (stateString!=null&&stateString.compareTo("DESTROYED")==0) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(topLeft);
-        setBottomRight(bottomRight);
-        setState(WindowState.fromString(stateString));
-        setText(text);
+       this(topLeft, bottomRight,WindowState.fromString(stateString), text);
     }
 
     public RectButton(int xLeft,
@@ -41,13 +30,7 @@ public class RectButton extends RectWindow {
                       int height,
                       WindowState windowState,
                       String text) throws WindowException{
-        if (windowState == WindowState.DESTROYED) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(new Point(xLeft, yTop));
-        setBottomRight(new Point(xLeft + width - 1, yTop + height - 1));
-        setState(windowState);
-        setText(text);
+        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),windowState,text);
     }
 
     public RectButton(int xLeft,
@@ -56,20 +39,15 @@ public class RectButton extends RectWindow {
                       int height,
                       String stateString,
                       String text) throws WindowException{
-        if (stateString!=null&&stateString.compareTo("DESTROYED")==0) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setTopLeft(new Point(xLeft, yTop));
-        setBottomRight(new Point(xLeft + width - 1, yTop + height - 1));
-        setState(WindowState.fromString(stateString));
-        setText(text);
+        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),
+                WindowState.fromString(stateString),text);
+
     }
 
     public RectButton(Point topLeft,
                       Point bottomRight,
                       String text) {
-        setTopLeft(topLeft);
-        setBottomRight(bottomRight);
+        super(topLeft, bottomRight);
         setText(text);
     }
 
@@ -78,9 +56,7 @@ public class RectButton extends RectWindow {
                       int width,
                       int height,
                       String text) {
-        setTopLeft(new Point(xLeft, yTop));
-        setBottomRight(new Point(xLeft + width - 1, yTop + height - 1));
-        setText(text);
+        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),text);
     }
 
     public String getText() {

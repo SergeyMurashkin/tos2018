@@ -11,63 +11,8 @@ public class RoundButton extends RoundWindow {
 
     public RoundButton(Point center,
                        int radius,
-                       WindowState windowState,
-                       String text) throws WindowException {
-        if (windowState == WindowState.DESTROYED) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setCenter(center.getX(), center.getY());
-        setRadius(radius);
-        setState(windowState);
-        setText(text);
-    }
-
-    public RoundButton(Point center,
-                       int radius,
-                       String stateString,
-                       String text) throws WindowException {
-        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setCenter(center.getX(), center.getY());
-        setRadius(radius);
-        setState(WindowState.fromString(stateString));
-        setText(text);
-    }
-
-    public RoundButton(int xCenter,
-                       int yCenter,
-                       int radius,
-                       WindowState windowState,
-                       String text) throws WindowException {
-        if (windowState == WindowState.DESTROYED) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setCenter(xCenter, yCenter);
-        setRadius(radius);
-        setState(windowState);
-        setText(text);
-    }
-
-    public RoundButton(int xCenter,
-                       int yCenter,
-                       int radius,
-                       String stateString,
-                       String text) throws WindowException {
-        if (stateString != null && stateString.compareTo("DESTROYED") == 0) {
-            throw new WindowException(WindowErrorCode.WRONG_STATE);
-        }
-        setCenter(xCenter, yCenter);
-        setRadius(radius);
-        setState(WindowState.fromString(stateString));
-        setText(text);
-    }
-
-    public RoundButton(Point center,
-                       int radius,
                        String text) {
-        setCenter(center.getX(), center.getY());
-        setRadius(radius);
+        super(center, radius);
         setText(text);
     }
 
@@ -75,10 +20,41 @@ public class RoundButton extends RoundWindow {
                        int yCenter,
                        int radius,
                        String text) {
-        setCenter(xCenter, yCenter);
-        setRadius(radius);
-        setText(text);
+        this(new Point(xCenter, yCenter), radius,text);
     }
+
+    public RoundButton(Point center,
+                       int radius,
+                       WindowState windowState,
+                       String text) throws WindowException {
+       super(center, radius,windowState);
+       setText(text);
+    }
+
+    public RoundButton(Point center,
+                       int radius,
+                       String stateString,
+                       String text) throws WindowException {
+        this(center, radius, WindowState.fromString(stateString),text);
+    }
+
+    public RoundButton(int xCenter,
+                       int yCenter,
+                       int radius,
+                       WindowState windowState,
+                       String text) throws WindowException {
+        this(new Point(xCenter, yCenter), radius, windowState,text);
+    }
+
+    public RoundButton(int xCenter,
+                       int yCenter,
+                       int radius,
+                       String stateString,
+                       String text) throws WindowException {
+        this(new Point(xCenter, yCenter), radius, WindowState.fromString(stateString),text);
+    }
+
+
 
     public String getText() {
         return text;
