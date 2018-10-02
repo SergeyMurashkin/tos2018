@@ -83,7 +83,7 @@ public class ComboBox extends ListBox {
             if (getLines() == null) {
                 throw new WindowException(WindowErrorCode.EMPTY_ARRAY);
             }
-            if ( selected >= getLines().length  ||  selected < 0) {
+            if (selected >= getLines().length || selected < 0) {
                 throw new WindowException(WindowErrorCode.WRONG_INDEX);
             } else {
                 this.selected = selected;

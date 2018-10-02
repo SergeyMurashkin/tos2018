@@ -9,7 +9,7 @@ public abstract class Window implements Movable, Resizable {
 
     private WindowState windowState;
 
-    public Window(){
+    public Window() {
         windowState = WindowState.ACTIVE;
     }
 

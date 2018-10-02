@@ -16,7 +16,7 @@ public class ListBox extends RectWindow {
                    Point bottomRight,
                    WindowState windowState,
                    String[] lines) throws WindowException {
-       super(topLeft, bottomRight, windowState);
+        super(topLeft, bottomRight, windowState);
         setLines(lines);
     }
 
@@ -24,7 +24,7 @@ public class ListBox extends RectWindow {
                    Point bottomRight,
                    String stateString,
                    String[] lines) throws WindowException {
-        this(topLeft, bottomRight,WindowState.fromString(stateString),lines);
+        this(topLeft, bottomRight, WindowState.fromString(stateString), lines);
     }
 
 
@@ -34,7 +34,7 @@ public class ListBox extends RectWindow {
                    int height,
                    WindowState windowState,
                    String[] lines) throws WindowException {
-        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),windowState,lines);
+        this(new Point(xLeft, yTop), new Point(xLeft + width - 1, yTop + height - 1), windowState, lines);
     }
 
     public ListBox(int xLeft,
@@ -43,7 +43,7 @@ public class ListBox extends RectWindow {
                    int height,
                    String stateString,
                    String[] lines) throws WindowException {
-       this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),
+        this(new Point(xLeft, yTop), new Point(xLeft + width - 1, yTop + height - 1),
                 WindowState.fromString(stateString), lines);
     }
 
@@ -59,7 +59,7 @@ public class ListBox extends RectWindow {
                    int width,
                    int height,
                    String[] lines) {
-       this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),lines);
+        this(new Point(xLeft, yTop), new Point(xLeft + width - 1, yTop + height - 1), lines);
     }
 
     public String[] getLines() {
@@ -88,17 +88,17 @@ public class ListBox extends RectWindow {
         if (from < 0 || lines.length < to || from > to - 1) {
             throw new WindowException(WindowErrorCode.WRONG_INDEX);
         }
-        String[] copyLines = new String[to-from];
+        String[] copyLines = new String[to - from];
         System.arraycopy(lines, from, copyLines, 0, copyLines.length);
         return copyLines;
     }
 
     public String getLine(int index) throws WindowException {
-        try{
+        try {
             return lines[index];
-        } catch(NullPointerException ex) {
+        } catch (NullPointerException ex) {
             throw new WindowException(WindowErrorCode.EMPTY_ARRAY);
-        } catch(ArrayIndexOutOfBoundsException ex) {
+        } catch (ArrayIndexOutOfBoundsException ex) {
             throw new WindowException(WindowErrorCode.WRONG_INDEX);
         }
     }

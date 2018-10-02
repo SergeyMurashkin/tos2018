@@ -1,7 +1,6 @@
 package net.thumbtack.school.windows.v4;
 
 import net.thumbtack.school.windows.v4.base.RoundWindow;
-import net.thumbtack.school.windows.v4.base.WindowErrorCode;
 import net.thumbtack.school.windows.v4.base.WindowException;
 import net.thumbtack.school.windows.v4.base.WindowState;
 
@@ -20,22 +19,22 @@ public class RoundButton extends RoundWindow {
                        int yCenter,
                        int radius,
                        String text) {
-        this(new Point(xCenter, yCenter), radius,text);
+        this(new Point(xCenter, yCenter), radius, text);
     }
 
     public RoundButton(Point center,
                        int radius,
                        WindowState windowState,
                        String text) throws WindowException {
-       super(center, radius,windowState);
-       setText(text);
+        super(center, radius, windowState);
+        setText(text);
     }
 
     public RoundButton(Point center,
                        int radius,
                        String stateString,
                        String text) throws WindowException {
-        this(center, radius, WindowState.fromString(stateString),text);
+        this(center, radius, WindowState.fromString(stateString), text);
     }
 
     public RoundButton(int xCenter,
@@ -43,7 +42,7 @@ public class RoundButton extends RoundWindow {
                        int radius,
                        WindowState windowState,
                        String text) throws WindowException {
-        this(new Point(xCenter, yCenter), radius, windowState,text);
+        this(new Point(xCenter, yCenter), radius, windowState, text);
     }
 
     public RoundButton(int xCenter,
@@ -51,9 +50,8 @@ public class RoundButton extends RoundWindow {
                        int radius,
                        String stateString,
                        String text) throws WindowException {
-        this(new Point(xCenter, yCenter), radius, WindowState.fromString(stateString),text);
+        this(new Point(xCenter, yCenter), radius, WindowState.fromString(stateString), text);
     }
-
 
 
     public String getText() {

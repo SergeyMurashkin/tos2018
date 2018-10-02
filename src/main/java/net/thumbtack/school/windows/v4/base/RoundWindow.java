@@ -24,6 +24,10 @@ public abstract class RoundWindow extends Window {
         return center;
     }
 
+    public void setCenter(Point center) {
+        this.center = center;
+    }
+
     public int getRadius() {
         return radius;
     }
@@ -33,11 +37,7 @@ public abstract class RoundWindow extends Window {
     }
 
     public void setCenter(int x, int y) {
-        setCenter(new Point(x,y));
-    }
-
-    public void setCenter(Point center){
-        this.center = center;
+        setCenter(new Point(x, y));
     }
 
     public void moveTo(int x, int y) {

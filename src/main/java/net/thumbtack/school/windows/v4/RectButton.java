@@ -1,7 +1,6 @@
 package net.thumbtack.school.windows.v4;
 
 import net.thumbtack.school.windows.v4.base.RectWindow;
-import net.thumbtack.school.windows.v4.base.WindowErrorCode;
 import net.thumbtack.school.windows.v4.base.WindowException;
 import net.thumbtack.school.windows.v4.base.WindowState;
 
@@ -20,8 +19,8 @@ public class RectButton extends RectWindow {
     public RectButton(Point topLeft,
                       Point bottomRight,
                       String stateString,
-                      String text) throws WindowException{
-       this(topLeft, bottomRight,WindowState.fromString(stateString), text);
+                      String text) throws WindowException {
+        this(topLeft, bottomRight, WindowState.fromString(stateString), text);
     }
 
     public RectButton(int xLeft,
@@ -29,8 +28,8 @@ public class RectButton extends RectWindow {
                       int width,
                       int height,
                       WindowState windowState,
-                      String text) throws WindowException{
-        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),windowState,text);
+                      String text) throws WindowException {
+        this(new Point(xLeft, yTop), new Point(xLeft + width - 1, yTop + height - 1), windowState, text);
     }
 
     public RectButton(int xLeft,
@@ -38,9 +37,9 @@ public class RectButton extends RectWindow {
                       int width,
                       int height,
                       String stateString,
-                      String text) throws WindowException{
-        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),
-                WindowState.fromString(stateString),text);
+                      String text) throws WindowException {
+        this(new Point(xLeft, yTop), new Point(xLeft + width - 1, yTop + height - 1),
+                WindowState.fromString(stateString), text);
 
     }
 
@@ -56,7 +55,7 @@ public class RectButton extends RectWindow {
                       int width,
                       int height,
                       String text) {
-        this(new Point(xLeft, yTop),new Point(xLeft + width - 1, yTop + height - 1),text);
+        this(new Point(xLeft, yTop), new Point(xLeft + width - 1, yTop + height - 1), text);
     }
 
     public String getText() {

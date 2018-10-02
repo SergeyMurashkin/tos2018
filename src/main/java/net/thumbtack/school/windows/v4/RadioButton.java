@@ -55,7 +55,7 @@ public class RadioButton extends RoundButton {
                        int radius,
                        String text,
                        boolean checked) {
-        this(new Point(xCenter, yCenter), radius, text,checked);
+        this(new Point(xCenter, yCenter), radius, text, checked);
     }
 
     public boolean isChecked() {
