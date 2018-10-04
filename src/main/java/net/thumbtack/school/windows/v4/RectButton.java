@@ -83,4 +83,5 @@ public class RectButton extends RectWindow {
         result = 31 * result + (text != null ? text.hashCode() : 0);
         return result;
     }
+
 }
