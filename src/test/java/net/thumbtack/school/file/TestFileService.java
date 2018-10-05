@@ -1,5 +1,7 @@
 package net.thumbtack.school.file;
 
+import net.thumbtack.school.ttschool.Trainee;
+import net.thumbtack.school.ttschool.TrainingException;
 import net.thumbtack.school.windows.v4.Point;
 import net.thumbtack.school.windows.v4.RectButton;
 import net.thumbtack.school.windows.v4.base.WindowException;
@@ -10,6 +12,10 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -89,6 +95,7 @@ public class TestFileService {
         assertEquals(rectButton, rectButtonRead);
     }
 
+
     @Test
     public void testFileReadRectButtonArrayBinary() throws WindowException, IOException {
         int count = 5;
@@ -125,7 +132,7 @@ public class TestFileService {
     public void testFileReadWriteRectButtonTextSixLines() throws WindowException, IOException {
         RectButton rectButton = new RectButton(10000, 10000, 20000, 20000, "OK");
         File file = TEMP_FOLDER.newFile("test.txt");
-        FileService.writeRectButtonToTextFileFourLines(file, rectButton);
+        FileService.writeRectButtonToTextFileSixLines(file, rectButton);
         assertTrue(file.exists());
         assertEquals(6, Files.readAllLines(file.toPath()).size());
         RectButton rectRead = FileService.readRectButtonFromTextFileSixLines(file);
@@ -189,9 +196,9 @@ public class TestFileService {
             if (method.getName().equals("serializeTraineeToJsonString") || method.getName().equals("deserializeTraineeFromJsonString")) {
                 continue;
             }
-	    if(!Modifier.isPublic(method.getModifiers())) {
+            if (!Modifier.isPublic(method.getModifiers())) {
                 continue;
-    		}
+            }
             Class<?>[] exceptionTypes = method.getExceptionTypes();
             boolean throwIOException = false;
             for (Class<?> exception : exceptionTypes) {
@@ -205,6 +212,7 @@ public class TestFileService {
             }
         }
     }
+
 
 }
 

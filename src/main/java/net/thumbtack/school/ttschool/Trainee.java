@@ -1,7 +1,10 @@
 package net.thumbtack.school.ttschool;
 
-public class Trainee {
+import java.io.Serializable;
 
+public class Trainee implements Serializable {
+
+    private static final long serialVersionUID = 123570356023689168L;
     private String firstName;
     private String lastName;
     private int rating;
@@ -67,5 +70,14 @@ public class Trainee {
         result = 31 * result + lastName.hashCode();
         result = 31 * result + rating;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Trainee{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", rating=" + rating +
+                '}';
     }
 }
