@@ -114,14 +114,14 @@ public class FileService {
     }*/
 
     public static void modifyRectButtonArrayInBinaryFile(File file) throws IOException {
-        try(RandomAccessFile raf = new RandomAccessFile(file, "rw")){
-          for(long i=0; i<file.length();i+=8){
-              int x = 0;
-              raf.seek(i);
-              x=raf.readInt();
-              raf.seek(i);
-              raf.writeInt(x+1);
-          }
+        try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+            for (long i = 0; i < file.length(); i += 8) {
+                int x = 0;
+                raf.seek(i);
+                x = raf.readInt();
+                raf.seek(i);
+                raf.writeInt(x + 1);
+            }
         }
     }
 
