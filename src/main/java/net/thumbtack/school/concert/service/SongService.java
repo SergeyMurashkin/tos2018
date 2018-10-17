@@ -1,6 +1,6 @@
 package net.thumbtack.school.concert.service;
 
-import net.thumbtack.school.concert.Song;
+import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.daoimpl.SongDaoImpl;
 import net.thumbtack.school.concert.dto.request.SuggestSongDtoRequest;
 

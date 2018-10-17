@@ -1,4 +1,4 @@
-package net.thumbtack.school.concert;
+package net.thumbtack.school.concert.model;
 
 import com.google.gson.Gson;
 
@@ -21,10 +21,8 @@ public class User implements Serializable {
         this.password = password;
     }
 
-
-
-    public User createUser(String jsonString) {
-        return new Gson().fromJson(jsonString, User.class);
+    public User createUser(String jsonUser) {
+        return new Gson().fromJson(jsonUser, User.class);
     }
 
     public String getFirstName() {

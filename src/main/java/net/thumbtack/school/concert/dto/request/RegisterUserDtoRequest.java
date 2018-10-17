@@ -1,7 +1,6 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.User;
 
 public class RegisterUserDtoRequest {
 
@@ -10,6 +9,9 @@ public class RegisterUserDtoRequest {
     private String login;
     private String password;
 
+    public RegisterUserDtoRequest(){
+    }
+
     public RegisterUserDtoRequest(String firstName, String lastName, String login, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -17,7 +19,8 @@ public class RegisterUserDtoRequest {
         this.password = password;
     }
 
-    public RegisterUserDtoRequest(){
+    public RegisterUserDtoRequest createRegUserDto(String jsonString) {
+        return new Gson().fromJson(jsonString, RegisterUserDtoRequest.class);
     }
 
     public String validate() {
@@ -32,10 +35,6 @@ public class RegisterUserDtoRequest {
         }
     }
 
-
-    public RegisterUserDtoRequest createRegUserDto(String jsonString) {
-        return new Gson().fromJson(jsonString, RegisterUserDtoRequest.class);
-    }
 
 
 }

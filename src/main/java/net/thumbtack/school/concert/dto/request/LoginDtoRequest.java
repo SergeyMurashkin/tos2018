@@ -2,29 +2,28 @@ package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
 import net.thumbtack.school.concert.DataBase;
-import net.thumbtack.school.concert.dto.response.LoginUserDtoResponse;
 
-public class LoginUserDtoRequest {
+public class LoginDtoRequest {
 
     private String login;
     private String password;
 
-    public LoginUserDtoRequest(){
+    public LoginDtoRequest(){
     }
 
-    public LoginUserDtoRequest(String login, String password){
+    public LoginDtoRequest(String login, String password){
         this.login = login;
         this.password = password;
     }
 
-    public LoginUserDtoRequest createLoginUserDto(String loginInfo){
-        return new Gson().fromJson(loginInfo, LoginUserDtoRequest.class);
+    public LoginDtoRequest createLoginDto(String jsonLogin){
+        return new Gson().fromJson(jsonLogin, LoginDtoRequest.class);
     }
 
     public String validate(){
-       if(DataBase.getDatabase().getRegisteredUsers().containsKey(login)
-               &&DataBase.getDatabase().getRegisteredUsers().get(login).getPassword().equals(password)){
-           return new Gson().toJson(this,LoginUserDtoRequest.class);
+       if(DataBase.getDatabase().isUserRegistered(login)
+               &&DataBase.getDatabase().isPasswordRight(login, password)){
+           return new Gson().toJson(this, LoginDtoRequest.class);
        }else{
            return "error";
        }

@@ -15,12 +15,12 @@ public class Server {
         return userService.registerUser(jsonUser);
     }
 
-    public String logIn(String jsonUserInfo) {
-        return userService.logIn(jsonUserInfo);
+    public String logIn(String jsonLogin) {
+        return userService.logIn(jsonLogin);
     }
 
-    public String logOut(String jsonUserInfo) {
-        return userService.logOut(jsonUserInfo);
+    public String logOut(String jsonLogout) {
+        return userService.logOut(jsonLogout);
     }
 
     public void stopDB(File file) throws IOException {
@@ -32,9 +32,7 @@ public class Server {
     public void startDB(File file) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new DataInputStream(new FileInputStream(file)))) {
             DataBase dataBase = (DataBase) ois.readObject();
-            DataBase.getDatabase().setRegisteredUsers(dataBase.getRegisteredUsers());
-            DataBase.getDatabase().setLogInOutUsers(dataBase.getLogInOutUsers());
-
+            DataBase.getDatabase().setDatabase(dataBase);
         }
     }
 

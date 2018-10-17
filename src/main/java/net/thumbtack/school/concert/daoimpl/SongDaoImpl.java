@@ -1,6 +1,6 @@
 package net.thumbtack.school.concert.daoimpl;
 
-import net.thumbtack.school.concert.Song;
+import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.dao.SongDao;
 
 public class SongDaoImpl implements SongDao {

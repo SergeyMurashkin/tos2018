@@ -1,38 +1,38 @@
 package net.thumbtack.school.concert.service;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.User;
+import net.thumbtack.school.concert.dto.request.LogoutDtoRequest;
+import net.thumbtack.school.concert.dto.response.LoginDtoResponse;
+import net.thumbtack.school.concert.model.User;
 import net.thumbtack.school.concert.daoimpl.UserDaoImpl;
-import net.thumbtack.school.concert.dto.request.LoginUserDtoRequest;
+import net.thumbtack.school.concert.dto.request.LoginDtoRequest;
 import net.thumbtack.school.concert.dto.request.RegisterUserDtoRequest;
 import net.thumbtack.school.concert.dto.response.RegisterUserDtoResponse;
 
 public class UserService {
 
     public String registerUser(String jsonUser) {
-        String checkedUser = new RegisterUserDtoRequest().createRegUserDto(jsonUser).validate();
-        if (checkedUser.equals("error")) {
-            return new Gson().toJson(new RegisterUserDtoResponse(checkedUser),RegisterUserDtoResponse.class);
+        String jsonCheckedUser = new RegisterUserDtoRequest().createRegUserDto(jsonUser).validate();
+        if (jsonCheckedUser.equals("error")) {
+            return new Gson().toJson(new RegisterUserDtoResponse(null,"error"),RegisterUserDtoResponse.class);
         }
-       User user = new User().createUser(checkedUser);
+       User user = new User().createUser(jsonCheckedUser);
         return new UserDaoImpl().insert(user);
     }
 
 
-    public String logIn(String jsonLoginInfo) {
-        String checkedLogin = new LoginUserDtoRequest().createLoginUserDto(jsonLoginInfo).validate();
-        if (checkedLogin.equals("error")){
-            return checkedLogin;
+    public String logIn(String jsonLogin) {
+        LoginDtoRequest loginDtoRequest = new LoginDtoRequest().createLoginDto(jsonLogin);
+        String jsonCheckedLogin = loginDtoRequest.validate();
+        if (jsonCheckedLogin.equals("error")){
+            return new Gson().toJson(new LoginDtoResponse(null,"error"));
         }
-        return new UserDaoImpl().logIn(new LoginUserDtoRequest().createLoginUserDto(checkedLogin));
+        return new UserDaoImpl().logIn(loginDtoRequest.getLogin());
     }
 
 
-    public String logOut(String jsonLogoutInfo) {
-        String checkedLogout = new LoginUserDtoRequest().createLoginUserDto(jsonLogoutInfo).validate();
-        if (checkedLogout.equals("error")){
-            return checkedLogout;
-        }
-        return new UserDaoImpl().logOut(new LoginUserDtoRequest().createLoginUserDto(checkedLogout));
+    public String logOut(String jsonLogout) {
+        String token = new LogoutDtoRequest().createLogoutDto(jsonLogout).getToken();
+        return new UserDaoImpl().logOut(token);
     }
 }

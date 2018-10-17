@@ -1,14 +1,14 @@
 package net.thumbtack.school.concert.dto.response;
 
-public class RegisterUserDtoResponse {
+public class LoginDtoResponse {
 
     private String token;
     private String error;
 
-    public RegisterUserDtoResponse(){
+    public LoginDtoResponse(){
     }
 
-    public RegisterUserDtoResponse(String token,String error){
+    public LoginDtoResponse(String token,String error){
         this.token = token;
         this.error = error;
     }

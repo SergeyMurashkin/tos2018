@@ -1,79 +1,61 @@
 package net.thumbtack.school.concert;
 
-import com.google.gson.Gson;
-import net.thumbtack.school.concert.dto.request.LoginUserDtoRequest;
-import net.thumbtack.school.concert.dto.response.RegisterUserDtoResponse;
+import net.thumbtack.school.concert.model.User;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DataBase implements Serializable {
 
-    private static final long serialVersionUID = -6235928341357577102L;
+    private static final long serialVersionUID = 2487620371369063972L;
     private static DataBase database;
+    private Map<String, User> registeredUsers = new HashMap<>();
+    private Map<String, String> loginUsers = new HashMap<>();
 
-    private DataBase(){
+    private DataBase() {
     }
 
     public static DataBase getDatabase() {
-        if(database==null){
-            database=new DataBase();
+        if (database == null) {
+            database = new DataBase();
         }
         return database;
     }
 
-    private Map<String, User> registeredUsers = new HashMap<>();
-    private Map<String, Boolean> logInOutUsers = new HashMap<>();
-
-
-    public String insert(User user) {
-        int before = registeredUsers.size();
-        registeredUsers.put(user.getLogin(),user);
-        int after = registeredUsers.size();
-        RegisterUserDtoResponse userDtoResponse = new RegisterUserDtoResponse();
-        if(after>before){
-           userDtoResponse.setToken("added");
-        }else if(after==before){
-            userDtoResponse.setToken("already exist");
-        }else{
-            userDtoResponse.setToken("WTF");
-        }
-
-        logInOutUsers.put(user.getLogin(), false);
-
-        return new Gson().toJson( userDtoResponse, RegisterUserDtoResponse.class) ;
+    public void setDatabase(DataBase database) {
+        DataBase.database = database;
     }
 
-    public String logIn(LoginUserDtoRequest loginUserDto) {
-        logInOutUsers.replace(loginUserDto.getLogin(),true);
-        return"successful";
+    public boolean isUserRegistered(String login) {
+        return registeredUsers.containsKey(login);
     }
 
-    public String logOut(LoginUserDtoRequest logoutUserDto) {
-        logInOutUsers.replace(logoutUserDto.getLogin(),false);
-        return"successful";
+    public boolean isPasswordRight(String login, String password) {
+        return registeredUsers.get(login).getPassword().equals(password);
     }
 
-
-
-    public Map<String, User> getRegisteredUsers() {
-        return registeredUsers;
+    public void addUser(User user) {
+        registeredUsers.put(user.getLogin(), user);
     }
 
-    public void setRegisteredUsers(Map<String, User> registeredUsers) {
-        this.registeredUsers = registeredUsers;
+    public void loginUser(String token, String login) {
+        loginUsers.put(token, login);
     }
 
-    public Map<String, Boolean> getLogInOutUsers() {
-        return logInOutUsers;
+    public void logoutUser(String token) {
+        loginUsers.remove(token);
     }
 
-    public void setLogInOutUsers(Map<String, Boolean> logInOutUsers) {
-        this.logInOutUsers = logInOutUsers;
+    public int countRegisteredUsers() {
+        return registeredUsers.size();
     }
 
+    public int countLoggedUsers() {
+        return loginUsers.size();
+    }
 
+    public boolean isUserLogged(String token) {
+        return loginUsers.containsKey(token);
+    }
 }

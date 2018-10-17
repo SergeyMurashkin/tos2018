@@ -1,4 +1,4 @@
-package net.thumbtack.school.concert;
+package net.thumbtack.school.concert.model;
 
 import com.google.gson.Gson;
 
