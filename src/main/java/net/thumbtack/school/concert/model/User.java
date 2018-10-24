@@ -1,7 +1,5 @@
 package net.thumbtack.school.concert.model;
 
-import com.google.gson.Gson;
-
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -15,15 +13,12 @@ public class User implements Serializable {
     }
 
     public User(String firstName, String lastName, String login, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.login = login;
-        this.password = password;
+        this.firstName = firstName.trim();
+        this.lastName = lastName.trim();
+        this.login = login.trim();
+        this.password = password.trim();
     }
 
-    public User createUser(String jsonUser) {
-        return new Gson().fromJson(jsonUser, User.class);
-    }
 
     public String getFirstName() {
         return firstName;
@@ -56,4 +51,6 @@ public class User implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }

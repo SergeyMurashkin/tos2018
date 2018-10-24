@@ -12,8 +12,8 @@ public class LoginDtoRequest {
     }
 
     public LoginDtoRequest(String login, String password){
-        this.login = login;
-        this.password = password;
+        this.login = login.trim();
+        this.password = password.trim();
     }
 
     public LoginDtoRequest createLoginDto(String jsonLogin){
@@ -21,11 +21,13 @@ public class LoginDtoRequest {
     }
 
     public String validate(){
-       if(DataBase.getDatabase().isUserRegistered(login)
-               &&DataBase.getDatabase().isPasswordRight(login, password)){
-           return new Gson().toJson(this, LoginDtoRequest.class);
+       if(!DataBase.getDatabase().isUserRegistered(login)){
+           return "error: login not exists";
+       }
+       if(!DataBase.getDatabase().isPasswordRight(login, password)){
+           return "error: wrong password";
        }else{
-           return "error";
+        return new Gson().toJson(this, LoginDtoRequest.class);
        }
     }
 
@@ -34,7 +36,7 @@ public class LoginDtoRequest {
     }
 
     public void setLogin(String login) {
-        this.login = login;
+        this.login = login.trim();
     }
 
     public String getPassword() {
@@ -42,6 +44,6 @@ public class LoginDtoRequest {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password.trim();
     }
 }

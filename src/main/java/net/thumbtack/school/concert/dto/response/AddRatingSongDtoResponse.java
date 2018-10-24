@@ -2,17 +2,21 @@ package net.thumbtack.school.concert.dto.response;
 
 import com.google.gson.Gson;
 
-public class LogoutDtoResponse {
+public class AddRatingSongDtoResponse {
 
     private String response;
     private String error;
 
-    public LogoutDtoResponse(){
+    public AddRatingSongDtoResponse(){
     }
 
-    public LogoutDtoResponse(String response,String error){
+    public AddRatingSongDtoResponse(String response, String error){
         this.response = response;
         this.error = error;
+    }
+
+    public AddRatingSongDtoResponse createResponse(String jsonAddResponse){
+        return new Gson().fromJson(jsonAddResponse, AddRatingSongDtoResponse.class);
     }
 
     public String getResponse() {
@@ -31,7 +35,5 @@ public class LogoutDtoResponse {
         this.error = error;
     }
 
-    public LogoutDtoResponse createResponse(String jsonLogoutResponse) {
-        return new Gson().fromJson(jsonLogoutResponse, LogoutDtoResponse.class);
-    }
+
 }
