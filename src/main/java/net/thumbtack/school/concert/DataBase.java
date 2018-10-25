@@ -6,6 +6,7 @@ import net.thumbtack.school.concert.model.User;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DataBase implements Serializable {
 
@@ -249,20 +250,24 @@ public class DataBase implements Serializable {
         }
     }
 
-/*
-    public void getSortedSongs() {
-        Map<Song, Integer> sortedSongSumRating = new HashMap<>(songRating.size());
+    public ArrayList<Map.Entry<Song,Integer>> getSortedSongs() {
+        ArrayList<Map.Entry<Song,Integer>> sortedSongSumRating = new ArrayList<>();
+        Map<Song, Integer> songSumRating = new HashMap<>(songRating.size());
         for (Map.Entry<Song, HashMap<String, Integer>> entry : songRating.entrySet()) {
             int sumRating = 0;
             for (HashMap.Entry<String, Integer> elem : entry.getValue().entrySet()) {
                 sumRating += elem.getValue();
             }
-            sortedSongSumRating.put(entry.getKey(), sumRating);
+            songSumRating.put(entry.getKey(), sumRating);
         }
-        sortedSongSumRating.entrySet().stream().
+        songSumRating.entrySet().stream().
                 sorted(Map.Entry.<Song, Integer>comparingByValue().reversed()).
-                collect();
-    }*/
+                forEach(sortedSongSumRating::add);
+        return sortedSongSumRating;
+    }
 
 
+    public int countSongRating(Song song) {
+       return songRating.get(song).size();
+    }
 }

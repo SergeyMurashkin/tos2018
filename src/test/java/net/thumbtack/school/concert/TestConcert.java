@@ -111,6 +111,22 @@ public class TestConcert {
         assertNull(sugResponse3.getError());
         assertEquals(2, DataBase.getDatabase().countSuggestedSong());
 
+        SuggestSongDtoRequest sugSongRequest4 = new SuggestSongDtoRequest(token2, "Everyday Is Christmas",
+                new HashSet<>(), new HashSet<>(), "Sia", 3600);
+        sugSongRequest4.getComposer().add("Greg Kurstin");
+        sugSongRequest4.getAuthor().add("Greg Kurstin");
+        Song song4 = new Song(sugSongRequest4.getTitle(),
+                sugSongRequest4.getComposer(),
+                sugSongRequest4.getAuthor(),
+                sugSongRequest4.getSinger(),
+                sugSongRequest4.getDuration());
+        String jsonSugRequest4 = new Gson().toJson(sugSongRequest4, SuggestSongDtoRequest.class);
+        SuggestSongDtoResponse sugResponse4 = new SuggestSongDtoResponse().
+                createResponse(server.suggestSong(jsonSugRequest4));
+        assertEquals("song added", sugResponse4.getResponse());
+        assertNull(sugResponse4.getError());
+        assertEquals(3, DataBase.getDatabase().countSuggestedSong());
+
         AddRatingSongDtoRequest addRatingRequest = new AddRatingSongDtoRequest(token2, song, 3);
         String jsonAddRatingRequest = new Gson().toJson(addRatingRequest, AddRatingSongDtoRequest.class);
         AddRatingSongDtoResponse addRatingResponse = new AddRatingSongDtoResponse().
@@ -154,14 +170,14 @@ public class TestConcert {
         assertEquals("comment changed", changeCommentResponse.getResponse());
         System.out.println(DataBase.getDatabase().getCommentsList(song));
 
-        AgreeWithCommentDtoRequest agreeCommentRequest = new AgreeWithCommentDtoRequest(token2,song,1);
+        AgreeWithCommentDtoRequest agreeCommentRequest = new AgreeWithCommentDtoRequest(token2, song, 1);
         String jsonAgreeCommentRequest = new Gson().toJson(agreeCommentRequest, AgreeWithCommentDtoRequest.class);
         String jsonAgreeCommentResponse = server.agreeWithComment(jsonAgreeCommentRequest);
         AgreeWithCommentDtoResponse agreeCommentResponse = new Gson().fromJson(jsonAgreeCommentResponse, AgreeWithCommentDtoResponse.class);
         assertEquals("change of attitude: you are agreed", agreeCommentResponse.getResponse());
         System.out.println(DataBase.getDatabase().getCommentsList(song));
 
-        AgreeWithCommentDtoRequest agreeCommentRequest2 = new AgreeWithCommentDtoRequest(token2,song,1);
+        AgreeWithCommentDtoRequest agreeCommentRequest2 = new AgreeWithCommentDtoRequest(token2, song, 1);
         String jsonAgreeCommentRequest2 = new Gson().toJson(agreeCommentRequest2, AgreeWithCommentDtoRequest.class);
         String jsonAgreeCommentResponse2 = server.agreeWithComment(jsonAgreeCommentRequest2);
         AgreeWithCommentDtoResponse agreeCommentResponse2 = new Gson().fromJson(jsonAgreeCommentResponse2, AgreeWithCommentDtoResponse.class);
@@ -179,7 +195,7 @@ public class TestConcert {
 
         HashSet<String> composers = new HashSet<>();
         composers.add("Daniel Reynolds");
-        GetComposerSongsDtoRequest composerSongsRequest = new GetComposerSongsDtoRequest(token2,composers);
+        GetComposerSongsDtoRequest composerSongsRequest = new GetComposerSongsDtoRequest(token2, composers);
         String jsonComposerSongsRequest = new Gson().toJson(composerSongsRequest, GetComposerSongsDtoRequest.class);
         String jsonComposerSongsResponse = server.getComposerSongs(jsonComposerSongsRequest);
         GetComposerSongsDtoResponse composerSongsResponse = new Gson().fromJson(jsonComposerSongsResponse, GetComposerSongsDtoResponse.class);
@@ -188,19 +204,24 @@ public class TestConcert {
         HashSet<String> authors = new HashSet<>();
         authors.add("Daniel Reynolds");
         GetAuthorSongsDtoRequest authorSongsRequest = new GetAuthorSongsDtoRequest(token2, authors);
-        String jsonAuthorSongsRequest = new Gson().toJson(authorSongsRequest,GetAuthorSongsDtoRequest.class);
+        String jsonAuthorSongsRequest = new Gson().toJson(authorSongsRequest, GetAuthorSongsDtoRequest.class);
         String jsonAuthorSongsResponse = server.getAuthorSongs(jsonAuthorSongsRequest);
         GetAuthorSongsDtoResponse authorSongsResponse = new Gson().fromJson(jsonAuthorSongsResponse, GetAuthorSongsDtoResponse.class);
         System.out.println(authorSongsResponse.getAuthorSongs());
 
         String singer = "Imagine dragons";
-        GetSingerSongsDtoRequest singerSongsRequest = new GetSingerSongsDtoRequest(token2,singer);
+        GetSingerSongsDtoRequest singerSongsRequest = new GetSingerSongsDtoRequest(token2, singer);
         String jsonSingerSongsRequest = new Gson().toJson(singerSongsRequest, GetSingerSongsDtoRequest.class);
         String jsonSingerSongsResponse = server.getSingerSongs(jsonSingerSongsRequest);
         GetSingerSongsDtoResponse singerSongsResponse = new Gson().fromJson(jsonSingerSongsResponse, GetSingerSongsDtoResponse.class);
         System.out.println(singerSongsResponse.getSingerSongs());
 
 
+        GetTrialConcertDtoRequest getTrialConcertRequest = new GetTrialConcertDtoRequest(token2);
+        String jsonGetTrialConcertRequest = new Gson().toJson(getTrialConcertRequest, GetTrialConcertDtoRequest.class);
+        String jsonGetTrialConcertResponse = server.getTrialConcert(jsonGetTrialConcertRequest);
+        GetTrialConcertDtoResponse getTrialConcertResponse = new Gson().fromJson(jsonGetTrialConcertResponse, GetTrialConcertDtoResponse.class);
+        System.out.println(getTrialConcertResponse.getTrialConcertSongs());
 
 
     }

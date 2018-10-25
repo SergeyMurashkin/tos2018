@@ -6,9 +6,12 @@ import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.dto.response.*;
 import net.thumbtack.school.concert.model.Comment;
 import net.thumbtack.school.concert.model.Song;
+import net.thumbtack.school.concert.model.TrialConcertSong;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class SongDaoImpl implements SongDao {
     @Override
@@ -128,7 +131,26 @@ public class SongDaoImpl implements SongDao {
 
     @Override
     public String getTrialConcert() {
-        return null;
+        ArrayList<TrialConcertSong> trialConcertSongs = new ArrayList<>();
+        int concertDuration = 0;
+        ArrayList<Map.Entry<Song,Integer>> sortedSongs = DataBase.getDatabase().getSortedSongs();
+        for (Map.Entry<Song, Integer> sortedSong : sortedSongs) {
+            if (sortedSong.getKey().getDuration() + concertDuration <= 3600) {
+                Song song = sortedSong.getKey();
+                String authorSuggestion = DataBase.getDatabase().getAuthorSuggestedSong(song);
+                double averageRating = (double) sortedSong.getValue() / DataBase.getDatabase().countSongRating(song);
+                ArrayList<Comment> allSongComments = DataBase.getDatabase().getCommentsList(song);
+                TrialConcertSong trialConcertSong = new TrialConcertSong(song, authorSuggestion, averageRating, allSongComments);
+                trialConcertSongs.add(trialConcertSong);
+                concertDuration +=sortedSong.getKey().getDuration() + 10;
+            }
+            if (concertDuration > 3600) {
+                break;
+            }
+        }
+        GetTrialConcertDtoResponse response = new GetTrialConcertDtoResponse(trialConcertSongs,null);
+        return new Gson().toJson(response, GetTrialConcertDtoResponse.class);
+
     }
 
 
