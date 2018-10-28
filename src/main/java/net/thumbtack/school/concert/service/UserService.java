@@ -2,9 +2,11 @@ package net.thumbtack.school.concert.service;
 
 import com.google.gson.Gson;
 import net.thumbtack.school.concert.daoimpl.UserDaoImpl;
+import net.thumbtack.school.concert.dto.request.LeaveServerDtoRequest;
 import net.thumbtack.school.concert.dto.request.LoginDtoRequest;
 import net.thumbtack.school.concert.dto.request.LogoutDtoRequest;
 import net.thumbtack.school.concert.dto.request.RegisterUserDtoRequest;
+import net.thumbtack.school.concert.dto.response.LeaveServerDtoResponse;
 import net.thumbtack.school.concert.dto.response.LoginDtoResponse;
 import net.thumbtack.school.concert.dto.response.RegisterUserDtoResponse;
 import net.thumbtack.school.concert.model.User;
@@ -39,4 +41,6 @@ public class UserService {
         String token = new LogoutDtoRequest().createLogoutDto(jsonLogout).getToken();
         return new UserDaoImpl().logOut(token);
     }
+
+
 }

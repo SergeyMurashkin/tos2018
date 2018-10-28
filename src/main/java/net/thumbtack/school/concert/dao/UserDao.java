@@ -7,4 +7,5 @@ public interface UserDao {
     String registerUser(User user);
     String logIn(String login);
     String logOut(String token);
+
 }

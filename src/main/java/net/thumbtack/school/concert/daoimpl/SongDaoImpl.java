@@ -54,7 +54,7 @@ public class SongDaoImpl implements SongDao {
             DataBase.getDatabase().removeSong(song);
             removeRatingSong.setResponse("rating and song removed");
         }else{
-            if(DataBase.getDatabase().isYourSuggestedSong(song, token)){
+            if(DataBase.getDatabase().isUserSuggestedSong(song, token)){
                 DataBase.getDatabase().changeAuthorSuggestedSong(song, authorRequest);
                 removeRatingSong.setResponse("rating removed and community is new author of suggestion");
             }else {
@@ -153,7 +153,24 @@ public class SongDaoImpl implements SongDao {
 
     }
 
+    @Override
+    public String leaveServer(String token) {
 
+        String userLogin = DataBase.getDatabase().getLoggedUser(token);
+        ArrayList<Song> userSongs = DataBase.getDatabase().getAllUserSongs(userLogin);
+        DataBase.getDatabase().removeUserSongs(userSongs, userLogin);
+        DataBase.getDatabase().removeUserRating(userLogin);
+        DataBase.getDatabase().removeUserComments(userLogin);
+        DataBase.getDatabase().removeUserTokens(userLogin);
+        DataBase.getDatabase().removeUserRegistration(userLogin);
+        LeaveServerDtoResponse leaveServerResponse = new LeaveServerDtoResponse();
+        if(DataBase.getDatabase().isUserLeft(userLogin)){
+            leaveServerResponse.setResponse("all mentions deleted");
+        }else{
+            leaveServerResponse.setError("error: user information not completely deleted");
+        }
+        return new Gson().toJson(leaveServerResponse, LeaveServerDtoResponse.class);
+    }
 
 
 }

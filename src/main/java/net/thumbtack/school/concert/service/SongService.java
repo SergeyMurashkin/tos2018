@@ -135,4 +135,13 @@ public class SongService {
     }
 
 
+    public String leaveServer(String jsonLeaveServer) {
+        LeaveServerDtoRequest leaveServerRequest = new LeaveServerDtoRequest().createRequest(jsonLeaveServer);
+        String jsonCheckedRequest = leaveServerRequest.validate();
+        if (jsonCheckedRequest.contains("error:")) {
+            return new Gson().toJson(new LeaveServerDtoResponse(null, jsonCheckedRequest),LeaveServerDtoResponse.class);
+        }
+        String token = leaveServerRequest.getToken();
+        return new SongDaoImpl().leaveServer(token);
+    }
 }

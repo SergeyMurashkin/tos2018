@@ -11,29 +11,12 @@ public class Server {
     private UserService userService = new UserService();
     private SongService songService = new SongService();
 
-    public void startServer(String savedDataFileName){
-        if (savedDataFileName!=null) {
-            File serverDB = new File(savedDataFileName);
-            try (ObjectInputStream ois = new ObjectInputStream(new DataInputStream(new FileInputStream(serverDB)))) {
-                DataBase dataBase = (DataBase) ois.readObject();
-                DataBase.getDatabase().setDatabase(dataBase);
-            } catch (IOException e) {
-                System.out.println("file not found");
-            } catch (ClassNotFoundException e) {
-                System.out.println("wrong DataBase");
-            }
-        }
+    public void startServer(String savedDataFileName) throws IOException, ClassNotFoundException {
+        DataBase.getDatabase().startDatabase(savedDataFileName);
     }
 
-    public void stopServer(String savedDataFileName) {
-        if (savedDataFileName!=null) {
-            File serverDB = new File(savedDataFileName);
-            try (ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(new FileOutputStream(serverDB)))) {
-                oos.writeObject(DataBase.getDatabase());
-            } catch (IOException e) {
-                System.out.println("file not found");
-            }
-        }
+    public void stopServer(String savedDataFileName) throws IOException {
+        DataBase.getDatabase().stopDatabase(savedDataFileName);
     }
 
     public String registerUser(String jsonUser) {
@@ -90,6 +73,10 @@ public class Server {
 
     public String getTrialConcert(String jsonGetTrialConcert){
         return songService.getTrialConcert(jsonGetTrialConcert);
+    }
+
+    public String leaveServer (String jsonLeaveServer){
+        return songService.leaveServer(jsonLeaveServer);
     }
 
 

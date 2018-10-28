@@ -17,6 +17,7 @@ public interface SongDao {
     String getAuthorSongs (HashSet<String> author);
     String getSingerSongs (String singer);
     String getTrialConcert();
+    String leaveServer(String token);
 }
 
 

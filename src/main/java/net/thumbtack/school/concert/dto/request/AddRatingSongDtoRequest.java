@@ -32,7 +32,7 @@ public class AddRatingSongDtoRequest {
         if (!DataBase.getDatabase().isSongSuggested(song)) {
             return "error: the song not exists";
         }
-        if (DataBase.getDatabase().isYourSuggestedSong(song, token)) {
+        if (DataBase.getDatabase().isUserSuggestedSong(song, token)) {
             return "error: you are the author suggestion";
         }
         if (rating > 5 || rating < 1) {

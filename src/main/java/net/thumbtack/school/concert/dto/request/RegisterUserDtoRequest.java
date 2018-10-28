@@ -29,7 +29,7 @@ public class RegisterUserDtoRequest {
             return "error: empty first name";
         }
         if ( firstName.contains(" ")) {
-            return "error:  space in the first name";
+            return "error: space in the first name";
         }
         if (lastName == null || lastName.equals("")){
             return "error: empty last name";

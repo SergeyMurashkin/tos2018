@@ -97,10 +97,7 @@ public class Song implements Serializable {
     public String toString() {
         return "Song{" +
                 "title='" + title + '\'' +
-                ", composer=" + composer +
-                ", author=" + author +
                 ", singer='" + singer + '\'' +
-                ", duration=" + duration +
                 '}';
     }
 }

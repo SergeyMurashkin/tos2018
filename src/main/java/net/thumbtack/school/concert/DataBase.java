@@ -4,9 +4,8 @@ import net.thumbtack.school.concert.model.Comment;
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DataBase implements Serializable {
 
@@ -16,12 +15,10 @@ public class DataBase implements Serializable {
     private Map<String, String> loggedUsers = new HashMap<>();
     private Map<Song, String> suggestedSong = new HashMap<>();
     private Map<Song, HashMap<String, Integer>> songRating = new HashMap<>();
- //   private Map<Song, Integer> sumSongRating = new HashMap<>();
     private Map<Song, ArrayList<Comment>> comments = new HashMap<>();
 
     private DataBase() {
     }
-
 
     public static DataBase getDatabase() {
         if (database == null) {
@@ -121,7 +118,7 @@ public class DataBase implements Serializable {
     }
 
 
-    public boolean isYourSuggestedSong(Song song, String token) {
+    public boolean isUserSuggestedSong(Song song, String token) {
         String authorRequest = DataBase.getDatabase().getLoggedUser(token);
         return suggestedSong.get(song).equals(authorRequest);
     }
@@ -131,8 +128,7 @@ public class DataBase implements Serializable {
     }
 
     public ArrayList<Song> getConcertSongs() {
-        Set<Song> songSet = new HashSet<>(suggestedSong.keySet());
-        return new ArrayList<>(songSet);
+        return new ArrayList<>(suggestedSong.keySet());
     }
 
     public ArrayList<Song> getComposerSongs(HashSet<String> composers) {
@@ -196,7 +192,6 @@ public class DataBase implements Serializable {
             int id = DataBase.getDatabase().getMaxCommentId(song);
             comments.get(song).add(new Comment(authorRequest, newCommentText, id + 1));
         }
-
     }
 
     public ArrayList<Comment> getCommentsList(Song song) {
@@ -250,8 +245,8 @@ public class DataBase implements Serializable {
         }
     }
 
-    public ArrayList<Map.Entry<Song,Integer>> getSortedSongs() {
-        ArrayList<Map.Entry<Song,Integer>> sortedSongSumRating = new ArrayList<>();
+    public ArrayList<Map.Entry<Song, Integer>> getSortedSongs() {
+        ArrayList<Map.Entry<Song, Integer>> sortedSongSumRating = new ArrayList<>();
         Map<Song, Integer> songSumRating = new HashMap<>(songRating.size());
         for (Map.Entry<Song, HashMap<String, Integer>> entry : songRating.entrySet()) {
             int sumRating = 0;
@@ -268,6 +263,122 @@ public class DataBase implements Serializable {
 
 
     public int countSongRating(Song song) {
-       return songRating.get(song).size();
+        return songRating.get(song).size();
     }
+
+    public ArrayList<Song> getAllUserSongs(String userLogin) {
+        ArrayList<Song> userSongs = new ArrayList<>();
+        for (Map.Entry<Song, String> entry : suggestedSong.entrySet()) {
+            if (entry.getValue().equals(userLogin)) {
+                userSongs.add(entry.getKey());
+            }
+        }
+        return userSongs;
+    }
+
+
+    public void removeUserSongs(ArrayList<Song> userSongs, String userLogin) {
+        for (Song song : userSongs) {
+            if (countSongRating(song) > 1) {
+                songRating.get(song).remove(userLogin);
+                suggestedSong.replace(song, userLogin, "userCommunity@gmail.com");
+            } else {
+                removeSong(song);
+            }
+        }
+    }
+
+    public void removeUserComments(String userLogin) {
+        for (Map.Entry<Song, ArrayList<Comment>> entry : comments.entrySet()) {
+            ArrayList<Comment> removedComments = new ArrayList<>();
+            for (Comment comment : entry.getValue()) {
+                comment.getAgreedUsers().remove(userLogin);
+                if (comment.getAuthorComment().equals(userLogin)) {
+                    if (comment.getAgreedUsers().size() > 0) {
+                        comment.setAuthorComment("userCommunity@gmail.com");
+                    } else {
+                        removedComments.add(comment);
+                    }
+                }
+            }
+            comments.get(entry.getKey()).removeAll(removedComments);
+        }
+    }
+
+
+    public boolean isUserLeft(String userLogin) {
+        for (HashMap<String, Integer> ratings : songRating.values()) {
+            if (ratings.keySet().contains(userLogin)) {
+                return false;
+            }
+        }
+        for (ArrayList<Comment> songComment : comments.values()) {
+            for (Comment comment : songComment) {
+                if (comment.getAuthorComment().equals(userLogin)
+                        || comment.getAgreedUsers().contains(userLogin)) {
+                    return false;
+                }
+            }
+        }
+        return !registeredUsers.keySet().contains(userLogin)
+                && !loggedUsers.values().contains(userLogin)
+                && !suggestedSong.values().contains(userLogin);
+
+    }
+
+    public void removeUserRating(String userLogin) {
+        for (Map.Entry<Song, HashMap<String, Integer>> entry : songRating.entrySet()) {
+            songRating.get(entry.getKey()).remove(userLogin);
+        }
+    }
+
+    public void removeUserTokens(String userLogin) {
+        Map<String, String> removedUserTokens = new HashMap<>();
+        for (Map.Entry<String, String> entry : loggedUsers.entrySet()) {
+            if (entry.getValue().equals(userLogin)) {
+                removedUserTokens.put(entry.getKey(), userLogin);
+            }
+        }
+        for (Map.Entry<String, String> entry : removedUserTokens.entrySet()) {
+            loggedUsers.remove(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void removeUserRegistration(String userLogin) {
+        registeredUsers.remove(userLogin);
+    }
+
+    @Override
+    public String toString() {
+        return "DataBase{" +
+                "registeredUsers=" + registeredUsers +
+                ", loggedUsers=" + loggedUsers +
+                ", suggestedSong=" + suggestedSong +
+                ", songRating=" + songRating +
+                ", comments=" + comments +
+                '}';
+    }
+
+    public void startDatabase(String savedDataFileName) throws IOException, ClassNotFoundException {
+        if (savedDataFileName != null) {
+            File serverDB = new File(savedDataFileName);
+            try (ObjectInputStream ois = new ObjectInputStream(new DataInputStream(new FileInputStream(serverDB)))) {
+                database = (DataBase) ois.readObject();
+            }
+        } else {
+            database = new DataBase();
+        }
+    }
+
+    public void stopDatabase(String savedDataFileName) throws IOException {
+        if (savedDataFileName != null) {
+            File serverDB = new File(savedDataFileName);
+            try (ObjectOutputStream oos = new ObjectOutputStream(new DataOutputStream(new FileOutputStream(serverDB)))) {
+                oos.writeObject(DataBase.getDatabase());
+            }
+        }
+    }
+
+
+
 }
