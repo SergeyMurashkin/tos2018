@@ -3,16 +3,17 @@ package net.thumbtack.school.concert.dto.request;
 import com.google.gson.Gson;
 
 public class LogoutDtoRequest {
+
     private String token;
 
-    public LogoutDtoRequest(){
+    public LogoutDtoRequest() {
     }
 
-    public LogoutDtoRequest(String token){
+    public LogoutDtoRequest(String token) {
         this.token = token;
     }
 
-    public LogoutDtoRequest createLogoutDto(String jsonLogoutDto){
+    public LogoutDtoRequest createLogoutDto(String jsonLogoutDto) {
         return new Gson().fromJson(jsonLogoutDto, LogoutDtoRequest.class);
     }
 

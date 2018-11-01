@@ -2,13 +2,14 @@ package net.thumbtack.school.concert.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = -334761479774682190L;
     private String authorComment;
     private String textComment;
-    private HashSet<String> agreedUsers;
+    private Set<String> agreedUsers;
     private int id;
 
     public Comment() {
@@ -16,7 +17,7 @@ public class Comment implements Serializable {
 
     public Comment(String authorComment,
                    String textComment,
-                   HashSet<String> agreedUsers,
+                   Set<String> agreedUsers,
                    int id) {
         this.authorComment = authorComment;
         this.textComment = textComment;
@@ -27,7 +28,6 @@ public class Comment implements Serializable {
     public Comment(String authorComment,
                    String textComment,
                    int id) {
-
         this.authorComment = authorComment;
         this.textComment = textComment;
         this.agreedUsers = new HashSet<>();
@@ -50,11 +50,11 @@ public class Comment implements Serializable {
         this.textComment = textComment;
     }
 
-    public HashSet<String> getAgreedUsers() {
+    public Set<String> getAgreedUsers() {
         return agreedUsers;
     }
 
-    public void setAgreedUsers(HashSet<String> agreedUsers) {
+    public void setAgreedUsers(Set<String> agreedUsers) {
         this.agreedUsers = agreedUsers;
     }
 
@@ -87,13 +87,4 @@ public class Comment implements Serializable {
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "authorComment='" + authorComment + '\'' +
-                ", textComment='" + textComment + '\'' +
-                ", agreedUsers=" + agreedUsers +
-                ", id=" + id +
-                '}';
-    }
 }

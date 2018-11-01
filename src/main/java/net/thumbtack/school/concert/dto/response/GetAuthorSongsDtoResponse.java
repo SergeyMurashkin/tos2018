@@ -2,26 +2,26 @@ package net.thumbtack.school.concert.dto.response;
 
 import net.thumbtack.school.concert.model.Song;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GetAuthorSongsDtoResponse {
 
-    private ArrayList<Song> authorSongs;
-    private String  error;
+    private List<Song> authorSongs;
+    private String error;
 
-    public GetAuthorSongsDtoResponse(){
+    public GetAuthorSongsDtoResponse() {
     }
 
-    public GetAuthorSongsDtoResponse(ArrayList<Song> authorSongs, String  error){
+    public GetAuthorSongsDtoResponse(List<Song> authorSongs, String error) {
         this.authorSongs = authorSongs;
         this.error = error;
     }
 
-    public ArrayList<Song> getAuthorSongs() {
+    public List<Song> getAuthorSongs() {
         return authorSongs;
     }
 
-    public void setAuthorSongs(ArrayList<Song> authorSongs) {
+    public void setAuthorSongs(List<Song> authorSongs) {
         this.authorSongs = authorSongs;
     }
 
@@ -32,4 +32,6 @@ public class GetAuthorSongsDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
+
 }

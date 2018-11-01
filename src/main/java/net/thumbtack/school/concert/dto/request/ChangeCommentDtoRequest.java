@@ -7,8 +7,6 @@ import net.thumbtack.school.concert.model.Song;
 public class ChangeCommentDtoRequest {
 
     private String token;
-
-
     private Song song;
     private int oldCommentIndex;
     private String newCommentText;
@@ -30,7 +28,6 @@ public class ChangeCommentDtoRequest {
         return new Gson().fromJson(jsonChangeComment, ChangeCommentDtoRequest.class);
     }
 
-
     public String validate() {
         if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
@@ -38,10 +35,10 @@ public class ChangeCommentDtoRequest {
         if (!DataBase.getDatabase().isSongSuggested(song)) {
             return "error: the song not exists";
         }
-        if(!DataBase.getDatabase().isCommentExists(song, oldCommentIndex)){
+        if (!DataBase.getDatabase().isCommentExists(song, oldCommentIndex)) {
             return "error: the comment not exists";
         }
-        if (!DataBase.getDatabase().isYourComment(token, song, oldCommentIndex)){
+        if (!DataBase.getDatabase().isYourComment(token, song, oldCommentIndex)) {
             return "error: the comment not yours";
         }
         if (newCommentText.length() > 50) {
@@ -82,4 +79,5 @@ public class ChangeCommentDtoRequest {
     public void setNewCommentText(String newCommentText) {
         this.newCommentText = newCommentText;
     }
+
 }

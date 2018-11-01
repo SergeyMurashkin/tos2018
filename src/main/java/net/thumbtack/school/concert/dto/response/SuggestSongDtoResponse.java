@@ -7,18 +7,17 @@ public class SuggestSongDtoResponse {
     private String response;
     private String error;
 
-    public SuggestSongDtoResponse(){
+    public SuggestSongDtoResponse() {
     }
 
-    public SuggestSongDtoResponse(String response, String error){
+    public SuggestSongDtoResponse(String response, String error) {
         this.response = response;
         this.error = error;
     }
 
-    public SuggestSongDtoResponse createResponse(String jsonResponse){
-       return new Gson().fromJson(jsonResponse, SuggestSongDtoResponse.class);
+    public SuggestSongDtoResponse createResponse(String jsonResponse) {
+        return new Gson().fromJson(jsonResponse, SuggestSongDtoResponse.class);
     }
-
 
     public String getResponse() {
         return response;
@@ -35,4 +34,5 @@ public class SuggestSongDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
 }

@@ -8,27 +8,27 @@ public class LoginDtoRequest {
     private String login;
     private String password;
 
-    public LoginDtoRequest(){
+    public LoginDtoRequest() {
     }
 
-    public LoginDtoRequest(String login, String password){
+    public LoginDtoRequest(String login, String password) {
         this.login = login.trim();
         this.password = password.trim();
     }
 
-    public LoginDtoRequest createLoginDto(String jsonLogin){
+    public LoginDtoRequest createLoginDto(String jsonLogin) {
         return new Gson().fromJson(jsonLogin, LoginDtoRequest.class);
     }
 
-    public String validate(){
-       if(!DataBase.getDatabase().isUserRegistered(login)){
-           return "error: login not exists";
-       }
-       if(!DataBase.getDatabase().isPasswordRight(login, password)){
-           return "error: wrong password";
-       }else{
-        return new Gson().toJson(this, LoginDtoRequest.class);
-       }
+    public String validate() {
+        if (!DataBase.getDatabase().isUserRegistered(login)) {
+            return "error: login not exists";
+        }
+        if (!DataBase.getDatabase().isPasswordRight(login, password)) {
+            return "error: wrong password";
+        } else {
+            return new Gson().toJson(this, LoginDtoRequest.class);
+        }
     }
 
     public String getLogin() {
@@ -46,4 +46,5 @@ public class LoginDtoRequest {
     public void setPassword(String password) {
         this.password = password.trim();
     }
+
 }

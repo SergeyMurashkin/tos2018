@@ -7,16 +7,15 @@ public class AgreeWithCommentDtoResponse {
     private String response;
     private String error;
 
-    public AgreeWithCommentDtoResponse(){
+    public AgreeWithCommentDtoResponse() {
     }
 
-    public AgreeWithCommentDtoResponse(String response, String error){
+    public AgreeWithCommentDtoResponse(String response, String error) {
         this.response = response;
         this.error = error;
     }
 
-
-    public AgreeWithCommentDtoResponse createResponse(String jsonResponse){
+    public AgreeWithCommentDtoResponse createResponse(String jsonResponse) {
         return new Gson().fromJson(jsonResponse, AgreeWithCommentDtoResponse.class);
     }
 
@@ -35,4 +34,5 @@ public class AgreeWithCommentDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
 }

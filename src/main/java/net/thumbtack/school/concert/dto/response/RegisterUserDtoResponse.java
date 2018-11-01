@@ -5,10 +5,10 @@ public class RegisterUserDtoResponse {
     private String token;
     private String error;
 
-    public RegisterUserDtoResponse(){
+    public RegisterUserDtoResponse() {
     }
 
-    public RegisterUserDtoResponse(String token,String error){
+    public RegisterUserDtoResponse(String token, String error) {
         this.token = token;
         this.error = error;
     }
@@ -28,4 +28,5 @@ public class RegisterUserDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
 }

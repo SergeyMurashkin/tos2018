@@ -7,10 +7,10 @@ public class LogoutDtoResponse {
     private String response;
     private String error;
 
-    public LogoutDtoResponse(){
+    public LogoutDtoResponse() {
     }
 
-    public LogoutDtoResponse(String response,String error){
+    public LogoutDtoResponse(String response, String error) {
         this.response = response;
         this.error = error;
     }
@@ -34,4 +34,5 @@ public class LogoutDtoResponse {
     public LogoutDtoResponse createResponse(String jsonLogoutResponse) {
         return new Gson().fromJson(jsonLogoutResponse, LogoutDtoResponse.class);
     }
+
 }

@@ -3,14 +3,14 @@ package net.thumbtack.school.concert.model;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Set;
 
 public class Song implements Serializable {
 
     private static final long serialVersionUID = 1653987098914607270L;
     private String title;
-    private HashSet<String> composer;
-    private HashSet<String> author;
+    private Set<String> composer;
+    private Set<String> author;
     private String singer;
     private int duration;
 
@@ -18,8 +18,8 @@ public class Song implements Serializable {
     }
 
     public Song(String title,
-                HashSet<String> composer,
-                HashSet<String> author,
+                Set<String> composer,
+                Set<String> author,
                 String singer,
                 int duration) {
         this.title = title.trim();
@@ -32,8 +32,6 @@ public class Song implements Serializable {
     public Song createSong(String jsonCheckedSong) {
         return new Gson().fromJson(jsonCheckedSong, Song.class);
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -57,47 +55,20 @@ public class Song implements Serializable {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title.trim();
-    }
-
-    public HashSet<String> getComposer() {
+    public Set<String> getComposer() {
         return composer;
     }
 
-    public void setComposer(HashSet<String> composer) {
-        this.composer = composer;
-    }
-
-    public HashSet<String> getAuthor() {
+    public Set<String> getAuthor() {
         return author;
-    }
-
-    public void setAuthor(HashSet<String> author) {
-        this.author = author;
     }
 
     public String getSinger() {
         return singer;
     }
 
-    public void setSinger(String singer) {
-        this.singer = singer.trim();
-    }
-
     public int getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    @Override
-    public String toString() {
-        return "Song{" +
-                "title='" + title + '\'' +
-                ", singer='" + singer + '\'' +
-                '}';
-    }
 }

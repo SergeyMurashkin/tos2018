@@ -5,10 +5,10 @@ public class LoginDtoResponse {
     private String token;
     private String error;
 
-    public LoginDtoResponse(){
+    public LoginDtoResponse() {
     }
 
-    public LoginDtoResponse(String token,String error){
+    public LoginDtoResponse(String token, String error) {
         this.token = token;
         this.error = error;
     }
@@ -28,4 +28,5 @@ public class LoginDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
 }

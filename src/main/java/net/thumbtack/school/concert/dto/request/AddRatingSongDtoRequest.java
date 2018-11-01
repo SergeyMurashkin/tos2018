@@ -65,4 +65,5 @@ public class AddRatingSongDtoRequest {
     public void setRating(Integer rating) {
         this.rating = rating;
     }
+
 }

@@ -7,15 +7,15 @@ public class AddRatingSongDtoResponse {
     private String response;
     private String error;
 
-    public AddRatingSongDtoResponse(){
+    public AddRatingSongDtoResponse() {
     }
 
-    public AddRatingSongDtoResponse(String response, String error){
+    public AddRatingSongDtoResponse(String response, String error) {
         this.response = response;
         this.error = error;
     }
 
-    public AddRatingSongDtoResponse createResponse(String jsonAddResponse){
+    public AddRatingSongDtoResponse createResponse(String jsonAddResponse) {
         return new Gson().fromJson(jsonAddResponse, AddRatingSongDtoResponse.class);
     }
 
@@ -34,6 +34,5 @@ public class AddRatingSongDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
-
 
 }

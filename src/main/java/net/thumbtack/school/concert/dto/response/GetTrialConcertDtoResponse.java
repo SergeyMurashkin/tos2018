@@ -2,27 +2,27 @@ package net.thumbtack.school.concert.dto.response;
 
 import net.thumbtack.school.concert.model.TrialConcertSong;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class GetTrialConcertDtoResponse {
 
-    private ArrayList<TrialConcertSong> trialConcertSongs = new ArrayList<>();
+    private List<TrialConcertSong> trialConcertSongs;
     private String error;
 
-    public GetTrialConcertDtoResponse(){
+    public GetTrialConcertDtoResponse() {
     }
 
-    public GetTrialConcertDtoResponse(ArrayList<TrialConcertSong> trialConcertSongs, String error){
+    public GetTrialConcertDtoResponse(List<TrialConcertSong> trialConcertSongs, String error) {
         this.trialConcertSongs = trialConcertSongs;
         this.error = error;
     }
 
-    public ArrayList<TrialConcertSong> getTrialConcertSongs() {
+    public List<TrialConcertSong> getTrialConcertSongs() {
         return trialConcertSongs;
     }
 
-    public void setTrialConcertSongs(ArrayList<TrialConcertSong> trialConcertSongs) {
+    public void setTrialConcertSongs(List<TrialConcertSong> trialConcertSongs) {
         this.trialConcertSongs = trialConcertSongs;
     }
 
@@ -33,4 +33,5 @@ public class GetTrialConcertDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
 }

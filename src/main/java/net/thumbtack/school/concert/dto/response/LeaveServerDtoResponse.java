@@ -5,10 +5,10 @@ public class LeaveServerDtoResponse {
     private String response;
     private String error;
 
-    public LeaveServerDtoResponse(){
+    public LeaveServerDtoResponse() {
     }
 
-    public LeaveServerDtoResponse( String response, String error){
+    public LeaveServerDtoResponse(String response, String error) {
         this.response = response;
         this.error = error;
     }
@@ -28,4 +28,5 @@ public class LeaveServerDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
 }

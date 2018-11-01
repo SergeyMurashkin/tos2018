@@ -9,30 +9,30 @@ public class RemoveRatingSongDtoRequest {
     private String token;
     private Song song;
 
-    public RemoveRatingSongDtoRequest(){
+    public RemoveRatingSongDtoRequest() {
     }
 
-    public RemoveRatingSongDtoRequest(String token, Song song){
+    public RemoveRatingSongDtoRequest(String token, Song song) {
         this.token = token;
         this.song = song;
     }
 
-    public RemoveRatingSongDtoRequest createRequest(String jsonRemoveRating){
-       return new Gson().fromJson(jsonRemoveRating, RemoveRatingSongDtoRequest.class);
+    public RemoveRatingSongDtoRequest createRequest(String jsonRemoveRating) {
+        return new Gson().fromJson(jsonRemoveRating, RemoveRatingSongDtoRequest.class);
     }
 
     public String validate() {
-        String authorRequest = DataBase.getDatabase().getLoggedUser(token);
-        if(!DataBase.getDatabase().isUserLogged(token)){
+        String userLogin = DataBase.getDatabase().getLoggedUser(token);
+        if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
         }
-        if(!DataBase.getDatabase().isSongSuggested(song)){
+        if (!DataBase.getDatabase().isSongSuggested(song)) {
             return "error: the song not exists";
         }
-        if(!DataBase.getDatabase().isUserRatedSong(song,authorRequest)){
+        if (!DataBase.getDatabase().isUserRatedSong(song, userLogin)) {
             return "error: you can remove only your rating";
-        }else {
-            return new Gson().toJson(this,RemoveRatingSongDtoRequest.class);
+        } else {
+            return new Gson().toJson(this, RemoveRatingSongDtoRequest.class);
         }
     }
 
@@ -51,6 +51,5 @@ public class RemoveRatingSongDtoRequest {
     public void setSong(Song song) {
         this.song = song;
     }
-
 
 }

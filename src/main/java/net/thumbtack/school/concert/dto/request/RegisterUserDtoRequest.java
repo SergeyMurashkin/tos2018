@@ -9,7 +9,7 @@ public class RegisterUserDtoRequest {
     private String login;
     private String password;
 
-    public RegisterUserDtoRequest(){
+    public RegisterUserDtoRequest() {
     }
 
     public RegisterUserDtoRequest(String firstName, String lastName, String login, String password) {
@@ -24,38 +24,36 @@ public class RegisterUserDtoRequest {
     }
 
     public String validate() {
-
-        if ( firstName == null || firstName.equals("")) {
+        if (firstName == null || firstName.equals("")) {
             return "error: empty first name";
         }
-        if ( firstName.contains(" ")) {
+        if (firstName.contains(" ")) {
             return "error: space in the first name";
         }
-        if (lastName == null || lastName.equals("")){
+        if (lastName == null || lastName.equals("")) {
             return "error: empty last name";
         }
-        if (lastName.contains(" ")){
+        if (lastName.contains(" ")) {
             return "error: space in the last name";
         }
-        if ( login == null || login.equals("")) {
+        if (login == null || login.equals("")) {
             return "error: empty login";
         }
-        if ( login.contains(" ")) {
+        if (login.contains(" ")) {
             return "error: space in the login";
         }
-        if (password == null || password.equals("")){
+        if (password == null || password.equals("")) {
             return "error: empty password";
         }
-        if ( password.length()<6) {
+        if (password.length() < 6) {
             return "error: short password";
         }
-        if ( password.contains(" ") ) {
+        if (password.contains(" ")) {
             return "error: space in the password";
-        }else{
+        } else {
             return new Gson().toJson(this, RegisterUserDtoRequest.class);
         }
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -88,4 +86,5 @@ public class RegisterUserDtoRequest {
     public void setPassword(String password) {
         this.password = password.trim();
     }
+
 }

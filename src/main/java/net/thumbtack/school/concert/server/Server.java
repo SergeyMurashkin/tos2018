@@ -4,7 +4,7 @@ import net.thumbtack.school.concert.DataBase;
 import net.thumbtack.school.concert.service.SongService;
 import net.thumbtack.school.concert.service.UserService;
 
-import java.io.*;
+import java.io.IOException;
 
 public class Server {
 
@@ -43,20 +43,20 @@ public class Server {
         return songService.removeRating(jsonRemoveRating);
     }
 
-    public String addComment(String jsonAddComment){
+    public String addComment(String jsonAddComment) {
         return songService.addComment(jsonAddComment);
     }
 
-    public String changeComment(String jsonChangeComment){
+    public String changeComment(String jsonChangeComment) {
         return songService.changeComment(jsonChangeComment);
     }
 
-    public String agreeWithComment( String jsonAgreeWithComment) {
+    public String agreeWithComment(String jsonAgreeWithComment) {
         return songService.agreeWithComment(jsonAgreeWithComment);
     }
 
     public String getConcertSongs(String jsonGetConcertSongs) {
-       return songService.getConcertSongs(jsonGetConcertSongs);
+        return songService.getConcertSongs(jsonGetConcertSongs);
     }
 
     public String getComposerSongs(String jsonGetComposerSongs) {
@@ -71,13 +71,12 @@ public class Server {
         return songService.getSingerSongs(jsonGetSingerSongs);
     }
 
-    public String getTrialConcert(String jsonGetTrialConcert){
+    public String getTrialConcert(String jsonGetTrialConcert) {
         return songService.getTrialConcert(jsonGetTrialConcert);
     }
 
-    public String leaveServer (String jsonLeaveServer){
+    public String leaveServer(String jsonLeaveServer) {
         return songService.leaveServer(jsonLeaveServer);
     }
-
 
 }

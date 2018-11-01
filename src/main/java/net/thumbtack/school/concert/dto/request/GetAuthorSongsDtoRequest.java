@@ -10,22 +10,22 @@ public class GetAuthorSongsDtoRequest {
     private String token;
     private HashSet<String> author;
 
-    public GetAuthorSongsDtoRequest(){
+    public GetAuthorSongsDtoRequest() {
     }
 
-    public GetAuthorSongsDtoRequest(String token, HashSet<String> author){
+    public GetAuthorSongsDtoRequest(String token, HashSet<String> author) {
         this.token = token;
         this.author = author;
     }
 
-    public GetAuthorSongsDtoRequest createRequest(String  jsonGetAuthorSongs) {
+    public GetAuthorSongsDtoRequest createRequest(String jsonGetAuthorSongs) {
         return new Gson().fromJson(jsonGetAuthorSongs, GetAuthorSongsDtoRequest.class);
     }
 
     public String validate() {
         if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
-        }else{
+        } else {
             return new Gson().toJson(this, GetAuthorSongsDtoRequest.class);
         }
     }
@@ -45,4 +45,5 @@ public class GetAuthorSongsDtoRequest {
     public void setAuthor(HashSet<String> author) {
         this.author = author;
     }
+
 }

@@ -8,22 +8,22 @@ public class GetSingerSongsDtoRequest {
     private String token;
     private String singer;
 
-    public GetSingerSongsDtoRequest(){
+    public GetSingerSongsDtoRequest() {
     }
 
-    public GetSingerSongsDtoRequest(String token, String singer){
+    public GetSingerSongsDtoRequest(String token, String singer) {
         this.token = token;
         this.singer = singer;
     }
 
-    public GetSingerSongsDtoRequest createRequest(String  jsonGetSingerSongs) {
+    public GetSingerSongsDtoRequest createRequest(String jsonGetSingerSongs) {
         return new Gson().fromJson(jsonGetSingerSongs, GetSingerSongsDtoRequest.class);
     }
 
     public String validate() {
         if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
-        }else{
+        } else {
             return new Gson().toJson(this, GetSingerSongsDtoRequest.class);
         }
     }
@@ -43,4 +43,5 @@ public class GetSingerSongsDtoRequest {
     public void setSinger(String singer) {
         this.singer = singer;
     }
+
 }

@@ -14,7 +14,6 @@ public class SuggestSongDtoRequest {
     private String singer;
     private int duration;
 
-
     public SuggestSongDtoRequest() {
     }
 
@@ -106,4 +105,5 @@ public class SuggestSongDtoRequest {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
 }

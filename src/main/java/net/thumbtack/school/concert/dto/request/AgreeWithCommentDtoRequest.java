@@ -1,7 +1,6 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-
 import net.thumbtack.school.concert.model.Song;
 
 public class AgreeWithCommentDtoRequest {
@@ -25,9 +24,8 @@ public class AgreeWithCommentDtoRequest {
         return new Gson().fromJson(jsonAgreeWithComment, AgreeWithCommentDtoRequest.class);
     }
 
-
     public String validate() {
-        return new Gson().toJson(this,AgreeWithCommentDtoRequest.class);
+        return new Gson().toJson(this, AgreeWithCommentDtoRequest.class);
     }
 
     public String getToken() {
@@ -53,4 +51,5 @@ public class AgreeWithCommentDtoRequest {
     public void setCommentIndex(int commentIndex) {
         this.commentIndex = commentIndex;
     }
+
 }

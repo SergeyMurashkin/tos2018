@@ -9,13 +9,14 @@ import java.util.*;
 
 public class DataBase implements Serializable {
 
+    public static final String COMMUNITY_LOGIN = "WhiteSailsCommunity@gmail.com";
     private static final long serialVersionUID = 2487620371369063972L;
     private static DataBase database;
     private Map<String, User> registeredUsers = new HashMap<>();
     private Map<String, String> loggedUsers = new HashMap<>();
     private Map<Song, String> suggestedSong = new HashMap<>();
-    private Map<Song, HashMap<String, Integer>> songRating = new HashMap<>();
-    private Map<Song, ArrayList<Comment>> comments = new HashMap<>();
+    private Map<Song, Map<String, Integer>> songRating = new HashMap<>();
+    private Map<Song, List<Comment>> comments = new HashMap<>();
 
     private DataBase() {
     }
@@ -27,13 +28,12 @@ public class DataBase implements Serializable {
         return database;
     }
 
-
-    public void setDatabase(DataBase database) {
-        DataBase.database = database;
-    }
-
     public boolean isUserRegistered(String login) {
         return registeredUsers.containsKey(login);
+    }
+
+    public boolean isUserLogged(String token) {
+        return loggedUsers.containsKey(token);
     }
 
     public boolean isPasswordRight(String login, String password) {
@@ -60,8 +60,8 @@ public class DataBase implements Serializable {
         return loggedUsers.size();
     }
 
-    public boolean isUserLogged(String token) {
-        return loggedUsers.containsKey(token);
+    public int countSuggestedSong() {
+        return suggestedSong.size();
     }
 
     public String getLoggedUser(String token) {
@@ -72,40 +72,37 @@ public class DataBase implements Serializable {
         return suggestedSong.get(song);
     }
 
-    public void addSong(Song song, String authorRequest) {
-        suggestedSong.put(song, authorRequest);
+    public void addSong(Song song, String userLogin) {
+        suggestedSong.put(song, userLogin);
     }
 
-
-    public void addRating(Song song, String authorRequest, Integer rating) {
-        songRating.get(song).put(authorRequest, rating);
+    public void addRating(Song song, String userLogin, Integer rating) {
+        songRating.get(song).put(userLogin, rating);
     }
 
-    public void changeRating(Song song, String authorRequest, Integer rating) {
-        songRating.get(song).replace(authorRequest, rating);
+    public void changeRating(Song song, String userLogin, Integer rating) {
+        songRating.get(song).replace(userLogin, rating);
     }
 
-
-    public boolean isUserRatedSong(Song song, String authorRequest) {
-        return songRating.get(song).containsKey(authorRequest);
+    public boolean isUserRatedSong(Song song, String userLogin) {
+        return songRating.get(song).containsKey(userLogin);
     }
 
     public boolean isSongSuggested(Song song) {
         return suggestedSong.containsKey(song) && songRating.containsKey(song);
     }
 
-    public void addFirstRating(Song song, HashMap<String, Integer> firstRating) {
+    public void addFirstRating(Song song, Map<String, Integer> firstRating) {
         songRating.put(song, firstRating);
     }
 
-    public void removeRating(Song song, String authorRequest) {
-        songRating.get(song).remove(authorRequest);
+    public void removeRating(Song song, String userLogin) {
+        songRating.get(song).remove(userLogin);
     }
 
-    public void changeAuthorSuggestedSong(Song song, String oldAuthorRequest) {
-        suggestedSong.replace(song, oldAuthorRequest, "userCommunity@gmail.com");
+    public void changeAuthorSuggestedSong(Song song, String oldUserLogin, String newUserLogin) {
+        suggestedSong.replace(song, oldUserLogin, newUserLogin);
     }
-
 
     public boolean isSongNotRated(Song song) {
         return songRating.get(song).size() == 0;
@@ -117,21 +114,16 @@ public class DataBase implements Serializable {
         comments.remove(song);
     }
 
-
     public boolean isUserSuggestedSong(Song song, String token) {
-        String authorRequest = DataBase.getDatabase().getLoggedUser(token);
-        return suggestedSong.get(song).equals(authorRequest);
+        String userLogin = DataBase.getDatabase().getLoggedUser(token);
+        return suggestedSong.get(song).equals(userLogin);
     }
 
-    public int countSuggestedSong() {
-        return suggestedSong.size();
-    }
-
-    public ArrayList<Song> getConcertSongs() {
+    public List<Song> getConcertSongs() {
         return new ArrayList<>(suggestedSong.keySet());
     }
 
-    public ArrayList<Song> getComposerSongs(HashSet<String> composers) {
+    public List<Song> getComposerSongs(Set<String> composers) {
         Set<Song> songComposerSet = new HashSet<>();
         Set<Song> songSet = new HashSet<>(suggestedSong.keySet());
         for (Song song : songSet) {
@@ -144,7 +136,7 @@ public class DataBase implements Serializable {
         return new ArrayList<>(songComposerSet);
     }
 
-    public ArrayList<Song> getAuthorSongs(HashSet<String> authors) {
+    public List<Song> getAuthorSongs(Set<String> authors) {
         Set<Song> songAuthorSet = new HashSet<>();
         Set<Song> songSet = new HashSet<>(suggestedSong.keySet());
         for (Song song : songSet) {
@@ -157,8 +149,7 @@ public class DataBase implements Serializable {
         return new ArrayList<>(songAuthorSet);
     }
 
-
-    public ArrayList<Song> getSingerSongs(String singer) {
+    public List<Song> getSingerSongs(String singer) {
         Set<Song> songSingerSet = new HashSet<>();
         Set<Song> songSet = new HashSet<>(suggestedSong.keySet());
         for (Song song : songSet) {
@@ -168,7 +159,6 @@ public class DataBase implements Serializable {
         }
         return new ArrayList<>(songSingerSet);
     }
-
 
     public boolean isSongCommented(Song song) {
         return comments.containsKey(song);
@@ -183,59 +173,40 @@ public class DataBase implements Serializable {
         comments.get(song).add(comment);
     }
 
-
-    public void changeComment(String authorRequest, Song song, int commentIndex, String newCommentText) {
+    public void changeComment(String userLogin, Song song, int commentIndex, String newCommentText) {
         if (comments.get(song).get(commentIndex).getAgreedUsers().size() == 0) {
             comments.get(song).get(commentIndex).setTextComment(newCommentText);
         } else {
-            comments.get(song).get(commentIndex).setAuthorComment("userCommunity@gmail.com");
+            comments.get(song).get(commentIndex).setAuthorComment(DataBase.COMMUNITY_LOGIN);
             int id = DataBase.getDatabase().getMaxCommentId(song);
-            comments.get(song).add(new Comment(authorRequest, newCommentText, id + 1));
+            comments.get(song).add(new Comment(userLogin, newCommentText, id + 1));
         }
     }
 
-    public ArrayList<Comment> getCommentsList(Song song) {
+    public List<Comment> getCommentsList(Song song) {
         return comments.get(song);
     }
 
-
-    public void agreeWithComment(String authorRequest, Song song, int commentIndex) {
-        if (!comments.get(song).get(commentIndex).getAgreedUsers().contains(authorRequest)) {
-            comments.get(song).get(commentIndex).getAgreedUsers().add(authorRequest);
+    public void agreeWithComment(String userLogin, Song song, int commentIndex) {
+        if (!comments.get(song).get(commentIndex).getAgreedUsers().contains(userLogin)) {
+            comments.get(song).get(commentIndex).getAgreedUsers().add(userLogin);
         } else {
-            comments.get(song).get(commentIndex).getAgreedUsers().remove(authorRequest);
+            comments.get(song).get(commentIndex).getAgreedUsers().remove(userLogin);
         }
     }
 
-    public boolean areUsersAgreed(Song song, Comment comment) {
-        int index = comments.get(song).indexOf(comment);
-        return comments.get(song).get(index).getAgreedUsers().size() > 0;
-    }
-
-    public boolean isUserAgreed(Song song, int commentIndex, String authorRequest) {
-        return comments.get(song).get(commentIndex).getAgreedUsers().contains(authorRequest);
-    }
-
-
-    public boolean isCommentExists(Song song, Comment comment) {
-        return comments.get(song).contains(comment);
+    public boolean isUserAgreed(Song song, int commentIndex, String userLogin) {
+        return comments.get(song).get(commentIndex).getAgreedUsers().contains(userLogin);
     }
 
     public boolean isCommentExists(Song song, int commentIndex) {
         return comments.get(song).size() > commentIndex;
     }
 
-
-    public boolean isYourComment(String token, Comment comment) {
-        String authorRequest = DataBase.getDatabase().getLoggedUser(token);
-        return comment.getAuthorComment().equals(authorRequest);
-    }
-
     public boolean isYourComment(String token, Song song, int commentIndex) {
-        String authorRequest = DataBase.getDatabase().getLoggedUser(token);
-        return comments.get(song).get(commentIndex).getAuthorComment().equals(authorRequest);
+        String userLogin = DataBase.getDatabase().getLoggedUser(token);
+        return comments.get(song).get(commentIndex).getAuthorComment().equals(userLogin);
     }
-
 
     public int getMaxCommentId(Song song) {
         if (comments.get(song).size() == 0) {
@@ -245,10 +216,10 @@ public class DataBase implements Serializable {
         }
     }
 
-    public ArrayList<Map.Entry<Song, Integer>> getSortedSongs() {
-        ArrayList<Map.Entry<Song, Integer>> sortedSongSumRating = new ArrayList<>();
+    public List<Map.Entry<Song, Integer>> sortSongsBySumRating() {
+        List<Map.Entry<Song, Integer>> sortedSongSumRating = new ArrayList<>();
         Map<Song, Integer> songSumRating = new HashMap<>(songRating.size());
-        for (Map.Entry<Song, HashMap<String, Integer>> entry : songRating.entrySet()) {
+        for (Map.Entry<Song, Map<String, Integer>> entry : songRating.entrySet()) {
             int sumRating = 0;
             for (HashMap.Entry<String, Integer> elem : entry.getValue().entrySet()) {
                 sumRating += elem.getValue();
@@ -261,13 +232,12 @@ public class DataBase implements Serializable {
         return sortedSongSumRating;
     }
 
-
     public int countSongRating(Song song) {
         return songRating.get(song).size();
     }
 
-    public ArrayList<Song> getAllUserSongs(String userLogin) {
-        ArrayList<Song> userSongs = new ArrayList<>();
+    public List<Song> getAllUserSongs(String userLogin) {
+        List<Song> userSongs = new ArrayList<>();
         for (Map.Entry<Song, String> entry : suggestedSong.entrySet()) {
             if (entry.getValue().equals(userLogin)) {
                 userSongs.add(entry.getKey());
@@ -276,26 +246,25 @@ public class DataBase implements Serializable {
         return userSongs;
     }
 
-
-    public void removeUserSongs(ArrayList<Song> userSongs, String userLogin) {
+    public void removeUserSongs(List<Song> userSongs, String userLogin) {
         for (Song song : userSongs) {
             if (countSongRating(song) > 1) {
                 songRating.get(song).remove(userLogin);
-                suggestedSong.replace(song, userLogin, "userCommunity@gmail.com");
+                suggestedSong.replace(song, userLogin, DataBase.COMMUNITY_LOGIN);
             } else {
                 removeSong(song);
             }
         }
     }
 
-    public void removeUserComments(String userLogin) {
-        for (Map.Entry<Song, ArrayList<Comment>> entry : comments.entrySet()) {
-            ArrayList<Comment> removedComments = new ArrayList<>();
+    public void removeUserCommentsAndAgrees(String userLogin) {
+        for (Map.Entry<Song, List<Comment>> entry : comments.entrySet()) {
+            List<Comment> removedComments = new ArrayList<>();
             for (Comment comment : entry.getValue()) {
                 comment.getAgreedUsers().remove(userLogin);
                 if (comment.getAuthorComment().equals(userLogin)) {
                     if (comment.getAgreedUsers().size() > 0) {
-                        comment.setAuthorComment("userCommunity@gmail.com");
+                        comment.setAuthorComment(DataBase.COMMUNITY_LOGIN);
                     } else {
                         removedComments.add(comment);
                     }
@@ -305,14 +274,13 @@ public class DataBase implements Serializable {
         }
     }
 
-
     public boolean isUserLeft(String userLogin) {
-        for (HashMap<String, Integer> ratings : songRating.values()) {
+        for (Map<String, Integer> ratings : songRating.values()) {
             if (ratings.keySet().contains(userLogin)) {
                 return false;
             }
         }
-        for (ArrayList<Comment> songComment : comments.values()) {
+        for (List<Comment> songComment : comments.values()) {
             for (Comment comment : songComment) {
                 if (comment.getAuthorComment().equals(userLogin)
                         || comment.getAgreedUsers().contains(userLogin)) {
@@ -327,7 +295,7 @@ public class DataBase implements Serializable {
     }
 
     public void removeUserRating(String userLogin) {
-        for (Map.Entry<Song, HashMap<String, Integer>> entry : songRating.entrySet()) {
+        for (Map.Entry<Song, Map<String, Integer>> entry : songRating.entrySet()) {
             songRating.get(entry.getKey()).remove(userLogin);
         }
     }
@@ -346,17 +314,6 @@ public class DataBase implements Serializable {
 
     public void removeUserRegistration(String userLogin) {
         registeredUsers.remove(userLogin);
-    }
-
-    @Override
-    public String toString() {
-        return "DataBase{" +
-                "registeredUsers=" + registeredUsers +
-                ", loggedUsers=" + loggedUsers +
-                ", suggestedSong=" + suggestedSong +
-                ", songRating=" + songRating +
-                ", comments=" + comments +
-                '}';
     }
 
     public void startDatabase(String savedDataFileName) throws IOException, ClassNotFoundException {
@@ -378,7 +335,5 @@ public class DataBase implements Serializable {
             }
         }
     }
-
-
 
 }

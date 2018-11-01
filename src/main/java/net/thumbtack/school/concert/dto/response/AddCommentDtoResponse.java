@@ -7,16 +7,16 @@ public class AddCommentDtoResponse {
     private String response;
     private String error;
 
-    public AddCommentDtoResponse(){
+    public AddCommentDtoResponse() {
     }
 
-    public AddCommentDtoResponse(String response, String error){
+    public AddCommentDtoResponse(String response, String error) {
         this.response = response;
         this.error = error;
     }
 
-    public AddCommentDtoResponse createResponse(String jsonAddCommentResponse){
-        return  new Gson().fromJson(jsonAddCommentResponse, AddCommentDtoResponse.class);
+    public AddCommentDtoResponse createResponse(String jsonAddCommentResponse) {
+        return new Gson().fromJson(jsonAddCommentResponse, AddCommentDtoResponse.class);
     }
 
     public String getResponse() {
@@ -34,4 +34,5 @@ public class AddCommentDtoResponse {
     public void setError(String error) {
         this.error = error;
     }
+
 }

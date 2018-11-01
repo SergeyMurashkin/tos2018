@@ -14,14 +14,14 @@ public class LeaveServerDtoRequest {
         this.token = token;
     }
 
-    public LeaveServerDtoRequest createRequest(String  jsonRequest){
+    public LeaveServerDtoRequest createRequest(String jsonRequest) {
         return new Gson().fromJson(jsonRequest, LeaveServerDtoRequest.class);
     }
 
     public String validate() {
         if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
-        }else{
+        } else {
             return "valid request";
         }
     }
@@ -33,4 +33,5 @@ public class LeaveServerDtoRequest {
     public void setToken(String token) {
         this.token = token;
     }
+
 }

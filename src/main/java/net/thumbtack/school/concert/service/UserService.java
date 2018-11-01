@@ -1,46 +1,82 @@
 package net.thumbtack.school.concert.service;
 
 import com.google.gson.Gson;
+import net.thumbtack.school.concert.TokenGenerator;
 import net.thumbtack.school.concert.daoimpl.UserDaoImpl;
-import net.thumbtack.school.concert.dto.request.LeaveServerDtoRequest;
 import net.thumbtack.school.concert.dto.request.LoginDtoRequest;
 import net.thumbtack.school.concert.dto.request.LogoutDtoRequest;
 import net.thumbtack.school.concert.dto.request.RegisterUserDtoRequest;
-import net.thumbtack.school.concert.dto.response.LeaveServerDtoResponse;
 import net.thumbtack.school.concert.dto.response.LoginDtoResponse;
+import net.thumbtack.school.concert.dto.response.LogoutDtoResponse;
 import net.thumbtack.school.concert.dto.response.RegisterUserDtoResponse;
 import net.thumbtack.school.concert.model.User;
 
 public class UserService {
 
-    public String registerUser(String jsonRegisterUser) {
-        RegisterUserDtoRequest registerUser = new RegisterUserDtoRequest().createRegUserDto(jsonRegisterUser);
-        String jsonCheckedRequest = registerUser.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            return new Gson().toJson(new RegisterUserDtoResponse(null, jsonCheckedRequest), RegisterUserDtoResponse.class);
-        }
-        User user = new User(registerUser.getFirstName(),
-                registerUser.getLastName(),
-                registerUser.getLogin(),
-                registerUser.getPassword());
-        return new UserDaoImpl().registerUser(user);
-    }
+    private UserDaoImpl userDaoImpl = new UserDaoImpl();
+    private TokenGenerator tokenGenerator = new TokenGenerator();
+    private RegisterUserDtoRequest registerRequest = new RegisterUserDtoRequest();
+    private RegisterUserDtoResponse registerResponse = new RegisterUserDtoResponse();
+    private LoginDtoRequest loginRequest = new LoginDtoRequest();
+    private LoginDtoResponse loginResponse = new LoginDtoResponse();
+    private LogoutDtoRequest logoutRequest = new LogoutDtoRequest();
+    private LogoutDtoResponse logoutResponse = new LogoutDtoResponse();
 
+    public String registerUser(String jsonRegisterUser) {
+        registerRequest = registerRequest.createRegUserDto(jsonRegisterUser);
+        String jsonCheckedRequest = registerRequest.validate();
+        if (jsonCheckedRequest.contains("error:")) {
+            registerResponse.setToken(null);
+            registerResponse.setError(jsonCheckedRequest);
+        } else {
+            User user = new User(registerRequest.getFirstName(),
+                    registerRequest.getLastName(),
+                    registerRequest.getLogin(),
+                    registerRequest.getPassword());
+            String token = tokenGenerator.generateToken();
+            String response = userDaoImpl.registerUser(user, token);
+            if (response.contains("error:")) {
+                registerResponse.setToken(null);
+                registerResponse.setError(response);
+            } else {
+                registerResponse.setToken(response);
+                registerResponse.setError(null);
+            }
+        }
+        return new Gson().toJson(registerResponse, RegisterUserDtoResponse.class);
+    }
 
     public String logIn(String jsonLogin) {
-        LoginDtoRequest loginDtoRequest = new LoginDtoRequest().createLoginDto(jsonLogin);
-        String jsonCheckedRequest = loginDtoRequest.validate();
+        loginRequest = loginRequest.createLoginDto(jsonLogin);
+        String jsonCheckedRequest = loginRequest.validate();
         if (jsonCheckedRequest.contains("error:")) {
-            return new Gson().toJson(new LoginDtoResponse(null, jsonCheckedRequest),LoginDtoResponse.class);
+            loginResponse.setToken(null);
+            loginResponse.setError(jsonCheckedRequest);
         }
-        return new UserDaoImpl().logIn(loginDtoRequest.getLogin());
+        String userLogin = loginRequest.getLogin();
+        String token = tokenGenerator.generateToken();
+        String response = userDaoImpl.logIn(userLogin, token);
+        if (response.contains("error:")) {
+            loginResponse.setToken(null);
+            loginResponse.setError(response);
+        } else {
+            loginResponse.setToken(response);
+            loginResponse.setError(null);
+        }
+        return new Gson().toJson(loginResponse, LoginDtoResponse.class);
     }
-
 
     public String logOut(String jsonLogout) {
-        String token = new LogoutDtoRequest().createLogoutDto(jsonLogout).getToken();
-        return new UserDaoImpl().logOut(token);
+        String token = logoutRequest.createLogoutDto(jsonLogout).getToken();
+        String response = userDaoImpl.logOut(token);
+        if (response.contains("error:")) {
+            logoutResponse.setResponse(null);
+            logoutResponse.setError(response);
+        } else {
+            logoutResponse.setResponse(response);
+            logoutResponse.setError(null);
+        }
+        return new Gson().toJson(logoutResponse, LogoutDtoResponse.class);
     }
-
 
 }

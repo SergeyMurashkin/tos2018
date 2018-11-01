@@ -1,22 +1,22 @@
 package net.thumbtack.school.concert.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class TrialConcertSong {
 
     private Song song;
     private String userLogin;
     private double averageRating;
-    private ArrayList<Comment> allSongComments;
+    private List<Comment> allSongComments;
 
-    public TrialConcertSong(){
+    public TrialConcertSong() {
     }
 
     public TrialConcertSong(
-             Song song,
-             String userLogin,
-             double averageRating,
-             ArrayList<Comment> allSongComments){
+            Song song,
+            String userLogin,
+            double averageRating,
+            List<Comment> allSongComments) {
 
         this.song = song;
         this.userLogin = userLogin;
@@ -48,21 +48,12 @@ public class TrialConcertSong {
         this.averageRating = averageRating;
     }
 
-    public ArrayList<Comment> getAllSongComments() {
+    public List<Comment> getAllSongComments() {
         return allSongComments;
     }
 
-    public void setAllSongComments(ArrayList<Comment> allSongComments) {
+    public void setAllSongComments(List<Comment> allSongComments) {
         this.allSongComments = allSongComments;
     }
 
-    @Override
-    public String toString() {
-        return "TrialConcertSong{" +
-                "song=" + song +
-                ", userLogin='" + userLogin + '\'' +
-                ", averageRating=" + averageRating +
-                ", allSongComments=" + allSongComments +
-                '}';
-    }
 }

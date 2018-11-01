@@ -10,18 +10,18 @@ public class AddCommentDtoRequest {
     private Song song;
     private String commentText;
 
-    public AddCommentDtoRequest(){
+    public AddCommentDtoRequest() {
     }
 
     public AddCommentDtoRequest(String token,
                                 Song song,
-                                String commentText){
+                                String commentText) {
         this.token = token;
         this.song = song;
         this.commentText = commentText;
     }
 
-    public AddCommentDtoRequest createRequest(String  jsonAddComment){
+    public AddCommentDtoRequest createRequest(String jsonAddComment) {
         return new Gson().fromJson(jsonAddComment, AddCommentDtoRequest.class);
     }
 
@@ -50,17 +50,17 @@ public class AddCommentDtoRequest {
     }
 
     public String validate() {
-        if(!DataBase.getDatabase().isUserLogged(token)){
+        if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
         }
-        if(!DataBase.getDatabase().isSongSuggested(song)){
+        if (!DataBase.getDatabase().isSongSuggested(song)) {
             return "error: the song not exists";
         }
-        if(commentText.length()>50){
+        if (commentText.length() > 50) {
             return "error: more 50 symbols in the comment";
-        }else{
+        } else {
             return new Gson().toJson(this, AddCommentDtoRequest.class);
         }
-
     }
+
 }
