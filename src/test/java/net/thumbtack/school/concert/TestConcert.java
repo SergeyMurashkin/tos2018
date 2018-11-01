@@ -14,7 +14,6 @@ import static org.junit.Assert.*;
 
 public class TestConcert {
 
-
     @Test
     public void testServerOpportunities() throws IOException, ClassNotFoundException {
 
