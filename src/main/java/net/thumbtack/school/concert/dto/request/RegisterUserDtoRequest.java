@@ -59,32 +59,17 @@ public class RegisterUserDtoRequest {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName.trim();
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName.trim();
     }
 
     public String getLogin() {
         return login;
     }
 
-    public void setLogin(String login) {
-        this.login = login.trim();
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password.trim();
-    }
 
 }

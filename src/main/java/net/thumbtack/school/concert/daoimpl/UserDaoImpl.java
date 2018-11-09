@@ -8,8 +8,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public String registerUser(User user, String token) {
-        if (DataBase.getDatabase().isUserRegistered(user.getLogin())
-                || user.getLogin().equals(DataBase.COMMUNITY_LOGIN)) {
+        if (DataBase.getDatabase().isUserRegistered(user.getLogin())) {
             return "error: login exists";
         } else {
             DataBase.getDatabase().addUser(user);

@@ -71,9 +71,9 @@ public class SongService {
             addRatingResponse.setError(jsonCheckedRequest);
         } else {
             String token = addRatingRequest.getToken();
-            Song song = addRatingRequest.getSong();
+            Integer songId = addRatingRequest.getSongId();
             Integer rating = addRatingRequest.getRating();
-            String response = songDaoImpl.addRating(token, song, rating);
+            String response = songDaoImpl.addRating(token, songId, rating);
             addRatingResponse.setResponse(response);
             addRatingResponse.setError(null);
         }
@@ -88,8 +88,8 @@ public class SongService {
             removeRatingResponse.setError(jsonCheckedRequest);
         } else {
             String token = removeRatingRequest.getToken();
-            Song song = removeRatingRequest.getSong();
-            String response = songDaoImpl.removeRating(token, song);
+            Integer songId = removeRatingRequest.getSongId();
+            String response = songDaoImpl.removeRating(token, songId);
             removeRatingResponse.setResponse(response);
             removeRatingResponse.setError(null);
         }
@@ -104,9 +104,9 @@ public class SongService {
             addCommentResponse.setError(jsonCheckedRequest);
         } else {
             String token = addCommentRequest.getToken();
-            Song song = addCommentRequest.getSong();
+            Integer songId = addCommentRequest.getSongId();
             String commentText = addCommentRequest.getCommentText();
-            String response = songDaoImpl.addComment(token, song, commentText);
+            String response = songDaoImpl.addComment(token, songId, commentText);
             addCommentResponse.setResponse(response);
             addCommentResponse.setError(null);
         }
@@ -121,10 +121,10 @@ public class SongService {
             changeCommentResponse.setError(jsonCheckedRequest);
         } else {
             String token = changeCommentRequest.getToken();
-            Song song = changeCommentRequest.getSong();
-            int oldCommentIndex = changeCommentRequest.getOldCommentIndex();
+            Integer commentId = changeCommentRequest.getCommentId();
+            Integer songId = changeCommentRequest.getSongId();
             String newCommentText = changeCommentRequest.getNewCommentText();
-            String response = songDaoImpl.changeComment(token, song, oldCommentIndex, newCommentText);
+            String response = songDaoImpl.changeComment(token, commentId, songId, newCommentText);
             changeCommentResponse.setResponse(response);
             changeCommentResponse.setError(null);
         }
@@ -139,9 +139,8 @@ public class SongService {
             agreeWithCommentResponse.setError(jsonCheckedRequest);
         } else {
             String token = agreeWithCommentRequest.getToken();
-            Song song = agreeWithCommentRequest.getSong();
-            int commentIndex = agreeWithCommentRequest.getCommentIndex();
-            String response = songDaoImpl.agreeWithComment(token, song, commentIndex);
+            Integer commentId = agreeWithCommentRequest.getCommentId();
+            String response = songDaoImpl.agreeWithComment(token, commentId);
             agreeWithCommentResponse.setResponse(response);
             agreeWithCommentResponse.setError(null);
         }
@@ -200,6 +199,8 @@ public class SongService {
         getSingerSongsResponse.setError(null);
         return gson.toJson(getSingerSongsResponse, GetSingerSongsDtoResponse.class);
     }
+
+
 
     public String getTrialConcert(String jsonGetTrialConcert) {
         getTrialConcertRequest = getTrialConcertRequest.createRequest(jsonGetTrialConcert);

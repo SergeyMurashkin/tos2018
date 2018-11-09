@@ -2,19 +2,19 @@ package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
 import net.thumbtack.school.concert.DataBase;
-import net.thumbtack.school.concert.model.Song;
+
 
 public class RemoveRatingSongDtoRequest {
 
     private String token;
-    private Song song;
+    private Integer songId;
 
     public RemoveRatingSongDtoRequest() {
     }
 
-    public RemoveRatingSongDtoRequest(String token, Song song) {
+    public RemoveRatingSongDtoRequest(String token, Integer songId) {
         this.token = token;
-        this.song = song;
+        this.songId = songId;
     }
 
     public RemoveRatingSongDtoRequest createRequest(String jsonRemoveRating) {
@@ -26,10 +26,10 @@ public class RemoveRatingSongDtoRequest {
         if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
         }
-        if (!DataBase.getDatabase().isSongSuggested(song)) {
+        if (!DataBase.getDatabase().isSongSuggested(songId)) {
             return "error: the song not exists";
         }
-        if (!DataBase.getDatabase().isUserRatedSong(song, userLogin)) {
+        if (!DataBase.getDatabase().isUserRatedSong(userLogin, songId)) {
             return "error: you can remove only your rating";
         } else {
             return new Gson().toJson(this, RemoveRatingSongDtoRequest.class);
@@ -40,16 +40,9 @@ public class RemoveRatingSongDtoRequest {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public Integer getSongId() {
+        return songId;
     }
 
-    public Song getSong() {
-        return song;
-    }
-
-    public void setSong(Song song) {
-        this.song = song;
-    }
 
 }

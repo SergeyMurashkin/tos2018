@@ -1,90 +1,73 @@
 package net.thumbtack.school.concert.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = -334761479774682190L;
-    private String authorComment;
-    private String textComment;
-    private Set<String> agreedUsers;
-    private int id;
+    private String userLogin;
+    private Integer songId;
+    private String text;
+    private List<String> agreedUsers;
+    private Integer commentId;
 
     public Comment() {
     }
 
-    public Comment(String authorComment,
-                   String textComment,
-                   Set<String> agreedUsers,
-                   int id) {
-        this.authorComment = authorComment;
-        this.textComment = textComment;
-        this.agreedUsers = agreedUsers;
-        this.id = id;
+    public Comment(String userLogin, Integer songId,
+                   String text) {
+        this.userLogin = userLogin;
+        this.songId = songId;
+        this.text = text;
+        this.agreedUsers = new ArrayList<>();
     }
 
-    public Comment(String authorComment,
-                   String textComment,
-                   int id) {
-        this.authorComment = authorComment;
-        this.textComment = textComment;
-        this.agreedUsers = new HashSet<>();
-        this.id = id;
+    public String getUserLogin() {
+        return userLogin;
     }
 
-    public String getAuthorComment() {
-        return authorComment;
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 
-    public void setAuthorComment(String authorComment) {
-        this.authorComment = authorComment;
+    public Integer getSongId() {
+        return songId;
     }
 
-    public String getTextComment() {
-        return textComment;
+    public void setSongId(Integer songId) {
+        this.songId = songId;
     }
 
-    public void setTextComment(String textComment) {
-        this.textComment = textComment;
+    public String getText() {
+        return text;
     }
 
-    public Set<String> getAgreedUsers() {
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public List<String> getAgreedUsers() {
         return agreedUsers;
     }
 
-    public void setAgreedUsers(Set<String> agreedUsers) {
-        this.agreedUsers = agreedUsers;
+    public Integer getCommentId() {
+        return commentId;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Comment comment = (Comment) o;
-
-        if (authorComment != null ? !authorComment.equals(comment.authorComment) : comment.authorComment != null)
-            return false;
-        if (textComment != null ? !textComment.equals(comment.textComment) : comment.textComment != null) return false;
-        return agreedUsers != null ? agreedUsers.equals(comment.agreedUsers) : comment.agreedUsers == null;
+    public String toString() {
+        return "Comment{" +
+                "userLogin='" + userLogin + '\'' +
+                ", songId=" + songId +
+                ", text='" + text + '\'' +
+                ", agreedUsers=" + agreedUsers +
+                ", commentId=" + commentId +
+                '}';
     }
-
-    @Override
-    public int hashCode() {
-        int result = authorComment != null ? authorComment.hashCode() : 0;
-        result = 31 * result + (textComment != null ? textComment.hashCode() : 0);
-        result = 31 * result + (agreedUsers != null ? agreedUsers.hashCode() : 0);
-        return result;
-    }
-
 }

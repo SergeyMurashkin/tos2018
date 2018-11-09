@@ -10,15 +10,15 @@ public interface SongDao {
 
     String addSong(String token, Song song);
 
-    String addRating(String token, Song song, Integer rating);
+    String addRating(String token, Integer songId, Integer rating);
 
-    String removeRating(String token, Song song);
+    String removeRating(String token, Integer songId);
 
-    String addComment(String token, Song song, String commentText);
+    String addComment(String token, Integer songId, String commentText);
 
-    String changeComment(String token, Song song, int oldCommentIndex, String newCommentText);
+    String changeComment(String token, Integer songId, Integer commentId, String newCommentText);
 
-    String agreeWithComment(String token, Song song, int commentIndex);
+    String agreeWithComment(String token, Integer commentIndex);
 
     List<Song> getConcertSongs();
 

@@ -2,25 +2,24 @@ package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
 import net.thumbtack.school.concert.DataBase;
-import net.thumbtack.school.concert.model.Song;
 
 public class ChangeCommentDtoRequest {
 
     private String token;
-    private Song song;
-    private int oldCommentIndex;
+    private Integer commentId;
+    private Integer songId;
     private String newCommentText;
 
     public ChangeCommentDtoRequest() {
     }
 
     public ChangeCommentDtoRequest(String token,
-                                   Song song,
-                                   int oldCommentIndex,
+                                   Integer commentId,
+                                   Integer songId,
                                    String newCommentText) {
         this.token = token;
-        this.song = song;
-        this.oldCommentIndex = oldCommentIndex;
+        this.commentId = commentId;
+        this.songId = songId;
         this.newCommentText = newCommentText;
     }
 
@@ -32,13 +31,10 @@ public class ChangeCommentDtoRequest {
         if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
         }
-        if (!DataBase.getDatabase().isSongSuggested(song)) {
-            return "error: the song not exists";
-        }
-        if (!DataBase.getDatabase().isCommentExists(song, oldCommentIndex)) {
+        if (!DataBase.getDatabase().isCommentExists(commentId)) {
             return "error: the comment not exists";
         }
-        if (!DataBase.getDatabase().isYourComment(token, song, oldCommentIndex)) {
+        if (!DataBase.getDatabase().isYourComment(token, commentId)) {
             return "error: the comment not yours";
         }
         if (newCommentText.length() > 50) {
@@ -52,32 +48,18 @@ public class ChangeCommentDtoRequest {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public Integer getCommentId() {
+        return commentId;
     }
 
-    public Song getSong() {
-        return song;
-    }
-
-    public void setSong(Song song) {
-        this.song = song;
-    }
-
-    public int getOldCommentIndex() {
-        return oldCommentIndex;
-    }
-
-    public void setOldCommentIndex(int oldCommentIndex) {
-        this.oldCommentIndex = oldCommentIndex;
+    public Integer getSongId(){
+        return songId;
     }
 
     public String getNewCommentText() {
         return newCommentText;
     }
 
-    public void setNewCommentText(String newCommentText) {
-        this.newCommentText = newCommentText;
-    }
+
 
 }

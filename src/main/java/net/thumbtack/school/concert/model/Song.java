@@ -3,6 +3,8 @@ package net.thumbtack.school.concert.model;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class Song implements Serializable {
@@ -12,7 +14,11 @@ public class Song implements Serializable {
     private Set<String> composer;
     private Set<String> author;
     private String singer;
-    private int duration;
+    private Integer duration;
+    private String userLogin;
+    private Integer songId;
+    private List<Integer> ratings;
+    private List<Integer> comments;
 
     public Song() {
     }
@@ -21,12 +27,14 @@ public class Song implements Serializable {
                 Set<String> composer,
                 Set<String> author,
                 String singer,
-                int duration) {
+                Integer duration) {
         this.title = title.trim();
         this.composer = composer;
         this.author = author;
         this.singer = singer.trim();
         this.duration = duration;
+        ratings = new ArrayList<>();
+        comments = new ArrayList<>();
     }
 
     public Song createSong(String jsonCheckedSong) {
@@ -67,8 +75,46 @@ public class Song implements Serializable {
         return singer;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
+    public Integer getSongId() {
+        return songId;
+    }
+
+    public void setSongId(Integer songId) {
+        this.songId = songId;
+    }
+
+    public List<Integer> getRatings() {
+        return ratings;
+    }
+
+    public List<Integer> getComments() {
+        return comments;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "title='" + title + '\'' +
+                ", composer=" + composer +
+                ", author=" + author +
+                ", singer='" + singer + '\'' +
+                ", duration=" + duration +
+                ", userLogin='" + userLogin + '\'' +
+                ", songId=" + songId +
+                ", ratings=" + ratings +
+                ", comments=" + comments +
+                '}';
+    }
 }

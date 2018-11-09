@@ -62,48 +62,24 @@ public class SuggestSongDtoRequest {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public HashSet<String> getComposer() {
         return composer;
     }
 
-    public void setComposer(HashSet<String> composer) {
-        this.composer = composer;
-    }
-
     public HashSet<String> getAuthor() {
         return author;
-    }
-
-    public void setAuthor(HashSet<String> author) {
-        this.author = author;
     }
 
     public String getSinger() {
         return singer;
     }
 
-    public void setSinger(String singer) {
-        this.singer = singer;
-    }
-
     public int getDuration() {
         return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
     }
 
 }

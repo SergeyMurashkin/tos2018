@@ -7,17 +7,17 @@ import net.thumbtack.school.concert.model.Song;
 public class AddRatingSongDtoRequest {
 
     private String token;
-    private Song song;
+    private Integer songId;
     private Integer rating;
 
     public AddRatingSongDtoRequest() {
     }
 
     public AddRatingSongDtoRequest(String token,
-                                   Song song,
+                                   Integer songId,
                                    Integer rating) {
         this.token = token;
-        this.song = song;
+        this.songId = songId;
         this.rating = rating;
     }
 
@@ -29,10 +29,11 @@ public class AddRatingSongDtoRequest {
         if (!DataBase.getDatabase().isUserLogged(token)) {
             return "error: please login";
         }
-        if (!DataBase.getDatabase().isSongSuggested(song)) {
+        if (!DataBase.getDatabase().isSongSuggested(songId)) {
             return "error: the song not exists";
         }
-        if (DataBase.getDatabase().isUserSuggestedSong(song, token)) {
+        String userLogin = DataBase.getDatabase().getLoggedUser(token);
+        if (DataBase.getDatabase().isUserSuggestedSong(songId, userLogin)) {
             return "error: you are the author suggestion";
         }
         if (rating > 5 || rating < 1) {
@@ -46,24 +47,13 @@ public class AddRatingSongDtoRequest {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Song getSong() {
-        return song;
-    }
-
-    public void setSong(Song song) {
-        this.song = song;
+    public Integer getSongId() {
+        return songId;
     }
 
     public Integer getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
 
 }
