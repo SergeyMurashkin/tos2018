@@ -60,4 +60,21 @@ public class Rating {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rating rating = (Rating) o;
+
+        if (userLogin != null ? !userLogin.equals(rating.userLogin) : rating.userLogin != null) return false;
+        return songId != null ? songId.equals(rating.songId) : rating.songId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userLogin != null ? userLogin.hashCode() : 0;
+        result = 31 * result + (songId != null ? songId.hashCode() : 0);
+        return result;
+    }
 }

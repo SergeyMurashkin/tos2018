@@ -17,7 +17,7 @@ public class Song implements Serializable {
     private Integer duration;
     private String userLogin;
     private Integer songId;
-    private List<Integer> ratings;
+    private List<Rating> ratings;
     private List<Integer> comments;
 
     public Song() {
@@ -87,7 +87,7 @@ public class Song implements Serializable {
         this.songId = songId;
     }
 
-    public List<Integer> getRatings() {
+    public List<Rating> getRatings() {
         return ratings;
     }
 

@@ -31,7 +31,7 @@ public class SongDaoImpl implements SongDao {
             Integer ratingId = DataBase.getDatabase().getFreeMaxRatingId();
             songRating.setRatingId(ratingId);
             DataBase.getDatabase().addRating(songRating);
-            DataBase.getDatabase().addRatedSongToUser(userLogin, songId, ratingId);
+            DataBase.getDatabase().addRatingToUser(userLogin, ratingId);
             DataBase.getDatabase().addRatingToSong(songId, ratingId);
 
             return "song added";
@@ -51,7 +51,7 @@ public class SongDaoImpl implements SongDao {
             Integer newRatingId = DataBase.getDatabase().getFreeMaxRatingId();
             songRating.setRatingId(newRatingId);
             DataBase.getDatabase().addRating(songRating);
-            DataBase.getDatabase().addRatedSongToUser(userLogin, songId, newRatingId);
+            DataBase.getDatabase().addRatingToUser(userLogin, newRatingId);
             DataBase.getDatabase().addRatingToSong(songId, newRatingId);
             return "rating " + rating + " added";
         }
@@ -62,7 +62,7 @@ public class SongDaoImpl implements SongDao {
         String userLogin = DataBase.getDatabase().getLoggedUser(token);
         Integer ratingId = DataBase.getDatabase().getRatingId(userLogin, songId);
         DataBase.getDatabase().removeRating(ratingId);
-        DataBase.getDatabase().removeRatedSongFromUser(userLogin, songId);
+        DataBase.getDatabase().removeRatingFromUser(userLogin, songId);
         DataBase.getDatabase().removeRatingFromSong(songId, ratingId);
         if (DataBase.getDatabase().isSongNotRated(songId)) {
             if (DataBase.getDatabase().isUserSuggestedSong(songId, token)) {

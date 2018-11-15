@@ -2,9 +2,7 @@ package net.thumbtack.school.concert.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class User implements Serializable {
 
@@ -13,8 +11,8 @@ public class User implements Serializable {
     private String lastName;
     private String login;
     private String password;
-    private List<Integer> suggestedSongs;
-    private Map<Integer, Integer> ratedSongs;
+    private List<Song> suggestedSongs;
+    private List<Rating> ratings;
     private List<Integer> comments;
     private List<Integer> agreedComments;
 
@@ -27,7 +25,7 @@ public class User implements Serializable {
         this.login = login.trim();
         this.password = password.trim();
         suggestedSongs = new ArrayList<>();
-        ratedSongs = new HashMap<>();
+        ratings = new ArrayList<>();
         comments = new ArrayList<>();
         agreedComments = new ArrayList<>();
     }
@@ -48,12 +46,12 @@ public class User implements Serializable {
         return password;
     }
 
-    public List<Integer> getSuggestedSongs() {
+    public List<Song> getSuggestedSongs() {
         return suggestedSongs;
     }
 
-    public Map<Integer, Integer> getRatedSongs() {
-        return ratedSongs;
+    public List<Rating> getRatings() {
+        return ratings;
     }
 
     public List<Integer> getComments() {
@@ -70,7 +68,7 @@ public class User implements Serializable {
         return "User{" +
                 " login='" + login + '\'' +
                 ", suggestedSongs=" + suggestedSongs +
-                ", ratedSongs=" + ratedSongs +
+                ", ratings=" + ratings +
                 ", comments=" + comments +
                 ", agreedComments=" + agreedComments +
                 '}';

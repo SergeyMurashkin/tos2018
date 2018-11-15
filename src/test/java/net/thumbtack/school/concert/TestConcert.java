@@ -1,3 +1,4 @@
+/*
 package net.thumbtack.school.concert;
 
 import com.google.gson.Gson;
@@ -253,7 +254,7 @@ public class TestConcert {
         assertEquals(song, getTrialConcertResponse.getTrialConcertSongs().get(1).getSong());
         assertEquals(2, getTrialConcertResponse.getTrialConcertSongs().size());
 
-       // System.out.println(DataBase.getDatabase());
+        System.out.println(DataBase.getDatabase());
 
         LeaveServerDtoRequest leaveServerRequest = new LeaveServerDtoRequest(token2);
         String jsonLeaveServerRequest = new Gson().toJson(leaveServerRequest, LeaveServerDtoRequest.class);
@@ -266,7 +267,7 @@ public class TestConcert {
         assertEquals(1, DataBase.getDatabase().countSuggestedSong());
         assertEquals(0, DataBase.getDatabase().countComments());
 
-       // System.out.println(DataBase.getDatabase());
+        System.out.println(DataBase.getDatabase());
     }
 
     @Test
@@ -303,3 +304,4 @@ public class TestConcert {
     }
 
 }
+*/

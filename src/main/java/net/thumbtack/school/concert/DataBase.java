@@ -101,7 +101,7 @@ public class DataBase implements Serializable {
     }
 
     public void addSongToUser(String userLogin, Integer songId) {
-        registeredUsers.get(userLogin).getSuggestedSongs().add(songId);
+        registeredUsers.get(userLogin).getSuggestedSongs().add(songs.get(songId));
     }
 
     public void addRating(Rating rating) {
@@ -113,24 +113,25 @@ public class DataBase implements Serializable {
         return freeMaxRatingId;
     }
 
-    public void addRatedSongToUser(String userLogin, Integer songId, Integer ratingId) {
-        registeredUsers.get(userLogin).getRatedSongs().put(songId, ratingId);
+    public void addRatingToUser(String userLogin, Integer ratingId) {
+        registeredUsers.get(userLogin).getRatings().add(ratings.get(ratingId));
     }
 
     public void addRatingToSong(Integer songId, Integer ratingId) {
-        songs.get(songId).getRatings().add(ratingId);
+        songs.get(songId).getRatings().add(ratings.get(ratingId));
     }
 
     public boolean isUserSuggestedSong(Integer songId, String userLogin) {
-        return registeredUsers.get(userLogin).getSuggestedSongs().contains(songId);
+        return songs.get(songId).getUserLogin().equals(userLogin);
     }
 
     public boolean isUserRatedSong(String userLogin, Integer songId) {
-        return registeredUsers.get(userLogin).getRatedSongs().containsKey(songId);
+        return songs.get(songId).getUserLogin().equals(userLogin);
     }
 
     public Integer getRatingId(String userLogin, Integer songId) {
-        return registeredUsers.get(userLogin).getRatedSongs().get(songId);
+        int index = registeredUsers.get(userLogin).getRatings().indexOf(new Rating(userLogin,songId,5));
+        return registeredUsers.get(userLogin).getRatings().get(index).getRatingId();
     }
 
     public void changeRating(Integer ratingId, Integer rating) {
@@ -141,12 +142,13 @@ public class DataBase implements Serializable {
         ratings.remove(ratingId);
     }
 
-    public void removeRatedSongFromUser(String userLogin, Integer songId) {
-        registeredUsers.get(userLogin).getRatedSongs().remove(songId);
+    public void removeRatingFromUser(String userLogin, Integer songId) {
+        int index = registeredUsers.get(userLogin).getRatings().indexOf(new Rating(userLogin,songId,5));
+        registeredUsers.get(userLogin).getRatings().remove(index);
     }
 
     public void removeRatingFromSong(Integer songId, Integer ratingId) {
-        songs.get(songId).getRatings().remove(ratingId);
+        songs.get(songId).getRatings().remove(ratings.get(ratingId));
     }
 
     public boolean isSongNotRated(Integer songId) {
@@ -154,13 +156,13 @@ public class DataBase implements Serializable {
     }
 
     public void removeSongFromUser(String userLogin, Integer songId) {
-        registeredUsers.get(userLogin).getSuggestedSongs().remove(songId);
+        registeredUsers.get(userLogin).getSuggestedSongs().remove(songs.get(songId));
     }
 
     public void changeSuggestedSongUser(Integer songId, String oldUserLogin, String newUserLogin) {
         songs.get(songId).setUserLogin(newUserLogin);
-        registeredUsers.get(oldUserLogin).getSuggestedSongs().remove(songId);
-        registeredUsers.get(newUserLogin).getSuggestedSongs().add(songId);
+        registeredUsers.get(oldUserLogin).getSuggestedSongs().remove(songs.get(songId));
+        registeredUsers.get(newUserLogin).getSuggestedSongs().add(songs.get(songId));
     }
 
     public Integer getFreeMaxCommentId() {
@@ -259,10 +261,10 @@ public class DataBase implements Serializable {
     }
 
     public Integer getSumSongRating(Integer songId) {
-        List<Integer> ratingIds = songs.get(songId).getRatings();
+        List<Rating> ratings = songs.get(songId).getRatings();
         int sumSongRating = 0;
-        for (Integer ratingId : ratingIds) {
-            sumSongRating += ratings.get(ratingId).getRating();
+        for (Rating rating : ratings) {
+            sumSongRating += rating.getRating();
         }
         return sumSongRating;
     }
@@ -298,13 +300,13 @@ public class DataBase implements Serializable {
     }
 
     public void removeUserSongs(String userLogin) {
-        List<Integer> userSongsId = registeredUsers.get(userLogin).getSuggestedSongs();
+        List<Song> userSongs = registeredUsers.get(userLogin).getSuggestedSongs();
         List<Integer> removedSongsId = new ArrayList<>();
-        for (Integer songId : userSongsId) {
-            if (songs.get(songId).getRatings().size() > 1) {
-                changeSuggestedSongUser(songId, userLogin, COMMUNITY_LOGIN);
+        for (Song song : userSongs) {
+            if (song.getRatings().size() > 1) {
+                changeSuggestedSongUser(song.getSongId(), userLogin, COMMUNITY_LOGIN);
             } else {
-                removedSongsId.add(songId);
+                removedSongsId.add(song.getSongId());
             }
         }
         for (Integer removedSongId : removedSongsId) {
@@ -323,23 +325,23 @@ public class DataBase implements Serializable {
             registeredUsers.get(commentAuthor).getComments().remove(commentId);
             comments.remove(commentId);
         }
-        List<Integer> ratingsId = songs.get(songId).getRatings();
-        for (Integer ratingId : ratingsId) {
-            String ratingAuthor = ratings.get(ratingId).getUserLogin();
-            registeredUsers.get(ratingAuthor).getRatedSongs().remove(songId);
-            ratings.remove(ratingId);
+        List<Rating> ratings = songs.get(songId).getRatings();
+        for (Rating rating : ratings) {
+            String ratingAuthor = rating.getUserLogin();
+            registeredUsers.get(ratingAuthor).getRatings().remove(rating);
+            ratings.remove(rating);
         }
         String userLogin = songs.get(songId).getUserLogin();
-        registeredUsers.get(userLogin).getSuggestedSongs().remove(songId);
+        registeredUsers.get(userLogin).getSuggestedSongs().remove(songs.get(songId));
         songs.remove(songId);
     }
 
     public void removeUserRatings(String userLogin) {
-        Collection<Integer> ratingsId = registeredUsers.get(userLogin).getRatedSongs().values();
-        for (Integer ratingId : ratingsId) {
-            Integer songId = ratings.get(ratingId).getSongId();
-            songs.get(songId).getRatings().remove(ratingId);
-            ratings.remove(ratingId);
+        List<Rating> userRatings = registeredUsers.get(userLogin).getRatings();
+        for (Rating userRating : userRatings) {
+            Integer songId = userRating.getSongId();
+            songs.get(songId).getRatings().remove(userRating);
+            ratings.remove(userRating.getRatingId());
         }
     }
 
