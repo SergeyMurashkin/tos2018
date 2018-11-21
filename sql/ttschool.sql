@@ -13,8 +13,8 @@ CREATE TABLE schools(
 id INT NOT NULL AUTO_INCREMENT,
 name VARCHAR(250) NOT NULL,
 year INT NOT NULL,
-PRIMARY KEY (id)/*,
-UNIQUE KEY name_year(name,year)*/
+PRIMARY KEY (id),
+UNIQUE KEY name_year(name,year)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE groups(
@@ -46,6 +46,7 @@ subjectId INT NOT NULL,
 PRIMARY KEY (id),
 KEY groupId(groupId),
 KEY subjectId(subjectId),
+UNIQUE KEY groupId_subjectId(groupId,subjectId),
 FOREIGN KEY (groupId) REFERENCES groups(id) ON DELETE CASCADE,
 FOREIGN KEY (subjectId) REFERENCES subjects(id) ON DELETE CASCADE
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;

@@ -24,17 +24,11 @@ public class School implements Serializable {
     }
 
     public School(int id, String name, int year){
-        this.id = id;
-        this.name = name;
-        this.year = year;
-        groups = new ArrayList<>();
+        this(id, name, year, new ArrayList<>());
     }
 
     public School(String name, int year){
-        id = 0;
-        this.name = name;
-        this.year = year;
-        groups = new ArrayList<>();
+        this(0, name, year);
     }
 
     public void addGroup(Group group){
@@ -78,26 +72,25 @@ public class School implements Serializable {
     }
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof School)) return false;
 
         School school = (School) o;
 
-        if (id != school.id) return false;
-        if (year != school.year) return false;
-        if (name != null ? !name.equals(school.name) : school.name != null) return false;
-        return groups != null ? groups.equals(school.groups) : school.groups == null;
+        if (getId() != school.getId()) return false;
+        if (getYear() != school.getYear()) return false;
+        if (getName() != null ? !getName().equals(school.getName()) : school.getName() != null) return false;
+        return getGroups() != null ? getGroups().equals(school.getGroups()) : school.getGroups() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + year;
-        result = 31 * result + (groups != null ? groups.hashCode() : 0);
+        int result = getId();
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + getYear();
+        result = 31 * result + (getGroups() != null ? getGroups().hashCode() : 0);
         return result;
     }
 

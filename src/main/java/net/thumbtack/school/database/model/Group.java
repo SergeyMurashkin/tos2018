@@ -24,19 +24,11 @@ public class Group implements Serializable {
     }
 
     public Group(int id, String name, String room){
-        this.id = id;
-        this.name = name;
-        this.room = room;
-        trainees = new ArrayList<>();
-        subjects = new ArrayList<>();
+        this(id, name, room, new ArrayList<>(), new ArrayList<>());
     }
 
     public Group(String name, String room){
-        id = 0;
-        this.name = name;
-        this.room = room;
-        trainees = new ArrayList<>();
-        subjects = new ArrayList<>();
+        this(0,name,room);
     }
 
     public void addTrainee(Trainee trainee){
@@ -98,24 +90,25 @@ public class Group implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Group)) return false;
 
         Group group = (Group) o;
 
-        if (id != group.id) return false;
-        if (name != null ? !name.equals(group.name) : group.name != null) return false;
-        if (room != null ? !room.equals(group.room) : group.room != null) return false;
-        if (trainees != null ? !trainees.equals(group.trainees) : group.trainees != null) return false;
-        return subjects != null ? subjects.equals(group.subjects) : group.subjects == null;
+        if (getId() != group.getId()) return false;
+        if (getName() != null ? !getName().equals(group.getName()) : group.getName() != null) return false;
+        if (getRoom() != null ? !getRoom().equals(group.getRoom()) : group.getRoom() != null) return false;
+        if (getTrainees() != null ? !getTrainees().equals(group.getTrainees()) : group.getTrainees() != null)
+            return false;
+        return getSubjects() != null ? getSubjects().equals(group.getSubjects()) : group.getSubjects() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (room != null ? room.hashCode() : 0);
-        result = 31 * result + (trainees != null ? trainees.hashCode() : 0);
-        result = 31 * result + (subjects != null ? subjects.hashCode() : 0);
+        int result = getId();
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getRoom() != null ? getRoom().hashCode() : 0);
+        result = 31 * result + (getTrainees() != null ? getTrainees().hashCode() : 0);
+        result = 31 * result + (getSubjects() != null ? getSubjects().hashCode() : 0);
         return result;
     }
 
