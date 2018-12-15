@@ -1,16 +1,17 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
-import java.util.HashSet;
+import java.util.List;
 
 public class SuggestSongDtoRequest {
 
     private String token;
     private String title;
-    private HashSet<String> composer;
-    private HashSet<String> author;
+    private List<String> composers;
+    private List<String> authors;
     private String singer;
     private int duration;
 
@@ -19,14 +20,14 @@ public class SuggestSongDtoRequest {
 
     public SuggestSongDtoRequest(String token,
                                  String title,
-                                 HashSet<String> composer,
-                                 HashSet<String> author,
+                                 List<String> composers,
+                                 List<String> authors,
                                  String singer,
                                  int duration) {
         this.token = token;
         this.title = title;
-        this.composer = composer;
-        this.author = author;
+        this.composers = composers;
+        this.authors = authors;
         this.singer = singer;
         this.duration = duration;
     }
@@ -35,26 +36,21 @@ public class SuggestSongDtoRequest {
         return new Gson().fromJson(jsonSong, SuggestSongDtoRequest.class);
     }
 
-    public String validate() {
-        if (!DataBase.getDatabase().isUserLogged(token)) {
-            return "error: please login";
-        }
+    public void validate() throws RequestException {
         if (title == null || title.trim().equals("")) {
-            return "error: empty song title ";
+            throw new RequestException(RequestErrorCode.EMPTY_SONG_TITLE);
         }
-        if (composer == null || composer.size() == 0) {
-            return "error: empty composer list";
+        if (composers == null || composers.size() == 0) {
+            throw new RequestException(RequestErrorCode.EMPTY_COMPOSER_LIST);
         }
-        if (author == null || author.size() == 0) {
-            return "error: empty author list";
+        if (authors == null || authors.size() == 0) {
+            throw new RequestException(RequestErrorCode.EMPTY_AUTHOR_LIST);
         }
         if (singer == null || singer.trim().equals("")) {
-            return "error: empty singer list";
+            throw new RequestException(RequestErrorCode.EMPTY_SINGER_LIST);
         }
         if (duration <= 0) {
-            return "error: negative time";
-        } else {
-            return new Gson().toJson(this, SuggestSongDtoRequest.class);
+            throw new RequestException(RequestErrorCode.WRONG_SONG_DURATION);
         }
     }
 
@@ -66,12 +62,12 @@ public class SuggestSongDtoRequest {
         return title;
     }
 
-    public HashSet<String> getComposer() {
-        return composer;
+    public List<String> getComposers() {
+        return composers;
     }
 
-    public HashSet<String> getAuthor() {
-        return author;
+    public List<String> getAuthors() {
+        return authors;
     }
 
     public String getSinger() {

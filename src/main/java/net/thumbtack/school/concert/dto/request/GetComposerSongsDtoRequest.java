@@ -1,19 +1,21 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class GetComposerSongsDtoRequest {
 
     private String token;
-    private HashSet<String> composer;
+    private Set<String> composer;
 
     public GetComposerSongsDtoRequest() {
     }
 
-    public GetComposerSongsDtoRequest(String token, HashSet<String> composer) {
+    public GetComposerSongsDtoRequest(String token, Set<String> composer) {
         this.token = token;
         this.composer = composer;
     }
@@ -22,11 +24,9 @@ public class GetComposerSongsDtoRequest {
         return new Gson().fromJson(jsonGetComposerSongs, GetComposerSongsDtoRequest.class);
     }
 
-    public String validate() {
-        if (!DataBase.getDatabase().isUserLogged(token)) {
-            return "error: please login";
-        } else {
-            return new Gson().toJson(this, GetComposerSongsDtoRequest.class);
+    public void validate() throws RequestException {
+        if (composer.size()==0) {
+            throw new RequestException(RequestErrorCode.EMPTY_COMPOSER_LIST);
         }
     }
 
@@ -38,11 +38,11 @@ public class GetComposerSongsDtoRequest {
         this.token = token;
     }
 
-    public HashSet<String> getComposer() {
+    public Set<String> getComposer() {
         return composer;
     }
 
-    public void setComposer(HashSet<String> composer) {
+    public void setComposer(Set<String> composer) {
         this.composer = composer;
     }
 

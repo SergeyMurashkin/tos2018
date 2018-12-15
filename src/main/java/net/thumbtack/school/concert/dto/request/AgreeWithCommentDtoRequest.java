@@ -1,6 +1,8 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 public class AgreeWithCommentDtoRequest {
 
@@ -20,8 +22,7 @@ public class AgreeWithCommentDtoRequest {
         return new Gson().fromJson(jsonAgreeWithComment, AgreeWithCommentDtoRequest.class);
     }
 
-    public String validate() {
-        return new Gson().toJson(this, AgreeWithCommentDtoRequest.class);
+    public void validate() throws RequestException {
     }
 
     public String getToken() {

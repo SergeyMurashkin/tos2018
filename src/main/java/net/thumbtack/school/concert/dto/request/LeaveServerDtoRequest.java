@@ -1,7 +1,9 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 public class LeaveServerDtoRequest {
 
@@ -18,12 +20,10 @@ public class LeaveServerDtoRequest {
         return new Gson().fromJson(jsonRequest, LeaveServerDtoRequest.class);
     }
 
-    public String validate() {
-        if (!DataBase.getDatabase().isUserLogged(token)) {
-            return "error: please login";
-        } else {
-            return "valid request";
-        }
+    public void validate() throws RequestException {
+      /*  if (!DataBase.getDatabase().isUserLogged(token)) {
+            throw new RequestException(RequestErrorCode.USER_NOT_LOGGED);
+        }*/
     }
 
     public String getToken() {

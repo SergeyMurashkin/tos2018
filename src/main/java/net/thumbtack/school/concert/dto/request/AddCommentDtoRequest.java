@@ -1,23 +1,25 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 public class AddCommentDtoRequest {
 
     private String token;
     private Integer songId;
-    private String commentText;
+    private String text;
 
     public AddCommentDtoRequest() {
     }
 
     public AddCommentDtoRequest(String token,
                                 Integer songId,
-                                String commentText) {
+                                String text) {
         this.token = token;
         this.songId = songId;
-        this.commentText = commentText;
+        this.text = text;
     }
 
     public AddCommentDtoRequest createRequest(String jsonAddComment) {
@@ -32,21 +34,13 @@ public class AddCommentDtoRequest {
         return songId;
     }
 
-    public String getCommentText() {
-        return commentText;
+    public String getText() {
+        return text;
     }
 
-    public String validate() {
-        if (!DataBase.getDatabase().isUserLogged(token)) {
-            return "error: please login";
-        }
-        if (!DataBase.getDatabase().isSongSuggested(songId)) {
-            return "error: the song not exists";
-        }
-        if (commentText.length() > 50) {
-            return "error: more 50 symbols in the comment";
-        } else {
-            return new Gson().toJson(this, AddCommentDtoRequest.class);
+    public void validate() throws RequestException {
+        if (text.length() > 50) {
+            throw new RequestException(RequestErrorCode.COMMENT_TEXT_LENGTH);
         }
     }
 

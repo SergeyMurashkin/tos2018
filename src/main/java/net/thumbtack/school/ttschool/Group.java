@@ -52,13 +52,6 @@ public class Group {
         }
     }
 
-/*    public void removeTrainee(Trainee trainee) throws TrainingException {
-        if (!trainees.contains(trainee)) {
-            throw new TrainingException(TrainingErrorCode.TRAINEE_NOT_FOUND);
-        }
-        trainees.remove(trainee);
-    }*/
-
     public void removeTrainee(int index) throws TrainingException {
         try {
             trainees.remove(index);

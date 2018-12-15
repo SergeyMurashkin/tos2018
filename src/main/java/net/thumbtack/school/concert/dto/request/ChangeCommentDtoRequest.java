@@ -1,13 +1,14 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 public class ChangeCommentDtoRequest {
 
     private String token;
     private Integer commentId;
-    private Integer songId;
     private String newCommentText;
 
     public ChangeCommentDtoRequest() {
@@ -15,11 +16,9 @@ public class ChangeCommentDtoRequest {
 
     public ChangeCommentDtoRequest(String token,
                                    Integer commentId,
-                                   Integer songId,
                                    String newCommentText) {
         this.token = token;
         this.commentId = commentId;
-        this.songId = songId;
         this.newCommentText = newCommentText;
     }
 
@@ -27,20 +26,9 @@ public class ChangeCommentDtoRequest {
         return new Gson().fromJson(jsonChangeComment, ChangeCommentDtoRequest.class);
     }
 
-    public String validate() {
-        if (!DataBase.getDatabase().isUserLogged(token)) {
-            return "error: please login";
-        }
-        if (!DataBase.getDatabase().isCommentExists(commentId)) {
-            return "error: the comment not exists";
-        }
-        if (!DataBase.getDatabase().isYourComment(token, commentId)) {
-            return "error: the comment not yours";
-        }
+    public void validate() throws RequestException {
         if (newCommentText.length() > 50) {
-            return "error: more 50 symbols in the comment";
-        } else {
-            return new Gson().toJson(this, ChangeCommentDtoRequest.class);
+            throw new RequestException(RequestErrorCode.COMMENT_TEXT_LENGTH);
         }
     }
 
@@ -52,14 +40,8 @@ public class ChangeCommentDtoRequest {
         return commentId;
     }
 
-    public Integer getSongId(){
-        return songId;
-    }
-
     public String getNewCommentText() {
         return newCommentText;
     }
-
-
 
 }

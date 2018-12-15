@@ -1,7 +1,8 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 
 public class RemoveRatingSongDtoRequest {
@@ -21,19 +22,8 @@ public class RemoveRatingSongDtoRequest {
         return new Gson().fromJson(jsonRemoveRating, RemoveRatingSongDtoRequest.class);
     }
 
-    public String validate() {
-        String userLogin = DataBase.getDatabase().getLoggedUser(token);
-        if (!DataBase.getDatabase().isUserLogged(token)) {
-            return "error: please login";
-        }
-        if (!DataBase.getDatabase().isSongSuggested(songId)) {
-            return "error: the song not exists";
-        }
-        if (!DataBase.getDatabase().isUserRatedSong(userLogin, songId)) {
-            return "error: you can remove only your rating";
-        } else {
-            return new Gson().toJson(this, RemoveRatingSongDtoRequest.class);
-        }
+    public void validate() throws RequestException {
+
     }
 
     public String getToken() {

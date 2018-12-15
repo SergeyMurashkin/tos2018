@@ -1,0 +1,85 @@
+DROP DATABASE IF EXISTS concert;
+CREATE DATABASE concert;
+USE concert;
+
+CREATE TABLE users (
+id INT NOT NULL AUTO_INCREMENT,
+firstName VARCHAR(250) NOT NULL,
+lastName VARCHAR(250) NOT NULL,
+login VARCHAR(250) NOT NULL,
+password VARCHAR(250) NOT NULL,
+token VARCHAR(250) DEFAULT NULL,
+PRIMARY KEY (id),
+KEY firstName(firstName),
+KEY lastName(lastName),
+KEY token(token),
+UNIQUE KEY login (login)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+INSERT INTO users (firstName, lastName,
+ login, password, token) VALUES ('WhiteSailsCommunity',
+ 'WhiteSailsCommunity', 'WhiteSailsCommunity@gmail.com',
+ 'Berthollet1785', '0b4ed331-c248-4003-80d7-8e8037f8ba00');
+
+CREATE TABLE songs (
+id INT NOT NULL AUTO_INCREMENT,
+title VARCHAR(250) NOT NULL,
+singer VARCHAR(250) NOT NULL,
+duration INT NOT NULL,
+userId INT NOT NULL,
+PRIMARY KEY (id),
+UNIQUE KEY titleSinger(title, singer),
+FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE song_composer (
+id INT NOT NULL AUTO_INCREMENT,
+songId INT NOT NULL,
+composer VARCHAR(250) NOT NULL,
+PRIMARY KEY (id),
+UNIQUE KEY songIdComposer(songId, composer),
+FOREIGN KEY (songId) REFERENCES songs(id) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE song_author (
+id INT NOT NULL AUTO_INCREMENT,
+songId INT NOT NULL,
+author VARCHAR(250) NOT NULL,
+PRIMARY KEY (id),
+UNIQUE KEY songIdAuthor(songId, author),
+FOREIGN KEY (songId) REFERENCES songs(id) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE ratings (
+id INT NOT NULL AUTO_INCREMENT,
+songId INT NOT NULL,
+userId INT NOT NULL,
+rating INT NOT NULL,
+PRIMARY KEY (id),
+UNIQUE KEY songIdUserId(songId, userId),
+FOREIGN KEY (songId) REFERENCES songs(id) ON DELETE CASCADE,
+FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE comments (
+id INT NOT NULL AUTO_INCREMENT,
+songId INT NOT NULL,
+userId INT NOT NULL,
+text VARCHAR(250) NOT NULL,
+PRIMARY KEY (id),
+UNIQUE KEY songIdUserId(songId, userId),
+FOREIGN KEY (songId) REFERENCES songs(id) ON DELETE CASCADE,
+FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE comment_agreedUser (
+id INT NOT NULL AUTO_INCREMENT,
+commentId INT NOT NULL,
+userId INT NOT NULL,
+PRIMARY KEY (id),
+KEY commentId(commentId),
+KEY userId(userId),
+UNIQUE KEY commentIdUserId(commentId, userId),
+FOREIGN KEY (commentId) REFERENCES comments(id) ON DELETE CASCADE,
+FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=INNODB DEFAULT CHARSET=utf8;

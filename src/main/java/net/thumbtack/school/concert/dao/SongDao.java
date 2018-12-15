@@ -2,35 +2,38 @@ package net.thumbtack.school.concert.dao;
 
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.TrialConcertSong;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 import java.util.List;
 import java.util.Set;
 
 public interface SongDao {
 
-    String addSong(String token, Song song);
+    String addSong(String token, Song song) throws RequestException;
 
-    String addRating(String token, Integer songId, Integer rating);
+    String addRating(String token, Integer songId, Integer rating) throws RequestException;
 
-    String removeRating(String token, Integer songId);
+    String removeRating(String token, Integer songId) throws RequestException;
 
-    String addComment(String token, Integer songId, String commentText);
+    String addComment(String token, Integer songId, String commentText) throws RequestException;
 
-    String changeComment(String token, Integer songId, Integer commentId, String newCommentText);
+    String changeComment(String token, Integer commentId, String newCommentText) throws RequestException;
 
-    String agreeWithComment(String token, Integer commentIndex);
+    String agreeWithComment(String token, Integer commentIndex) throws RequestException;
 
-    List<Song> getConcertSongs();
+    Song getSongById (Integer songId) throws RequestException;
 
-    List<Song> getComposerSongs(Set<String> composer);
+    List<Song> getConcertSongs(String token) throws RequestException;
 
-    List<Song> getAuthorSongs(Set<String> author);
+    List<Song> getComposerSongs(String token , Set<String> composers) throws RequestException;
 
-    List<Song> getSingerSongs(String singer);
+    List<Song> getAuthorSongs(String token, Set<String> authors) throws RequestException;
 
-    List<TrialConcertSong> getTrialConcert();
+    List<Song> getSingerSongs(String  token, String singer) throws RequestException;
 
-    String leaveServer(String token);
+    List<TrialConcertSong> getTrialConcert(String token) throws RequestException;
+
+    String leaveServer(String token) throws RequestException;
 
 }
 

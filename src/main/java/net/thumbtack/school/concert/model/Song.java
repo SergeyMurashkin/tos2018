@@ -1,120 +1,160 @@
 package net.thumbtack.school.concert.model;
 
-import com.google.gson.Gson;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class Song implements Serializable {
 
     private static final long serialVersionUID = 1653987098914607270L;
+    private Integer id;
     private String title;
-    private Set<String> composer;
-    private Set<String> author;
+    private List<String> composers;
+    private List<String> authors;
     private String singer;
     private Integer duration;
-    private String userLogin;
-    private Integer songId;
+    private Integer userId;
     private List<Rating> ratings;
-    private List<Integer> comments;
+    private List<Comment> comments;
 
     public Song() {
     }
 
-    public Song(String title,
-                Set<String> composer,
-                Set<String> author,
+    public Song(Integer id,
+                String title,
+                List<String> composers,
+                List<String> authors,
                 String singer,
-                Integer duration) {
+                Integer duration,
+                Integer userId,
+                List<Rating> ratings,
+                List<Comment> comments) {
+        this();
+        this.id = id;
         this.title = title.trim();
-        this.composer = composer;
-        this.author = author;
+        this.composers = composers;
+        this.authors = authors;
         this.singer = singer.trim();
         this.duration = duration;
-        ratings = new ArrayList<>();
-        comments = new ArrayList<>();
+        this.userId = userId;
+        this.ratings = ratings;
+        this.comments = comments;
     }
 
-    public Song createSong(String jsonCheckedSong) {
-        return new Gson().fromJson(jsonCheckedSong, Song.class);
+    public Song(String title,
+                List<String> composers,
+                List<String> authors,
+                String singer,
+                Integer duration) {
+        this(0, title, composers, authors, singer, duration,null, new ArrayList<>(), new ArrayList<>());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Song song = (Song) o;
-
-        if (title != null ? !title.equals(song.title) : song.title != null) return false;
-        return singer != null ? singer.equals(song.singer) : song.singer == null;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
-    @Override
-    public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
-        result = 31 * result + (singer != null ? singer.hashCode() : 0);
-        return result;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Set<String> getComposer() {
-        return composer;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public Set<String> getAuthor() {
-        return author;
+    public List<String> getComposers() {
+        return composers;
+    }
+
+    public void setComposers(List<String> composers) {
+        this.composers = composers;
+    }
+
+    public List<String> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<String> authors) {
+        this.authors = authors;
     }
 
     public String getSinger() {
         return singer;
     }
 
+    public void setSinger(String singer) {
+        this.singer = singer;
+    }
+
     public Integer getDuration() {
         return duration;
     }
 
-    public Integer getSongId() {
-        return songId;
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 
-    public void setSongId(Integer songId) {
-        this.songId = songId;
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public List<Rating> getRatings() {
         return ratings;
     }
 
-    public List<Integer> getComments() {
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public String getUserLogin() {
-        return userLogin;
-    }
-
-    public void setUserLogin(String userLogin) {
-        this.userLogin = userLogin;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
     public String toString() {
         return "Song{" +
-                "title='" + title + '\'' +
-                ", composer=" + composer +
-                ", author=" + author +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", composers=" + composers +
+                ", authors=" + authors +
                 ", singer='" + singer + '\'' +
                 ", duration=" + duration +
-                ", userLogin='" + userLogin + '\'' +
-                ", songId=" + songId +
+                ", userId=" + userId +
                 ", ratings=" + ratings +
                 ", comments=" + comments +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Song)) return false;
+
+        Song song = (Song) o;
+
+        if (getTitle() != null ? !getTitle().equals(song.getTitle()) : song.getTitle() != null) return false;
+        return getSinger() != null ? getSinger().equals(song.getSinger()) : song.getSinger() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getTitle() != null ? getTitle().hashCode() : 0;
+        result = 31 * result + (getSinger() != null ? getSinger().hashCode() : 0);
+        return result;
     }
 }

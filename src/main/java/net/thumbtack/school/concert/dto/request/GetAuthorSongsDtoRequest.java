@@ -1,19 +1,21 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class GetAuthorSongsDtoRequest {
 
     private String token;
-    private HashSet<String> author;
+    private Set<String> author;
 
     public GetAuthorSongsDtoRequest() {
     }
 
-    public GetAuthorSongsDtoRequest(String token, HashSet<String> author) {
+    public GetAuthorSongsDtoRequest(String token, Set<String> author) {
         this.token = token;
         this.author = author;
     }
@@ -22,11 +24,9 @@ public class GetAuthorSongsDtoRequest {
         return new Gson().fromJson(jsonGetAuthorSongs, GetAuthorSongsDtoRequest.class);
     }
 
-    public String validate() {
-        if (!DataBase.getDatabase().isUserLogged(token)) {
-            return "error: please login";
-        } else {
-            return new Gson().toJson(this, GetAuthorSongsDtoRequest.class);
+    public void validate() throws RequestException {
+        if (author.size()==0) {
+            throw new RequestException(RequestErrorCode.EMPTY_AUTHOR_LIST);
         }
     }
 
@@ -38,11 +38,11 @@ public class GetAuthorSongsDtoRequest {
         this.token = token;
     }
 
-    public HashSet<String> getAuthor() {
+    public Set<String> getAuthor() {
         return author;
     }
 
-    public void setAuthor(HashSet<String> author) {
+    public void setAuthor(Set<String> author) {
         this.author = author;
     }
 

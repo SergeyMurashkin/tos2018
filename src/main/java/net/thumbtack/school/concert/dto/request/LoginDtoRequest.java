@@ -1,7 +1,8 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
-import net.thumbtack.school.concert.DataBase;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 public class LoginDtoRequest {
 
@@ -20,14 +21,12 @@ public class LoginDtoRequest {
         return new Gson().fromJson(jsonLogin, LoginDtoRequest.class);
     }
 
-    public String validate() {
-        if (!DataBase.getDatabase().isUserRegistered(login)) {
-            return "error: login not exists";
+    public void validate() throws RequestException {
+        if (login==null) {
+            throw new RequestException(RequestErrorCode.EMPTY_LOGIN_STRING);
         }
-        if (!DataBase.getDatabase().isPasswordRight(login, password)) {
-            return "error: wrong password";
-        } else {
-            return new Gson().toJson(this, LoginDtoRequest.class);
+        if (password==null) {
+            throw new RequestException(RequestErrorCode.EMPTY_PASSWORD_STRING);
         }
     }
 

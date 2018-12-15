@@ -1,237 +1,224 @@
 package net.thumbtack.school.concert.service;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.thumbtack.school.concert.adapter.CommentAdapter;
+import net.thumbtack.school.concert.adapter.SongAdapter;
 import net.thumbtack.school.concert.daoimpl.SongDaoImpl;
 import net.thumbtack.school.concert.dto.request.*;
 import net.thumbtack.school.concert.dto.response.*;
+import net.thumbtack.school.concert.model.Comment;
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.TrialConcertSong;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 import java.util.List;
 
 public class SongService {
 
     private SongDaoImpl songDaoImpl = new SongDaoImpl();
-    private Gson gson = new Gson();
-    private SuggestSongDtoRequest suggestSongRequest = new SuggestSongDtoRequest();
-    private SuggestSongDtoResponse suggestSongResponse = new SuggestSongDtoResponse();
-    private AddRatingSongDtoRequest addRatingRequest = new AddRatingSongDtoRequest();
-    private AddRatingSongDtoResponse addRatingResponse = new AddRatingSongDtoResponse();
-    private RemoveRatingSongDtoRequest removeRatingRequest = new RemoveRatingSongDtoRequest();
-    private RemoveRatingSongDtoResponse removeRatingResponse = new RemoveRatingSongDtoResponse();
-    private AddCommentDtoRequest addCommentRequest = new AddCommentDtoRequest();
-    private AddCommentDtoResponse addCommentResponse = new AddCommentDtoResponse();
-    private ChangeCommentDtoRequest changeCommentRequest = new ChangeCommentDtoRequest();
-    private ChangeCommentDtoResponse changeCommentResponse = new ChangeCommentDtoResponse();
-    private AgreeWithCommentDtoRequest agreeWithCommentRequest = new AgreeWithCommentDtoRequest();
-    private AgreeWithCommentDtoResponse agreeWithCommentResponse = new AgreeWithCommentDtoResponse();
-    private GetConcertSongsDtoRequest getConcertSongsRequest = new GetConcertSongsDtoRequest();
-    private GetConcertSongsDtoResponse getConcertSongsResponse = new GetConcertSongsDtoResponse();
-    private GetComposerSongsDtoRequest getComposerSongsRequest = new GetComposerSongsDtoRequest();
-    private GetComposerSongsDtoResponse getComposerSongsResponse = new GetComposerSongsDtoResponse();
-    private GetAuthorSongsDtoRequest getAuthorSongsRequest = new GetAuthorSongsDtoRequest();
-    private GetAuthorSongsDtoResponse getAuthorSongsResponse = new GetAuthorSongsDtoResponse();
-    private GetSingerSongsDtoRequest getSingerSongsRequest = new GetSingerSongsDtoRequest();
-    private GetSingerSongsDtoResponse getSingerSongsResponse = new GetSingerSongsDtoResponse();
-    private GetTrialConcertDtoRequest getTrialConcertRequest = new GetTrialConcertDtoRequest();
-    private GetTrialConcertDtoResponse getTrialConcertResponse = new GetTrialConcertDtoResponse();
-    private LeaveServerDtoRequest leaveServerRequest = new LeaveServerDtoRequest();
-    private LeaveServerDtoResponse leaveServerResponse = new LeaveServerDtoResponse();
+    private Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Song.class, new SongAdapter())
+            .registerTypeAdapter(Comment.class, new CommentAdapter())
+            .create();
 
     public String suggestSong(String jsonSong) {
-        suggestSongRequest = suggestSongRequest.createSugSongDto(jsonSong);
-        String jsonCheckedRequest = suggestSongRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            suggestSongResponse.setResponse(null);
-            suggestSongResponse.setError(jsonCheckedRequest);
-        } else {
-            String token = suggestSongRequest.getToken();
-            Song song = new Song(suggestSongRequest.getTitle(),
-                    suggestSongRequest.getComposer(),
-                    suggestSongRequest.getAuthor(),
-                    suggestSongRequest.getSinger(),
-                    suggestSongRequest.getDuration());
-            String response = songDaoImpl.addSong(token, song);
-            if (response.contains("error:")) {
-                suggestSongResponse.setResponse(null);
-                suggestSongResponse.setError(response);
-            } else {
-                suggestSongResponse.setResponse(response);
-                suggestSongResponse.setError(null);
-            }
+        SuggestSongDtoRequest request = new SuggestSongDtoRequest().createSugSongDto(jsonSong);
+        SuggestSongDtoResponse response = new SuggestSongDtoResponse();
+        try {
+            request.validate();
+            String token = request.getToken();
+            Song song = new Song(request.getTitle(),
+                    request.getComposers(),
+                    request.getAuthors(),
+                    request.getSinger(),
+                    request.getDuration());
+            String result = songDaoImpl.addSong(token, song);
+            response.setResponse(result);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setResponse(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(suggestSongResponse, SuggestSongDtoResponse.class);
+        return gson.toJson(response, SuggestSongDtoResponse.class);
     }
 
     public String addRating(String jsonAddRating) {
-        addRatingRequest = addRatingRequest.createRequest(jsonAddRating);
-        String jsonCheckedRequest = addRatingRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            addRatingResponse.setResponse(null);
-            addRatingResponse.setError(jsonCheckedRequest);
-        } else {
-            String token = addRatingRequest.getToken();
-            Integer songId = addRatingRequest.getSongId();
-            Integer rating = addRatingRequest.getRating();
-            String response = songDaoImpl.addRating(token, songId, rating);
-            addRatingResponse.setResponse(response);
-            addRatingResponse.setError(null);
+        AddSongRatingDtoRequest request = new AddSongRatingDtoRequest().createRequest(jsonAddRating);
+        AddSongRatingDtoResponse response = new AddSongRatingDtoResponse();
+        try {
+            request.validate();
+            String token = request.getToken();
+            Integer songId = request.getSongId();
+            Integer rating = request.getRating();
+            String result = songDaoImpl.addRating(token, songId, rating);
+            response.setResponse(result);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setResponse(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(addRatingResponse, AddRatingSongDtoResponse.class);
+        return gson.toJson(response, AddSongRatingDtoResponse.class);
     }
 
     public String removeRating(String jsonRemoveRating) {
-        removeRatingRequest = removeRatingRequest.createRequest(jsonRemoveRating);
-        String jsonCheckedRequest = removeRatingRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            removeRatingResponse.setResponse(null);
-            removeRatingResponse.setError(jsonCheckedRequest);
-        } else {
-            String token = removeRatingRequest.getToken();
-            Integer songId = removeRatingRequest.getSongId();
-            String response = songDaoImpl.removeRating(token, songId);
-            removeRatingResponse.setResponse(response);
-            removeRatingResponse.setError(null);
+        RemoveRatingSongDtoRequest request = new RemoveRatingSongDtoRequest().createRequest(jsonRemoveRating);
+        RemoveRatingSongDtoResponse response = new RemoveRatingSongDtoResponse();
+        try {
+            request.validate();
+            String token = request.getToken();
+            Integer songId = request.getSongId();
+            String result = songDaoImpl.removeRating(token, songId);
+            response.setResponse(result);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setResponse(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(removeRatingResponse, RemoveRatingSongDtoResponse.class);
+        return gson.toJson(response, RemoveRatingSongDtoResponse.class);
     }
 
     public String addComment(String jsonAddCommentRequest) {
-        addCommentRequest = addCommentRequest.createRequest(jsonAddCommentRequest);
-        String jsonCheckedRequest = addCommentRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            addRatingResponse.setResponse(null);
-            addCommentResponse.setError(jsonCheckedRequest);
-        } else {
-            String token = addCommentRequest.getToken();
-            Integer songId = addCommentRequest.getSongId();
-            String commentText = addCommentRequest.getCommentText();
-            String response = songDaoImpl.addComment(token, songId, commentText);
-            addCommentResponse.setResponse(response);
-            addCommentResponse.setError(null);
+        AddCommentDtoRequest request = new AddCommentDtoRequest().createRequest(jsonAddCommentRequest);
+        AddCommentDtoResponse response = new AddCommentDtoResponse();
+        try {
+            request.validate();
+            String token = request.getToken();
+            Integer songId = request.getSongId();
+            String commentText = request.getText();
+            String result = songDaoImpl.addComment(token, songId, commentText);
+            response.setResponse(result);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setResponse(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(addCommentResponse, AddCommentDtoResponse.class);
+        return gson.toJson(response, AddCommentDtoResponse.class);
     }
 
     public String changeComment(String jsonChangeComment) {
-        changeCommentRequest = changeCommentRequest.createRequest(jsonChangeComment);
-        String jsonCheckedRequest = changeCommentRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            changeCommentResponse.setResponse(null);
-            changeCommentResponse.setError(jsonCheckedRequest);
-        } else {
-            String token = changeCommentRequest.getToken();
-            Integer commentId = changeCommentRequest.getCommentId();
-            Integer songId = changeCommentRequest.getSongId();
-            String newCommentText = changeCommentRequest.getNewCommentText();
-            String response = songDaoImpl.changeComment(token, commentId, songId, newCommentText);
-            changeCommentResponse.setResponse(response);
-            changeCommentResponse.setError(null);
+        ChangeCommentDtoRequest request = new ChangeCommentDtoRequest().createRequest(jsonChangeComment);
+        ChangeCommentDtoResponse response = new ChangeCommentDtoResponse();
+        try {
+            request.validate();
+            String token = request.getToken();
+            Integer commentId = request.getCommentId();
+            String newCommentText = request.getNewCommentText();
+            String result = songDaoImpl.changeComment(token, commentId, newCommentText);
+            response.setResponse(result);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setResponse(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(changeCommentResponse, ChangeCommentDtoResponse.class);
+        return gson.toJson(response, ChangeCommentDtoResponse.class);
     }
 
     public String agreeWithComment(String jsonAgreeWithComment) {
-        agreeWithCommentRequest = agreeWithCommentRequest.createRequest(jsonAgreeWithComment);
-        String jsonCheckedRequest = agreeWithCommentRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            agreeWithCommentResponse.setResponse(null);
-            agreeWithCommentResponse.setError(jsonCheckedRequest);
-        } else {
-            String token = agreeWithCommentRequest.getToken();
-            Integer commentId = agreeWithCommentRequest.getCommentId();
-            String response = songDaoImpl.agreeWithComment(token, commentId);
-            agreeWithCommentResponse.setResponse(response);
-            agreeWithCommentResponse.setError(null);
+        AgreeWithCommentDtoRequest request = new AgreeWithCommentDtoRequest().createRequest(jsonAgreeWithComment);
+        AgreeWithCommentDtoResponse response = new AgreeWithCommentDtoResponse();
+        try {
+            request.validate();
+            String token = request.getToken();
+            Integer commentId = request.getCommentId();
+            String result = songDaoImpl.agreeWithComment(token, commentId);
+            response.setResponse(result);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setResponse(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(agreeWithCommentResponse, AgreeWithCommentDtoResponse.class);
+        return gson.toJson(response, AgreeWithCommentDtoResponse.class);
     }
 
     public String getConcertSongs(String jsonGetConcertSongs) {
-        getConcertSongsRequest = getConcertSongsRequest.createRequest(jsonGetConcertSongs);
-        String jsonCheckedRequest = getConcertSongsRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            getConcertSongsResponse.setError(jsonCheckedRequest);
-            getConcertSongsResponse.setConcertSongs(null);
-        } else {
-            List<Song> concertSongs = songDaoImpl.getConcertSongs();
-            getConcertSongsResponse.setConcertSongs(concertSongs);
-            getConcertSongsResponse.setError(null);
+        GetConcertSongsDtoRequest request = new GetConcertSongsDtoRequest().createRequest(jsonGetConcertSongs);
+        GetConcertSongsDtoResponse response = new GetConcertSongsDtoResponse();
+        try {
+            request.validate();
+            List<Song> concertSongs = songDaoImpl.getConcertSongs(request.getToken());
+            response.setConcertSongs(concertSongs);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setConcertSongs(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(getConcertSongsResponse, GetConcertSongsDtoResponse.class);
+        return gson.toJson(response, GetConcertSongsDtoResponse.class);
     }
 
     public String getComposerSongs(String jsonGetComposerSongs) {
-        getComposerSongsRequest = getComposerSongsRequest.createRequest(jsonGetComposerSongs);
-        String jsonCheckedRequest = getComposerSongsRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            getComposerSongsResponse.setComposerSongs(null);
-            getComposerSongsResponse.setError(jsonCheckedRequest);
+        GetComposerSongsDtoRequest request = new GetComposerSongsDtoRequest().createRequest(jsonGetComposerSongs);
+        GetComposerSongsDtoResponse response = new GetComposerSongsDtoResponse();
+        try {
+            request.validate();
+            List<Song> composerSongs = songDaoImpl.getComposerSongs(request.getToken(), request.getComposer());
+            response.setComposerSongs(composerSongs);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setComposerSongs(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        List<Song> composerSongs = songDaoImpl.getComposerSongs(getComposerSongsRequest.getComposer());
-        getComposerSongsResponse.setComposerSongs(composerSongs);
-        getComposerSongsResponse.setError(null);
-        return gson.toJson(getComposerSongsResponse, GetComposerSongsDtoResponse.class);
+        return gson.toJson(response, GetComposerSongsDtoResponse.class);
     }
 
     public String getAuthorSongs(String jsonGetAuthorSongs) {
-        getAuthorSongsRequest = getAuthorSongsRequest.createRequest(jsonGetAuthorSongs);
-        String jsonCheckedRequest = getAuthorSongsRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            getAuthorSongsResponse.setAuthorSongs(null);
-            getAuthorSongsResponse.setError(jsonCheckedRequest);
+        GetAuthorSongsDtoRequest request = new GetAuthorSongsDtoRequest().createRequest(jsonGetAuthorSongs);
+        GetAuthorSongsDtoResponse response = new GetAuthorSongsDtoResponse();
+        try {
+            request.validate();
+            List<Song> authorSongs = songDaoImpl.getAuthorSongs(request.getToken(), request.getAuthor());
+            response.setAuthorSongs(authorSongs);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setAuthorSongs(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        List<Song> authorSongs = songDaoImpl.getAuthorSongs(getAuthorSongsRequest.getAuthor());
-        getAuthorSongsResponse.setAuthorSongs(authorSongs);
-        getAuthorSongsResponse.setError(null);
-        return gson.toJson(getAuthorSongsResponse, GetAuthorSongsDtoResponse.class);
+        return gson.toJson(response, GetAuthorSongsDtoResponse.class);
     }
 
     public String getSingerSongs(String jsonGetSingerSongs) {
-        getSingerSongsRequest = getSingerSongsRequest.createRequest(jsonGetSingerSongs);
-        String jsonCheckedRequest = getSingerSongsRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            getSingerSongsResponse.setSingerSongs(null);
-            getSingerSongsResponse.setError(jsonCheckedRequest);
+        GetSingerSongsDtoRequest request = new GetSingerSongsDtoRequest().createRequest(jsonGetSingerSongs);
+        GetSingerSongsDtoResponse response = new GetSingerSongsDtoResponse();
+        try {
+            request.validate();
+            List<Song> singerSongs = songDaoImpl.getSingerSongs(request.getToken(), request.getSinger());
+            response.setSingerSongs(singerSongs);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setSingerSongs(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        List<Song> singerSongs = songDaoImpl.getSingerSongs(getSingerSongsRequest.getSinger());
-        getSingerSongsResponse.setSingerSongs(singerSongs);
-        getSingerSongsResponse.setError(null);
-        return gson.toJson(getSingerSongsResponse, GetSingerSongsDtoResponse.class);
+        return gson.toJson(response, GetSingerSongsDtoResponse.class);
     }
 
-
-
     public String getTrialConcert(String jsonGetTrialConcert) {
-        getTrialConcertRequest = getTrialConcertRequest.createRequest(jsonGetTrialConcert);
-        String jsonCheckedRequest = getTrialConcertRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            getTrialConcertResponse.setTrialConcertSongs(null);
-            getTrialConcertResponse.setError(jsonCheckedRequest);
+        GetTrialConcertDtoRequest request = new GetTrialConcertDtoRequest().createRequest(jsonGetTrialConcert);
+        GetTrialConcertDtoResponse response = new GetTrialConcertDtoResponse();
+        try {
+            request.validate();
+            List<TrialConcertSong> trialConcertSongs = songDaoImpl.getTrialConcert(request.getToken());
+            response.setTrialConcertSongs(trialConcertSongs);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setTrialConcertSongs(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        List<TrialConcertSong> trialConcertSongs = songDaoImpl.getTrialConcert();
-        getTrialConcertResponse.setTrialConcertSongs(trialConcertSongs);
-        getTrialConcertResponse.setError(null);
-        return gson.toJson(getTrialConcertResponse, GetTrialConcertDtoResponse.class);
+        return gson.toJson(response, GetTrialConcertDtoResponse.class);
     }
 
     public String leaveServer(String jsonLeaveServer) {
-        leaveServerRequest = leaveServerRequest.createRequest(jsonLeaveServer);
-        String jsonCheckedRequest = leaveServerRequest.validate();
-        if (jsonCheckedRequest.contains("error:")) {
-            leaveServerResponse.setResponse(null);
-            leaveServerResponse.setError(jsonCheckedRequest);
-        } else {
-            String response = songDaoImpl.leaveServer(leaveServerRequest.getToken());
-            if (response.contains("error:")) {
-                leaveServerResponse.setResponse(null);
-                leaveServerResponse.setError(response);
-            } else {
-                leaveServerResponse.setResponse(response);
-                leaveServerResponse.setError(null);
-            }
+        LeaveServerDtoRequest request = new LeaveServerDtoRequest().createRequest(jsonLeaveServer);
+        LeaveServerDtoResponse response = new LeaveServerDtoResponse();
+        try {
+            request.validate();
+            String result = songDaoImpl.leaveServer(request.getToken());
+            response.setResponse(result);
+            response.setError(null);
+        } catch (RequestException ex) {
+            response.setResponse(null);
+            response.setError(ex.getRequestErrorCode().getErrorString());
         }
-        return gson.toJson(leaveServerResponse, LeaveServerDtoResponse.class);
+        return gson.toJson(response, LeaveServerDtoResponse.class);
     }
 
 }

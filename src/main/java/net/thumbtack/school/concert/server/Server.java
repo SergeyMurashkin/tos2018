@@ -1,6 +1,5 @@
 package net.thumbtack.school.concert.server;
 
-import net.thumbtack.school.concert.DataBase;
 import net.thumbtack.school.concert.service.SongService;
 import net.thumbtack.school.concert.service.UserService;
 
@@ -11,24 +10,17 @@ public class Server {
     private UserService userService = new UserService();
     private SongService songService = new SongService();
 
-    public void startServer(String savedDataFileName) throws IOException, ClassNotFoundException {
-        DataBase.getDatabase().startDatabase(savedDataFileName);
-    }
-
-    public void stopServer(String savedDataFileName) throws IOException {
-        DataBase.getDatabase().stopDatabase(savedDataFileName);
-    }
 
     public String registerUser(String jsonUser) {
         return userService.registerUser(jsonUser);
     }
 
-    public String logIn(String jsonLogin) {
-        return userService.logIn(jsonLogin);
+    public String loginUser(String jsonLogin) {
+        return userService.loginUser(jsonLogin);
     }
 
-    public String logOut(String jsonLogout) {
-        return userService.logOut(jsonLogout);
+    public String logoutUser(String jsonLogout) {
+        return userService.logoutUser(jsonLogout);
     }
 
     public String suggestSong(String jsonSuggest) {

@@ -1,29 +1,53 @@
 package net.thumbtack.school.concert.model;
 
-public class Rating {
+import java.io.Serializable;
 
-    private String userLogin;
+public class Rating implements Serializable {
+
+    private static final long serialVersionUID = 6868792766299052156L;
+    private Integer id;
+    private Integer userId;
     private Integer songId;
     private Integer rating;
-    private Integer ratingId;
 
     public Rating() {
     }
 
-    public Rating(String userLogin,
+    public Rating(Integer id,
+                  Integer userId,
                   Integer songId,
                   Integer rating) {
-        this.userLogin = userLogin;
+        this();
+        this.id = id;
+        this.userId = userId;
         this.songId = songId;
         this.rating = rating;
     }
 
-    public String getUserLogin() {
-        return userLogin;
+    public Rating(Integer userId,
+                  Integer songId,
+                  Integer rating) {
+        this(0, userId, songId, rating);
     }
 
-    public void setUserLogin(String userLogin) {
-        this.userLogin = userLogin;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getSongId() {
@@ -42,39 +66,35 @@ public class Rating {
         this.rating = rating;
     }
 
-    public Integer getRatingId() {
-        return ratingId;
-    }
-
-    public void setRatingId(Integer ratingId) {
-        this.ratingId = ratingId;
-    }
-
     @Override
     public String toString() {
         return "Rating{" +
-                "userLogin='" + userLogin + '\'' +
+                "id=" + id +
+                ", userId=" + userId +
                 ", songId=" + songId +
                 ", rating=" + rating +
-                ", ratingId=" + ratingId +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Rating)) return false;
 
-        Rating rating = (Rating) o;
+        Rating rating1 = (Rating) o;
 
-        if (userLogin != null ? !userLogin.equals(rating.userLogin) : rating.userLogin != null) return false;
-        return songId != null ? songId.equals(rating.songId) : rating.songId == null;
+        if (getId() != null ? !getId().equals(rating1.getId()) : rating1.getId() != null) return false;
+        if (getUserId() != null ? !getUserId().equals(rating1.getUserId()) : rating1.getUserId() != null) return false;
+        if (getSongId() != null ? !getSongId().equals(rating1.getSongId()) : rating1.getSongId() != null) return false;
+        return getRating() != null ? getRating().equals(rating1.getRating()) : rating1.getRating() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = userLogin != null ? userLogin.hashCode() : 0;
-        result = 31 * result + (songId != null ? songId.hashCode() : 0);
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getUserId() != null ? getUserId().hashCode() : 0);
+        result = 31 * result + (getSongId() != null ? getSongId().hashCode() : 0);
+        result = 31 * result + (getRating() != null ? getRating().hashCode() : 0);
         return result;
     }
 }

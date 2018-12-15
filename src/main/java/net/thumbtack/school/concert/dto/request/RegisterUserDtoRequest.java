@@ -1,6 +1,8 @@
 package net.thumbtack.school.concert.dto.request;
 
 import com.google.gson.Gson;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
 
 public class RegisterUserDtoRequest {
 
@@ -23,35 +25,33 @@ public class RegisterUserDtoRequest {
         return new Gson().fromJson(jsonString, RegisterUserDtoRequest.class);
     }
 
-    public String validate() {
+    public void validate() throws RequestException {
         if (firstName == null || firstName.equals("")) {
-            return "error: empty first name";
+            throw new RequestException(RequestErrorCode.EMPTY_FIRSTNAME_STRING);
         }
         if (firstName.contains(" ")) {
-            return "error: space in the first name";
+            throw new RequestException(RequestErrorCode.SPACE_FIRSTNAME_STRING);
         }
         if (lastName == null || lastName.equals("")) {
-            return "error: empty last name";
+            throw new RequestException(RequestErrorCode.EMPTY_LASTNAME_STRING);
         }
         if (lastName.contains(" ")) {
-            return "error: space in the last name";
+            throw new RequestException(RequestErrorCode.SPACE_LASTNAME_STRING);
         }
         if (login == null || login.equals("")) {
-            return "error: empty login";
+            throw new RequestException(RequestErrorCode.EMPTY_LOGIN_STRING);
         }
         if (login.contains(" ")) {
-            return "error: space in the login";
+            throw new RequestException(RequestErrorCode.SPACE_LOGIN_STRING);
         }
         if (password == null || password.equals("")) {
-            return "error: empty password";
-        }
-        if (password.length() < 6) {
-            return "error: short password";
+            throw new RequestException(RequestErrorCode.EMPTY_PASSWORD_STRING);
         }
         if (password.contains(" ")) {
-            return "error: space in the password";
-        } else {
-            return new Gson().toJson(this, RegisterUserDtoRequest.class);
+            throw new RequestException(RequestErrorCode.SPACE_PASSWORD_STRING);
+        }
+        if (password.length() < 6) {
+            throw new RequestException(RequestErrorCode.WRONG_PASSWORD_LENGTH);
         }
     }
 

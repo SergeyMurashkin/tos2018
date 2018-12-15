@@ -11,7 +11,7 @@ import net.thumbtack.school.database.mybatis.utils.MyBatisUtils;
 public class DaoImplBase {
 
     protected SqlSession getSession() {
-        return MyBatisUtils.getSqlSessionFactory().openSession();
+        return MyBatisUtils.getSession();
     }
 
     protected SchoolMapper getSchoolMapper(SqlSession sqlSession) {

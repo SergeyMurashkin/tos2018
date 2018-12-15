@@ -1,307 +1,192 @@
-/*
 package net.thumbtack.school.concert;
 
-import com.google.gson.Gson;
+
 import net.thumbtack.school.concert.dto.request.*;
 import net.thumbtack.school.concert.dto.response.*;
+import net.thumbtack.school.concert.model.Rating;
 import net.thumbtack.school.concert.model.Song;
-import net.thumbtack.school.concert.server.Server;
+import net.thumbtack.school.concert.model.TrialConcertSong;
+import net.thumbtack.school.concert.model.User;
+import net.thumbtack.school.concert.requestException.RequestErrorCode;
+import net.thumbtack.school.concert.requestException.RequestException;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.HashSet;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class TestConcert {
+public class TestConcert extends TestBase {
 
+  //  @Ignore
     @Test
-    public void testServerOpportunities() throws IOException, ClassNotFoundException {
-
-        Server server = new Server();
-        RegisterUserDtoRequest request1 = new RegisterUserDtoRequest(
-                "Sergei", "Murashkin", "himik@mail.ru", "123456789");
-        Gson gson = new Gson();
-        String jsonRequest1 = gson.toJson(request1);
+    public void testPositiveUserRegistration() {
+        String jsonRequest1 = gson.toJson(new RegisterUserDtoRequest(
+                "Sergei", "Murashkin", "workbox_55@mail.ru", "123456789"));
         String jsonResponse1 = server.registerUser(jsonRequest1);
         RegisterUserDtoResponse response1 = gson.fromJson(jsonResponse1, RegisterUserDtoResponse.class);
-        String token1 = response1.getToken();
-        assertTrue(DataBase.getDatabase().isUserLogged(token1));
-        assertEquals(2, DataBase.getDatabase().countRegisteredUsers());
-        assertEquals(1, DataBase.getDatabase().countLoggedUsers());
+        assertNull(response1.getError());
+        assertEquals(36,response1.getToken().length());
 
-        RegisterUserDtoRequest request2 = new RegisterUserDtoRequest("Sergei", "Murashkin", "himik@mail.ru", "123456789");
-        String jsonRequest2 = gson.toJson(request2);
-        String jsonResponse2 = server.registerUser(jsonRequest2);
-        RegisterUserDtoResponse response2 = gson.fromJson(jsonResponse2, RegisterUserDtoResponse.class);
-        assertEquals("error: login exists", response2.getError());
-        assertEquals(2, DataBase.getDatabase().countRegisteredUsers());
-        assertEquals(1, DataBase.getDatabase().countLoggedUsers());
+        String jsonRequest2 = gson.toJson(new LogoutDtoRequest(response1.getToken()));
+        String jsonResponse2 = server.logoutUser(jsonRequest2);
+        LogoutDtoResponse response2 = gson.fromJson(jsonResponse2, LogoutDtoResponse.class);
+        assertNull(response2.getError());
+        assertEquals("Successful logout.",response2.getResponse());
 
-        RegisterUserDtoRequest request3 = new RegisterUserDtoRequest("Sergei", "Murashkin", "himik2@mail.ru", "123456789");
-        String jsonRequest3 = gson.toJson(request3);
-        String jsonResponse3 = server.registerUser(jsonRequest3);
-        RegisterUserDtoResponse response3 = gson.fromJson(jsonResponse3, RegisterUserDtoResponse.class);
-        assertTrue(DataBase.getDatabase().isUserLogged(response3.getToken()));
-        assertEquals("himik2@mail.ru", DataBase.getDatabase().getLoggedUser(response3.getToken()));
-        assertEquals(3, DataBase.getDatabase().countRegisteredUsers());
-        assertEquals(2, DataBase.getDatabase().countLoggedUsers());
-
-        server.stopServer("serverDB.txt");
-        server.startServer("serverDB.txt");
-        assertEquals(3, DataBase.getDatabase().countRegisteredUsers());
-        assertEquals(2, DataBase.getDatabase().countLoggedUsers());
-
-        LogoutDtoRequest logoutRequest = new LogoutDtoRequest(response3.getToken());
-        String jsonLogoutRequest = new Gson().toJson(logoutRequest, LogoutDtoRequest.class);
-        String jsonLogoutResponse = server.logOut(jsonLogoutRequest);
-        LogoutDtoResponse logoutDtoResponse = new LogoutDtoResponse().createResponse(jsonLogoutResponse);
-        assertFalse(DataBase.getDatabase().isUserLogged(logoutRequest.getToken()));
-        assertEquals("logout done", logoutDtoResponse.getResponse());
-        assertEquals(3, DataBase.getDatabase().countRegisteredUsers());
-        assertEquals(1, DataBase.getDatabase().countLoggedUsers());
-
-        LoginDtoRequest loginRequest = new LoginDtoRequest("himik2@mail.ru", "123456789");
-        String jsonLoginRequest = gson.toJson(loginRequest, LoginDtoRequest.class);
-        String jsonLoginResponse = server.logIn(jsonLoginRequest);
-        LoginDtoResponse loginResponse = new Gson().fromJson(jsonLoginResponse, LoginDtoResponse.class);
-        String token2 = loginResponse.getToken();
-        assertTrue(DataBase.getDatabase().isUserLogged(token2));
-        assertEquals(3, DataBase.getDatabase().countRegisteredUsers());
-        assertEquals(2, DataBase.getDatabase().countLoggedUsers());
-
-        SuggestSongDtoRequest sugSongRequest = new SuggestSongDtoRequest(token2, "Believer",
-                new HashSet<>(), new HashSet<>(), "Imagine dragons", 200);
-        sugSongRequest.getComposer().add("Daniel Reynolds");
-        sugSongRequest.getAuthor().add("Daniel Reynolds");
-        Song song = new Song(sugSongRequest.getTitle(),
-                sugSongRequest.getComposer(),
-                sugSongRequest.getAuthor(),
-                sugSongRequest.getSinger(),
-                sugSongRequest.getDuration());
-        String jsonSugRequest = new Gson().toJson(sugSongRequest, SuggestSongDtoRequest.class);
-        SuggestSongDtoResponse sugResponse =
-                new SuggestSongDtoResponse().createResponse(server.suggestSong(jsonSugRequest));
-        assertEquals("song added", sugResponse.getResponse());
-        assertNull(sugResponse.getError());
-        assertTrue(DataBase.getDatabase().isUserSuggestedSong(1, "himik2@mail.ru"));
-        assertEquals(1, DataBase.getDatabase().countSuggestedSong());
-
-        SuggestSongDtoRequest sugSongRequest2 = new SuggestSongDtoRequest(token2, "Believer",
-                new HashSet<>(), new HashSet<>(), "Imagine dragons", 150);
-        sugSongRequest2.getComposer().add("Reynolds");
-        sugSongRequest2.getAuthor().add("Reynolds");
-        Song song2 = new Song(sugSongRequest2.getTitle(),
-                sugSongRequest2.getComposer(),
-                sugSongRequest2.getAuthor(),
-                sugSongRequest2.getSinger(),
-                sugSongRequest2.getDuration());
-        String jsonSugRequest2 = new Gson().toJson(sugSongRequest2, SuggestSongDtoRequest.class);
-        SuggestSongDtoResponse sugResponse2 =
-                new SuggestSongDtoResponse().createResponse(server.suggestSong(jsonSugRequest2));
-        assertEquals("error: song already added", sugResponse2.getError());
-        assertNull(sugResponse2.getResponse());
-        assertEquals(1, DataBase.getDatabase().countSuggestedSong());
-        assertEquals(song, song2);
-
-        SuggestSongDtoRequest sugSongRequest3 = new SuggestSongDtoRequest(token2, "Natural",
-                new HashSet<>(), new HashSet<>(), "Imagine dragons", 180);
-        sugSongRequest3.getComposer().add("Daniel");
-        sugSongRequest3.getAuthor().add("Reynolds");
-        Song song3 = new Song(sugSongRequest3.getTitle(),
-                sugSongRequest3.getComposer(),
-                sugSongRequest3.getAuthor(),
-                sugSongRequest3.getSinger(),
-                sugSongRequest3.getDuration());
-        String jsonSugRequest3 = new Gson().toJson(sugSongRequest3, SuggestSongDtoRequest.class);
-        SuggestSongDtoResponse sugResponse3 =
-                new SuggestSongDtoResponse().createResponse(server.suggestSong(jsonSugRequest3));
-        assertEquals("song added", sugResponse3.getResponse());
-        assertNull(sugResponse3.getError());
-        assertTrue(DataBase.getDatabase().isUserSuggestedSong(2, "himik2@mail.ru"));
-        assertTrue(DataBase.getDatabase().isUserSuggestedSong(1, "himik2@mail.ru"));
-        assertEquals(2, DataBase.getDatabase().countSuggestedSong());
-
-        SuggestSongDtoRequest sugSongRequest4 = new SuggestSongDtoRequest(token2, "Everyday Is Christmas",
-                new HashSet<>(), new HashSet<>(), "Sia", 3500);
-        sugSongRequest4.getComposer().add("Greg Kurstin");
-        sugSongRequest4.getAuthor().add("Greg Kurstin");
-        Song song4 = new Song(sugSongRequest4.getTitle(),
-                sugSongRequest4.getComposer(),
-                sugSongRequest4.getAuthor(),
-                sugSongRequest4.getSinger(),
-                sugSongRequest4.getDuration());
-        String jsonSugRequest4 = new Gson().toJson(sugSongRequest4, SuggestSongDtoRequest.class);
-        SuggestSongDtoResponse sugResponse4 =
-                new SuggestSongDtoResponse().createResponse(server.suggestSong(jsonSugRequest4));
-        assertEquals("song added", sugResponse4.getResponse());
-        assertNull(sugResponse4.getError());
-        assertTrue(DataBase.getDatabase().isUserSuggestedSong(3, "himik2@mail.ru"));
-        assertTrue(DataBase.getDatabase().isUserSuggestedSong(2, "himik2@mail.ru"));
-        assertTrue(DataBase.getDatabase().isUserSuggestedSong(1, "himik2@mail.ru"));
-        assertEquals(3, DataBase.getDatabase().countSuggestedSong());
-
-        AddRatingSongDtoRequest addRatingRequest = new AddRatingSongDtoRequest(token2, 1, 3);
-        String jsonAddRatingRequest = new Gson().toJson(addRatingRequest, AddRatingSongDtoRequest.class);
-        AddRatingSongDtoResponse addRatingResponse =
-                new AddRatingSongDtoResponse().createResponse(server.addRating(jsonAddRatingRequest));
-        assertEquals("error: you are the author suggestion", addRatingResponse.getError());
-
-        AddRatingSongDtoRequest addRatingRequest2 = new AddRatingSongDtoRequest(token1, 1, 3);
-        String jsonAddRatingRequest2 = new Gson().toJson(addRatingRequest2, AddRatingSongDtoRequest.class);
-        AddRatingSongDtoResponse addRatingResponse2 =
-                new AddRatingSongDtoResponse().createResponse(server.addRating(jsonAddRatingRequest2));
-        assertEquals("rating " + addRatingRequest2.getRating() + " added", addRatingResponse2.getResponse());
-        assertEquals("himik2@mail.ru", DataBase.getDatabase().getAuthorSuggestedSong(1));
-
-        RemoveRatingSongDtoRequest remRatingRequest = new RemoveRatingSongDtoRequest(token2, 1);
-        String jsonRemRatingRequest = new Gson().toJson(remRatingRequest, RemoveRatingSongDtoRequest.class);
-        RemoveRatingSongDtoResponse remRatingResponse =
-                new RemoveRatingSongDtoResponse().createResponse(server.removeRating(jsonRemRatingRequest));
-        assertEquals("rating removed and community is new author of suggestion", remRatingResponse.getResponse());
-        assertEquals(DataBase.COMMUNITY_LOGIN, DataBase.getDatabase().getAuthorSuggestedSong(1));
-
-        String userComment1 = "123qwe";
-        AddCommentDtoRequest addComment = new AddCommentDtoRequest(token2, 1, userComment1);
-        String jsonAddComment = new Gson().toJson(addComment, AddCommentDtoRequest.class);
-        String jsonAddCommentResponse = server.addComment(jsonAddComment);
-        AddCommentDtoResponse addCommentResponse =
-                new Gson().fromJson(jsonAddCommentResponse, AddCommentDtoResponse.class);
-        assertEquals("comment added", addCommentResponse.getResponse());
-        assertTrue(DataBase.getDatabase().isCommentExists(1));
-        assertEquals(userComment1, DataBase.getDatabase().getCommentText(1));
-
-        AddCommentDtoRequest addComment2 = new AddCommentDtoRequest(token2, 1, userComment1);
-        String jsonAddComment2 = new Gson().toJson(addComment2, AddCommentDtoRequest.class);
-        String jsonAddCommentResponse2 = server.addComment(jsonAddComment2);
-        AddCommentDtoResponse addCommentResponse2 =
-                new Gson().fromJson(jsonAddCommentResponse2, AddCommentDtoResponse.class);
-        assertEquals("comment added", addCommentResponse2.getResponse());
-        assertTrue(DataBase.getDatabase().isCommentExists(2));
-        assertEquals(userComment1, DataBase.getDatabase().getCommentText(2));
-
-        String userComment2 = "qwe123";
-        ChangeCommentDtoRequest changeCommentRequest = new ChangeCommentDtoRequest(token2, 2, 1, userComment2);
-        String jsonChangeCommentRequest = new Gson().toJson(changeCommentRequest, ChangeCommentDtoRequest.class);
-        String jsonChangeCommentResponse = server.changeComment(jsonChangeCommentRequest);
-        ChangeCommentDtoResponse changeCommentResponse =
-                new ChangeCommentDtoResponse().createResponse(jsonChangeCommentResponse);
-        assertEquals("comment changed", changeCommentResponse.getResponse());
-        assertEquals(userComment2, DataBase.getDatabase().getCommentText(2));
-
-        AgreeWithCommentDtoRequest agreeCommentRequest = new AgreeWithCommentDtoRequest(token2, 2);
-        String jsonAgreeCommentRequest = new Gson().toJson(agreeCommentRequest, AgreeWithCommentDtoRequest.class);
-        String jsonAgreeCommentResponse = server.agreeWithComment(jsonAgreeCommentRequest);
-        AgreeWithCommentDtoResponse agreeCommentResponse =
-                new Gson().fromJson(jsonAgreeCommentResponse, AgreeWithCommentDtoResponse.class);
-        assertEquals("change of attitude: you are agreed", agreeCommentResponse.getResponse());
-        assertTrue(DataBase.getDatabase().isUserAgreeWithComment("himik2@mail.ru", 2));
-
-        AgreeWithCommentDtoRequest agreeCommentRequest2 = new AgreeWithCommentDtoRequest(token2, 2);
-        String jsonAgreeCommentRequest2 = new Gson().toJson(agreeCommentRequest2, AgreeWithCommentDtoRequest.class);
-        String jsonAgreeCommentResponse2 = server.agreeWithComment(jsonAgreeCommentRequest2);
-        AgreeWithCommentDtoResponse agreeCommentResponse2 =
-                new Gson().fromJson(jsonAgreeCommentResponse2, AgreeWithCommentDtoResponse.class);
-        assertEquals("change of attitude: you are not agreed", agreeCommentResponse2.getResponse());
-        assertFalse(DataBase.getDatabase().isUserAgreeWithComment("himik2@mail.ru", 2));
-
-        GetConcertSongsDtoRequest concertSongs = new GetConcertSongsDtoRequest(token2);
-        String jsonConcertSongs = new Gson().toJson(concertSongs, GetConcertSongsDtoRequest.class);
-        String jsonConcertSongsResponse = server.getConcertSongs(jsonConcertSongs);
-        GetConcertSongsDtoResponse concertSongsResponse =
-                new Gson().fromJson(jsonConcertSongsResponse, GetConcertSongsDtoResponse.class);
-        assertTrue(concertSongsResponse.getConcertSongs().contains(song));
-        assertTrue(concertSongsResponse.getConcertSongs().contains(song3));
-        assertTrue(concertSongsResponse.getConcertSongs().contains(song4));
-        assertEquals(3, concertSongsResponse.getConcertSongs().size());
-
-        HashSet<String> composers = new HashSet<>();
-        composers.add("Daniel Reynolds");
-        GetComposerSongsDtoRequest composerSongsRequest = new GetComposerSongsDtoRequest(token2, composers);
-        String jsonComposerSongsRequest = new Gson().toJson(composerSongsRequest, GetComposerSongsDtoRequest.class);
-        String jsonComposerSongsResponse = server.getComposerSongs(jsonComposerSongsRequest);
-        GetComposerSongsDtoResponse composerSongsResponse =
-                new Gson().fromJson(jsonComposerSongsResponse, GetComposerSongsDtoResponse.class);
-        assertTrue(composerSongsResponse.getComposerSongs().contains(song));
-        assertEquals(1, composerSongsResponse.getComposerSongs().size());
-
-        HashSet<String> authors = new HashSet<>();
-        authors.add("Daniel Reynolds");
-        GetAuthorSongsDtoRequest authorSongsRequest = new GetAuthorSongsDtoRequest(token2, authors);
-        String jsonAuthorSongsRequest = new Gson().toJson(authorSongsRequest, GetAuthorSongsDtoRequest.class);
-        String jsonAuthorSongsResponse = server.getAuthorSongs(jsonAuthorSongsRequest);
-        GetAuthorSongsDtoResponse authorSongsResponse =
-                new Gson().fromJson(jsonAuthorSongsResponse, GetAuthorSongsDtoResponse.class);
-        assertTrue(authorSongsResponse.getAuthorSongs().contains(song));
-        assertEquals(1, authorSongsResponse.getAuthorSongs().size());
-
-        String singer = "Imagine dragons";
-        GetSingerSongsDtoRequest singerSongsRequest = new GetSingerSongsDtoRequest(token2, singer);
-        String jsonSingerSongsRequest = new Gson().toJson(singerSongsRequest, GetSingerSongsDtoRequest.class);
-        String jsonSingerSongsResponse = server.getSingerSongs(jsonSingerSongsRequest);
-        GetSingerSongsDtoResponse singerSongsResponse =
-                new Gson().fromJson(jsonSingerSongsResponse, GetSingerSongsDtoResponse.class);
-        assertTrue(singerSongsResponse.getSingerSongs().contains(song));
-        assertTrue(singerSongsResponse.getSingerSongs().contains(song3));
-        assertEquals(2, singerSongsResponse.getSingerSongs().size());
-
-        GetTrialConcertDtoRequest getTrialConcertRequest = new GetTrialConcertDtoRequest(token2);
-        String jsonGetTrialConcertRequest = new Gson().toJson(getTrialConcertRequest, GetTrialConcertDtoRequest.class);
-        String jsonGetTrialConcertResponse = server.getTrialConcert(jsonGetTrialConcertRequest);
-        GetTrialConcertDtoResponse getTrialConcertResponse =
-                new Gson().fromJson(jsonGetTrialConcertResponse, GetTrialConcertDtoResponse.class);
-        assertEquals(song3, getTrialConcertResponse.getTrialConcertSongs().get(0).getSong());
-        assertEquals(song, getTrialConcertResponse.getTrialConcertSongs().get(1).getSong());
-        assertEquals(2, getTrialConcertResponse.getTrialConcertSongs().size());
-
-        System.out.println(DataBase.getDatabase());
-
-        LeaveServerDtoRequest leaveServerRequest = new LeaveServerDtoRequest(token2);
-        String jsonLeaveServerRequest = new Gson().toJson(leaveServerRequest, LeaveServerDtoRequest.class);
-        String jsonLeaveServerResponse = server.leaveServer(jsonLeaveServerRequest);
-        LeaveServerDtoResponse leaveServerResponse =
-                new Gson().fromJson(jsonLeaveServerResponse, LeaveServerDtoResponse.class);
-        assertEquals("all mentions deleted", leaveServerResponse.getResponse());
-        assertEquals(2, DataBase.getDatabase().countRegisteredUsers());
-        assertEquals(1, DataBase.getDatabase().countLoggedUsers());
-        assertEquals(1, DataBase.getDatabase().countSuggestedSong());
-        assertEquals(0, DataBase.getDatabase().countComments());
-
-        System.out.println(DataBase.getDatabase());
+        String jsonRequest3 = gson.toJson(new LoginDtoRequest("workbox_55@mail.ru", "123456789"));
+        String jsonResponse3 = server.loginUser(jsonRequest3);
+        LoginDtoResponse response3 = gson.fromJson(jsonResponse3, LoginDtoResponse.class);
+        assertNull(response3.getError());
+        assertEquals(36,response3.getToken().length());
     }
 
+  //  @Ignore
     @Test
-    public void testIncorrectRegisterUser() {
-        Server server = new Server();
-        int before = DataBase.getDatabase().countRegisteredUsers();
-        RegisterUserDtoRequest request = new RegisterUserDtoRequest(
-                "Sergei", "Murashkin", "himik@mail.ru", "12345");
-        Gson gson = new Gson();
-        String jsonRequest = gson.toJson(request);
-        String jsonResponse = server.registerUser(jsonRequest);
-        RegisterUserDtoResponse response = gson.fromJson(jsonResponse, RegisterUserDtoResponse.class);
-        assertEquals("error: short password", response.getError());
-        assertEquals(before, DataBase.getDatabase().countRegisteredUsers());
+    public void testPositiveSongSuggestion() throws RequestException {
+        
+        String jsonRequest1 = gson.toJson(new RegisterUserDtoRequest(
+                "Sergei", "Murashkin", "workbox_55@mail.ru", "123456789"));
+        String jsonResponse1 = server.registerUser(jsonRequest1);
+        RegisterUserDtoResponse response1 = gson.fromJson(jsonResponse1, RegisterUserDtoResponse.class);
+        assertNull(response1.getError());
+        assertEquals(36,response1.getToken().length());
 
-        before = DataBase.getDatabase().countRegisteredUsers();
-        request = new RegisterUserDtoRequest(
-                "", "Murashkin", "himik@mail.ru", "123456789");
-        jsonRequest = gson.toJson(request);
-        jsonResponse = server.registerUser(jsonRequest);
-        response = gson.fromJson(jsonResponse, RegisterUserDtoResponse.class);
-        assertEquals("error: empty first name", response.getError());
-        assertEquals(before, DataBase.getDatabase().countRegisteredUsers());
+        List<String> composers = new ArrayList<>();
+        composers.add("Sia1");
+        composers.add("Sia2");
+        List<String> authors = new ArrayList<>();
+        authors.add("Sia3");
+        authors.add("Sia4");
 
-        before = DataBase.getDatabase().countRegisteredUsers();
-        request = new RegisterUserDtoRequest(
-                "Sergei", "      ", "himik@mail.ru", "123456789");
-        jsonRequest = gson.toJson(request);
-        jsonResponse = server.registerUser(jsonRequest);
-        response = gson.fromJson(jsonResponse, RegisterUserDtoResponse.class);
-        assertEquals("error: empty last name", response.getError());
-        assertEquals(before, DataBase.getDatabase().countRegisteredUsers());
+        String jsonRequest2 = gson.toJson(new SuggestSongDtoRequest(response1.getToken(),
+                "Everyday Is Christmas",
+                composers,
+                authors,
+                "Sia",
+                150));
+        String jsonResponse2 = server.suggestSong(jsonRequest2);
+        SuggestSongDtoResponse response2 = gson.fromJson(jsonResponse2, SuggestSongDtoResponse.class);
+        assertNull(response2.getError());
+        String[] resp1 = response2.getResponse().split(" ");
+        int songId = Integer.parseInt(resp1[2]);
+        assertEquals("Song № " + songId + " added. Song rated by 5, automatically.",response2.getResponse());
+
+        int rating = 5;
+        String jsonRequest3 = gson.toJson(new AddSongRatingDtoRequest(response1.getToken(), songId, rating));
+        String jsonResponse3 = server.addRating(jsonRequest3);
+        AddSongRatingDtoResponse response3 = gson.fromJson(jsonResponse3, AddSongRatingDtoResponse.class);
+        assertNull(response3.getResponse());
+        assertEquals(RequestErrorCode.RATING_BAN.getErrorString(),response3.getError());
+
+        String jsonRequest4 = gson.toJson(new RegisterUserDtoRequest(
+                "Sergei", "Murashkin", "workbox_555@mail.ru", "123456789"));
+        String jsonResponse4 = server.registerUser(jsonRequest4);
+        RegisterUserDtoResponse response4 = gson.fromJson(jsonResponse4, RegisterUserDtoResponse.class);
+        assertNull(response4.getError());
+        assertEquals(36,response4.getToken().length());
+
+        String jsonRequest5 = gson.toJson(new AddSongRatingDtoRequest(response4.getToken(), songId, rating));
+        String jsonResponse5 = server.addRating(jsonRequest5);
+        AddSongRatingDtoResponse response5 = gson.fromJson(jsonResponse5, AddSongRatingDtoResponse.class);
+        assertNull(response5.getError());
+        assertEquals("Rating " + rating + " added.",response5.getResponse());
+
+        String commentText = "The song " + songId + " is cool.";
+        String jsonRequest6 = gson.toJson(new AddCommentDtoRequest(response1.getToken(), songId, commentText));
+        String jsonResponse6 = server.addComment(jsonRequest6);
+        AddCommentDtoResponse response6 = gson.fromJson(jsonResponse6, AddCommentDtoResponse.class);
+        String[] resp2 = response6.getResponse().split(" ");
+        int commentId1 = Integer.parseInt(resp2[2]);
+        assertNull(response6.getError());
+        assertEquals("Comment № " + commentId1 + " added.",response6.getResponse());
+
+        String commentText2 = "The song № " + songId + " is cool.";
+        String jsonRequest7 = gson.toJson(new AddCommentDtoRequest(response4.getToken(), songId, commentText2));
+        String jsonResponse7 = server.addComment(jsonRequest7);
+        AddCommentDtoResponse response7 = gson.fromJson(jsonResponse7, AddCommentDtoResponse.class);
+        String[] resp3 = response7.getResponse().split(" ");
+        int commentId2 = Integer.parseInt(resp3[2]);
+        assertNull(response7.getError());
+        assertEquals("Comment № " + commentId2 + " added.",response7.getResponse());
+
+        String jsonRequest8 = gson.toJson(new RemoveRatingSongDtoRequest(response4.getToken(), songId));
+        String jsonResponse8 = server.removeRating(jsonRequest8);
+        RemoveRatingSongDtoResponse response8 = gson.fromJson(jsonResponse8, RemoveRatingSongDtoResponse.class);
+        assertNull(response8.getError());
+        assertEquals("Rating removed.",response8.getResponse());
+
+        String commentText3 = "The song № " + songId + " isn't cool. It's best.";
+        String jsonRequest9 = gson.toJson(new ChangeCommentDtoRequest(response4.getToken(), commentId2, commentText3));
+        String jsonResponse9 = server.changeComment(jsonRequest9);
+        ChangeCommentDtoResponse response9 = gson.fromJson(jsonResponse9, ChangeCommentDtoResponse.class);
+        assertNull(response9.getError());
+        assertEquals("Comment № " + commentId2 + " changed.",response9.getResponse());
+
+        String jsonRequest10 = gson.toJson(new AgreeWithCommentDtoRequest(response1.getToken(), commentId2));
+        String jsonResponse10 = server.agreeWithComment(jsonRequest10);
+        AgreeWithCommentDtoResponse response10 = gson.fromJson(jsonResponse10, AgreeWithCommentDtoResponse.class);
+        assertNull(response10.getError());
+        assertEquals("Attitude changing: you are agreed.",response10.getResponse());
+
+        Song song = new Song( "Everyday Is Christmas",
+                composers,
+                authors,
+                "Sia",
+                150);
+
+        String jsonRequest11 = gson.toJson(new GetConcertSongsDtoRequest(response1.getToken()));
+        String jsonResponse11 = server.getConcertSongs(jsonRequest11);
+        GetConcertSongsDtoResponse response11 = gson.fromJson(jsonResponse11, GetConcertSongsDtoResponse.class);
+        assertNull(response11.getError());
+        List<Song> concertSongs = new ArrayList<>();
+        concertSongs.add(song);
+        assertEquals(concertSongs,response11.getConcertSongs());
+        System.out.println(response11.getConcertSongs());
+
+        Set<String> neededComposers = new HashSet<>();
+        neededComposers.add("Sia1");
+        neededComposers.add("Sia2");
+        String jsonRequest12 = gson.toJson(new GetComposerSongsDtoRequest(response1.getToken(), neededComposers));
+        String jsonResponse12 = server.getComposerSongs(jsonRequest12);
+        GetComposerSongsDtoResponse response12 = gson.fromJson(jsonResponse12, GetComposerSongsDtoResponse.class);
+        assertNull(response12.getError());
+        List<Song> composerSongs = new ArrayList<>();
+        composerSongs.add(song);
+        assertEquals(composerSongs,response12.getComposerSongs());
+
+        Set<String> neededAuthors = new HashSet<>();
+        neededAuthors.add("Sia3");
+        neededAuthors.add("Sia4");
+        String jsonRequest13 = gson.toJson(new GetAuthorSongsDtoRequest(response1.getToken(), neededAuthors));
+        String jsonResponse13 = server.getAuthorSongs(jsonRequest13);
+        GetAuthorSongsDtoResponse response13 = gson.fromJson(jsonResponse13, GetAuthorSongsDtoResponse.class);
+        assertNull(response13.getError());
+        List<Song> authorSongs = new ArrayList<>();
+        authorSongs.add(song);
+        assertEquals(authorSongs,response13.getAuthorSongs());
+
+        String jsonRequest14 = gson.toJson(new GetSingerSongsDtoRequest(response1.getToken(), "Sia"));
+        String jsonResponse14 = server.getSingerSongs(jsonRequest14);
+        GetSingerSongsDtoResponse response14 = gson.fromJson(jsonResponse14, GetSingerSongsDtoResponse.class);
+        assertNull(response14.getError());
+        List<Song> singerSongs = new ArrayList<>();
+        singerSongs.add(song);
+        assertEquals(singerSongs,response14.getSingerSongs());
+
+        String jsonRequest15 = gson.toJson(new GetTrialConcertDtoRequest(response1.getToken()));
+        String jsonResponse15 = server.getTrialConcert(jsonRequest15);
+        GetTrialConcertDtoResponse response15 = gson.fromJson(jsonResponse15, GetTrialConcertDtoResponse.class);
+        assertNull(response15.getError());
+       /* List<TrialConcertSong> trialConcertSongs = new ArrayList<>();
+        TrialConcertSong trialConcertSong = new TrialConcertSong();
+        trialConcertSongs.add(trialConcertSong);
+        assertEquals(trialConcertSongs,response15.getTrialConcertSongs());*/
+        System.out.println(response15.getTrialConcertSongs());
+
 
     }
+
+
 
 }
-*/
