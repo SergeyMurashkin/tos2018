@@ -3,8 +3,6 @@ package net.thumbtack.school.concert.server;
 import net.thumbtack.school.concert.service.SongService;
 import net.thumbtack.school.concert.service.UserService;
 
-import java.io.IOException;
-
 public class Server {
 
     private UserService userService = new UserService();

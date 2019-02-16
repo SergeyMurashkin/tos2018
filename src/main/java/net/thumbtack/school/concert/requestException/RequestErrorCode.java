@@ -2,7 +2,6 @@ package net.thumbtack.school.concert.requestException;
 
 public enum RequestErrorCode {
 
-
     EMPTY_FIRSTNAME_STRING("Empty firstname string."),
     SPACE_FIRSTNAME_STRING("Space in firstname string."),
     EMPTY_LASTNAME_STRING("Empty lastname string."),
@@ -22,8 +21,9 @@ public enum RequestErrorCode {
     FAILED_SONG_EXISTING("Song not exists."),
     FAILED_RATING_ADDING("Unsuccessful rating adding."),
     FAILED_RATING_REMOVING("Unsuccessful rating removing."),
-    FAILED_COMMENT_ADDING("Unsuccessful comment adding."),
-    FAILED_COMMENT_CHANGING("Unsuccessful comment changing."),
+    FAILED_COMMENT_ADDING("Unsuccessful adding of comment."),
+    FAILED_COMMENT_CHANGING("Unsuccessful changing of comment."),
+    FAILED_COMMENT_JOINING("Unsuccessful joining to comment."),
     INVALID_TOKEN("Invalid token."),
     USER_NOT_LOGGED("User not logged."),
     USER_NOT_DELETED("User not deleted."),

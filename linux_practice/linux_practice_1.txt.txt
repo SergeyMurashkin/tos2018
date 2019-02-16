@@ -1,0 +1,101 @@
+1) В своём домашнем каталоге создать подкаталог linux_ex и зайти в него.
+перехожу в домашний каталог:    cd ~
+создаю подкаталог linux_ex:       mkdir linux_ex
+захожу в него:      cd linux_ex
+2) Создать файл hello.txt  с текстом “Hello world”:      echo "Hello world" > hello.txt
+3) Добавить в этот файл (разделяя пустыми строками)
+)свои имя и фамилию:       echo "Сергей Мурашкин" >> hello.txt
+)текущую дату:       date >> hello.txt
+)имя пользователя:        echo $USER >> hello.txt
+зашел через nano  и разделил строки
+)содержимое домашнего каталога (нерекурсивно, список имен файлов, включая скрытые):     ls -a /root >> hello.txt
+в дальнейшем отделяю пустой строкой через команду:     echo "" >> hello.txt
+)содержимое корневого каталога (нерекурсивно):      ls / >> hello.txt
+)содержимое каталога /etc:       ls /etc >> hello.txt
+)только файлы в каталоге /etc  :      find /etc -maxdepth 1 -type f >> hello.txt
+)только подкаталоги в каталоге /etc (нерекурсивно):        find /etc -maxdepth 1 -type d >> hello.txt
+)содержимое файла /etc/passwd:         cat /etc/passwd >> hello.txt
+)первый столбец файла /etc/passwd (список юзеров):     cut -d: -f1 /etc/passwd >> hello.txt
+)содержимое файла /etc/group:       cat /etc/group >> hello.txt
+)первый столбец файла /etc/group (список групп)       cut -d: -f1 /etc/group >> hello.txt
+4)Вывести hello.txt с прокруткой:     less hello.txt (постранично)    или        cat hello.txt 
+5)Разбить hello.txt на файлы размером 1к:      split -b 1k hello.txt  
+затем собрать обратно: cat x* > hello.txt
+6)Заменить в hello.txt ‘/’ на ‘\’ : cat hello.txt | tr '/' '\' > hello3.txt
+7)Скопировать /var/log в текущий каталог (кроме файлов без доступа) с сохранением времени модификации:   cp -rp /var/log .
+8)Для полученной копии вывести объем занимаемого места: du -sm * | sort -n
+)вывести все файлы, начинающиеся на ‘a’ (не каталоги): find log -maxdepth 1 -type f -name "a*" (глубина в зависимости от поставленной задачи)
+)удалить все файлы, начинающиеся на ‘a’ (не каталоги): find log -maxdepth 1 -type f -name "a*" -exec rm -f {} \;
+)Как убедиться, что выполнено правильно?       Выполнить предыдущую команду вывода, убедиться что ничего не выведено, ну или -ls
+)вывести все файлы со временем последней модификации больше 5 дней:        find log -type f -mtime +5
+)вывести все файлы со временем последней модификации меньше 5 дней:        find log -type f -mtime -5
+)создать каталог archive: mkdir archive
+)переместить туда файлы (не каталоги) со временем модификации больше 5 дней:  find log -type f -mtime +5 -exec mv {} archive \;
+9)Найти все файлы (рекурсивно) с расширением jar в каталогах /opt и /usr:    find /opt /usr  -type f -name "*.jar"
+10)Найти все каталоги, содержащие файлы с расширением jar в каталогах /opt и /usr, вывести по одному разу:
+           find /opt /usr  -type f -name "*.jar" | sed -r 's|/[^/]+$||' |sort |uniq
+11)Найти все файлы с расширением java, созданные месяц назад плюс-минус одна неделя.
+           find / -type f -mtime -37 -mtime +23 -name "*.java"
+12)В двух заданных каталогах должен быть одинаковый набор файлов. Нужно в этом убедиться, т.е. проверить, 
+что совпадают множества файлов, имена и содержимое:      diff -r log log2
+13)
+Установить вручную (без apt-get) java 8 и maven последней версии.
+Добавить путь запуска в переменную PATH, создать переменную M2_HOME.
+Выполнить сборку java проекта.
+
+cd /opt 
+wget --no-cookies --no-check-certificate --header "Cookie:oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+tar xzf имяскаченногофайла
+export JAVA_HOME=/opt/jdk1.8.0_xx
+export PATH=$JAVA_HOME/bin:$PATH
+
+cd /opt
+wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven
+tar xzf apache-maven-*-bin.tar.gz -C /opt
+export M2_HOME=/opt/apache-maven-3.3.9
+export PATH=$M2_HOME/bin:$PATH
+
+14)Проанализировать загрузку процессора     top   , объем памяти    cat /proc/meminfo.
+Вывести информацию по использованию места в файловой системе    free       df -h.
+Найти самые большие каталоги (рекурсивно до уровня 2).
+du -m --max-depth=2 | sort -nr | head -10
+
+
+Users, groups, access rights
+
+1)Создать трех юзеров (ivanov, petrov, sidorov):     adduser ivanov , adduser petrov , adduser sidorov
+ создать каталог /shared  :        mkdir /shared
+ дать полный доступ этим двум юзерам (ivanov, petrov): 
+ создать группу iv_pet:       addgroup iv_pet
+ включить их в группу:     gpasswd -a ivanov iv_pet    ,     gpasswd -a petrov iv_pet
+ и изменить доступ:             chmod -R 770 shared
+ У остальных не должно быть доступа даже на чтение.
+
+Pipes
+
+Установить MySQL: apt-get update, apt-get install mysql-server
+подключение к БД: mysql -u root -p
+создать базу ttschool: 
+CREATE DATABASE ttschool   
+USE ttschool 
+
+заполнить данными: 
+Выполнить дамп базы в файл посредством pipe: mysqldump -u root -p ttschool > ttschool_dump.sql
+затем восстановить из файла.  mysql -u root -p ttschool < ttschool_dump.sql
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

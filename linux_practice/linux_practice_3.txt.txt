@@ -1,0 +1,140 @@
+Занятие 3
+Скрипты
+Файлы скриптов редактировать с помощью vi.
+
+1)
+Сгенерировать набор файлов вида
+YYYY-mm-dd.csv
+по каждому дню за год с содержимым такого вида (числовые поля заполнить случайными  значениями):
+cite        ; country ; date       ; views ; clicks
+www.abc.com ; USA     ; 2017-01-01 ; 1000  ; 3
+www.cba.com ; France  ; 2017-01-01 ; 750   ; 0
+
+создал документ с именем   one-year-history.sh   , который генерирует 10 файлов можно изменить 
+
+#!/bin/bash
+datestart="2019-02-01"
+datefinish="2019-02-11"
+start=$datestart
+finish=$(date --date="$datefinish next day" "+%Y-%m-%d")
+
+while test $start != $finish
+do
+ text=$(date --date="$start" "+%Y-%m-%d")
+ touch $text.csv
+ echo " cite        ; country ; date       ; views ; clicks" > $text.csv
+ echo " www.abc.com ; USA     ; $text ; $RANDOM ; $RANDOM " >> $text.csv
+ echo " www.cba.com ; France  ; $text ; $RANDOM ; $RANDOM " >> $text.csv
+ start=$(date --date="$start next day" "+%Y-%m-%d")
+done
+
+
+2)
+В условиях предыдущей задачи 
+Проверить, что все файлы за год присутствуют и нет лишних.
+Во всех исходных файлах переставить дату на первое место и привести к виду dd/mm/YYYY:
+date       ; cite        ; country ; views ; clicks
+01/01/2017 ; www.abc.com ; usa     ; 1000  ; 3
+01/01/2017 ; www.cba.com ; France  ; 750   ; 0
+
+sed -i -r 's:(^)(.*;)(.*;)(.*;)(.*;)(.*)($):\1\4\2\3\5\6:g' 2019-02-01.csv 
+sed -i -r 's:(^| )([0-9]{4})(-)([0-9]{2})(-)([0-9]{2}):\1\6/\4/\2:g' 2019-02-01.csv 
+
+3)
+Сформировать набор файлов monday.csv, tuesday.txt и т.д. куда вывести содержимое
+ всех исходных файлов отдельно по каждому дню недели. Строку заголовка вывести один раз.
+ Исходные файлы удалить.
+
+#!/bin/bash
+list="all-csv.txt"
+touch $list
+#ls | grep -P '[0-9]{4}-[0-9]{2}-[0-9]{2}' | sort  > $list
+ls | grep -P '\.csv' | sort > $list
+count1=0
+count2=0
+count3=0
+count4=0
+count5=0
+count6=0
+count7=0
+while read line; do
+day=$(echo $line | sed -r 's:(.*)(\.csv):\1:g')
+weekday=$(date --date="$day" "+%A")
+case $weekday in
+
+Monday)
+        ((++count1))
+        count=$count1
+        file="monday.txt"
+;;
+Tuesday)
+        ((++count2))
+        count=$count2
+        file="tuesday.txt"
+;;
+Wednesday)
+        ((++count3))
+        count=$count3
+        file="wednesday.txt"
+;;
+Thursday)
+        ((++count4))
+        count=$count4
+        file="thursday.txt"
+;;
+Friday)
+        ((++count5))
+        count=$count5
+        file="friday.txt"
+;;
+Saturday)
+        ((++count6))
+        count=$count6
+        file="saturday.txt"
+;;
+Sunday)
+        ((++count7))
+        count=$count7
+        file="sunday.txt"
+;;
+esac
+
+if test $count -eq 1
+ then
+        cat $line > $file
+ else
+        #tail -n +2 $line
+        sed '1d' $line >> $file
+ fi
+rm $line
+done < $list
+rm $list
+
+4)
+Вывести в отдельный файл содержимое всех файлов *.java из своего репозитория,
+ в которых встречается ArrayList. 
+
+#!/bin/bash
+file="pipe-array.txt"
+aim="file-arraylist.txt"
+> $aim
+ls -a | grep ".java" > $file
+while read line; do
+if grep "ArrayList" $line > /dev/null 2>&1; then
+cat $line >> $aim
+fi
+done < $file
+rm $file
+
+5)
+Вывести содержимое каталога /etc (каждая строка с полным путем) 
+затем заменить первые вхождения ‘/’ на “C:\”, остальные на ‘\’
+
+#!/bin/bash
+file="etc-content.txt"
+find /etc -name "*" | sort > $file
+sed -i 's:\/:C\:\\:1' $file
+sed -i 's:\/:\\:g' $file
+
+
+

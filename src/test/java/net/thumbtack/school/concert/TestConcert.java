@@ -18,9 +18,9 @@ import static org.junit.Assert.*;
 
 public class TestConcert extends TestBase {
 
-  //  @Ignore
+    @Ignore
     @Test
-    public void testPositiveUserRegistration() {
+    public void testPositiveUserServiceRequests() {
         String jsonRequest1 = gson.toJson(new RegisterUserDtoRequest(
                 "Sergei", "Murashkin", "workbox_55@mail.ru", "123456789"));
         String jsonResponse1 = server.registerUser(jsonRequest1);
@@ -43,7 +43,7 @@ public class TestConcert extends TestBase {
 
   //  @Ignore
     @Test
-    public void testPositiveSongSuggestion() throws RequestException {
+    public void testPositiveSongServiceRequests() {
         
         String jsonRequest1 = gson.toJson(new RegisterUserDtoRequest(
                 "Sergei", "Murashkin", "workbox_55@mail.ru", "123456789"));
@@ -72,7 +72,7 @@ public class TestConcert extends TestBase {
         int songId = Integer.parseInt(resp1[2]);
         assertEquals("Song № " + songId + " added. Song rated by 5, automatically.",response2.getResponse());
 
-        int rating = 5;
+        int rating = 4;
         String jsonRequest3 = gson.toJson(new AddSongRatingDtoRequest(response1.getToken(), songId, rating));
         String jsonResponse3 = server.addRating(jsonRequest3);
         AddSongRatingDtoResponse response3 = gson.fromJson(jsonResponse3, AddSongRatingDtoResponse.class);
@@ -110,11 +110,11 @@ public class TestConcert extends TestBase {
         assertNull(response7.getError());
         assertEquals("Comment № " + commentId2 + " added.",response7.getResponse());
 
-        String jsonRequest8 = gson.toJson(new RemoveRatingSongDtoRequest(response4.getToken(), songId));
+        String jsonRequest8 = gson.toJson(new RemoveRatingSongDtoRequest(response1.getToken(), songId));
         String jsonResponse8 = server.removeRating(jsonRequest8);
         RemoveRatingSongDtoResponse response8 = gson.fromJson(jsonResponse8, RemoveRatingSongDtoResponse.class);
         assertNull(response8.getError());
-        assertEquals("Rating removed.",response8.getResponse());
+        assertEquals("Rating removed. Community is a new author of the song.",response8.getResponse());
 
         String commentText3 = "The song № " + songId + " isn't cool. It's best.";
         String jsonRequest9 = gson.toJson(new ChangeCommentDtoRequest(response4.getToken(), commentId2, commentText3));

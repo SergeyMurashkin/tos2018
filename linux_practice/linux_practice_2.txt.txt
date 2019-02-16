@@ -1,0 +1,77 @@
+1)В заданиях используется Web приложение WebHelloWorld, код которого выложен в этой папке.
+скачал Web приложение WebHelloWorld 
+  wget  https://transfiles.ru/     переименовал документ
+или для контейнера  docker cp C:\WebHelloWorld.tar.gz   номерконтейнера:/tmp/
+)Для запуска нужно распаковать WebHelloWorld.tar.gz       tar -xzf WebHelloWorld.tar.gz
+ и выполнить сборку командой mvn clean package.
+)В результате должен получился файл target/WebHelloWorld.jar готовый для запуска.
++
+
+2)SSH
+)Запустить виртуальную машину, зайти по ssh. 
+Установка
+sudo apt-get update
+sudo apt-get install openssh-server
+sudo apt-get install openssh-client
+
+Сгенерировать пару ключей и настроить по ним доступ. 
+Выполнил команду      ssh-keygen     на workstation получил 2 ключа. Приватный ключ защитил паролем.
+Публичный отправил на gateway командой       scp id_rsa.pub sergey@172.17.0.4:/tmp/keys
+Зашел на gateway, перешел cd ~ , создал mkdir .ssh, скопировал из  /tmp/keys в  ~/.ssh/authorized_keys
+Ключи должны быть доступны только владельцу:
+на клиенте
+ chmod 700 .ssh
+ chmod 600 .ssh/*
+на сервере
+ chmod 600 authorized_keys
+
+Средствами iptables на машине SERVER закрыть SSH (порт 22) для всех входящих запросов кроме тех,
+ которые пришли с GATEWAY.
+iptables -A INPUT -s 172.17.0.4 -p tcp -m tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 22 -j DROP
+
+eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa
+ssh -A -tt sergey@172.17.0.4 ssh sergey@172.17.02
+
+Установить на сервере java.
+Установку произвел через  apt-get install default-jre     apt-get install default-jdk
+создал screen -S “web hello world” 
+запустил java -jar /opt/HelloWorldServer/WebHelloWorld.jar
+Ctrl-A d  выход
+
+на workstation curl http://172.17.0.2:4567/hello      получил ответ Hello World
+
+и в виде службы systemd
+Создать файл в /etc/systemd/system/helloworld.service
+
+
+[Unit]
+Description=Helloworld service
+[Service]
+Type=simple
+User=sergey
+ExecStart=/usr/lib/jvm/java-11-openjdk-amd64/bin/java -jar /opt/HelloWorldServer/WebHelloWorld.jar      
+$ExecStop=/bin/kill -15 $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+
+В строке User=user заменить user на свое имя пользователя, т.к. java установил через
+apt-get install, пришлось поменять путь на /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+
+sudo systemctl daemon-reload
+вылезла проблема System has not been booted with systemd as init system (PID 1). Can't operate.
+т.к. система Windows, а контейнеры Linux 
+
+Установить web сервер nginx    apt-get install nginx 
+настройку производил в файле /etc/nginx/sites-enables/default
+в server{ поместил location / , /images , /uploader}
+тк root  =  /var/www/html/data  положил файлы html в соответствующие места 
+
+Установить на сервере MySql (без Docker), средствами iptables закрыть к нему доступ (закрыть порт 3306),
+ проверить, что доступа нет.
+
+iptables -A INPUT -s 172.17.0.4 -p tcp -m tcp --dport 3306 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 3306 -j DROP
+
+

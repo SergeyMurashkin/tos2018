@@ -26,6 +26,9 @@ public class SongDaoImpl extends DaoImplBase implements SongDao {
         try (SqlSession sqlSession = getSession()) {
             try {
                 Integer userId = getUserMapper(sqlSession).getUserIdByToken(token);
+                if(userId==null){
+                    throw new RequestException(RequestErrorCode.USER_NOT_LOGGED);
+                }
                 getSongMapper(sqlSession).addSong(song, userId);
                 for (String composer : song.getComposers()) {
                     getSongMapper(sqlSession).addComposerToSong(song.getId(), composer);
@@ -55,6 +58,9 @@ public class SongDaoImpl extends DaoImplBase implements SongDao {
         try (SqlSession sqlSession = getSession()) {
             try {
                 Integer userId = getUserMapper(sqlSession).getUserIdByToken(token);
+                if(userId==null){
+                    throw new RequestException(RequestErrorCode.USER_NOT_LOGGED);
+                }
                 Integer authorId = getSongMapper(sqlSession).getUserIdBySongId(songId);
                 if (userId.equals(authorId)) {
                     throw new RequestException(RequestErrorCode.RATING_BAN);
@@ -199,7 +205,7 @@ public class SongDaoImpl extends DaoImplBase implements SongDao {
             } catch (RuntimeException ex) {
                 LOGGER.info("Can't return Songs by id.", ex);
                 sqlSession.rollback();
-                throw new RequestException(RequestErrorCode.FAILED_SONG_ADDING);
+                throw new RequestException(RequestErrorCode.FAILED_SONG_EXISTING);
             }
         }
     }
