@@ -1,4 +1,4 @@
-package net.thumbtack.school.backend.threads.exercise_15;
+package net.thumbtack.school.backend.threads.exercise_15.version4playing;
 
 import java.util.Queue;
 
@@ -11,7 +11,7 @@ public class Reader extends Thread {
     }
 
     public void run() {
-        System.out.println("Reader started.");
+        System.out.println("Reader Started");
         while (!Exercise_15.isEnd) {
             Data data = dataQueue.poll();
             if (data == null) {
@@ -31,7 +31,6 @@ public class Reader extends Thread {
                 e.printStackTrace();
             }
         }
-        System.out.println("Reader finished.");
     }
 
 

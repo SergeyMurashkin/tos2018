@@ -17,12 +17,6 @@ public class Message {
         this.body = body;
     }
 
-    public Message(String emailAddress) {
-        this.emailAddress = emailAddress;
-        System.out.println(this);
-
-    }
-
     public String getEmailAddress() {
         return emailAddress;
     }

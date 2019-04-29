@@ -1,4 +1,4 @@
-package net.thumbtack.school.backend.threads.exercise_15.version_2;
+package net.thumbtack.school.backend.threads.exercise_15.version4playing;
 
 import java.util.Arrays;
 

@@ -2,7 +2,6 @@ package net.thumbtack.school.backend.threads.exercise_15;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.Executor;
 
 public class Exercise_15 {
 
@@ -16,19 +15,53 @@ public class Exercise_15 {
     public static volatile Boolean isEnd = false;
 
     public static void main(String[] args) {
+
         Queue<Data> dataQueue = new ConcurrentLinkedDeque<>();
+        final Object lock = new Object();
 
-        Runnable readerTask = () -> new Reader(dataQueue).start();
-        Runnable writerTask = () -> new Writer(dataQueue).start();
+        Reader reader1 = new Reader(dataQueue);
+        Reader reader2 = new Reader(dataQueue);
+        Reader reader3 = new Reader(dataQueue);
+        Reader reader4 = new Reader(dataQueue);
+        Writer writer1 = new Writer(dataQueue, lock);
+        Writer writer2 = new Writer(dataQueue, lock);
+        Writer writer3 = new Writer(dataQueue, lock);
+        Writer writer4 = new Writer(dataQueue, lock);
 
-        Executor executor = (runnable) -> {
-            new Thread(runnable).start();
-        };
-        executor.execute(writerTask);
-        executor.execute(readerTask);
-        executor.execute(readerTask);
-        executor.execute(readerTask);
-        executor.execute(writerTask);
+        reader1.start();
+        reader2.start();
+        reader3.start();
+        reader4.start();
+        writer1.start();
+        writer2.start();
+        writer3.start();
+
+        try {
+            writer1.join();
+            writer2.join();
+            writer3.join();
+            writer4.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        count=LIMIT+100;
+
+        writer4.start();
+
+        try {
+            writer4.join();
+            reader1.join();
+            reader2.join();
+            reader3.join();
+            reader4.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("All finished");
+
     }
 
 }

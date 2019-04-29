@@ -30,14 +30,21 @@ public class Exercise_14 {
 
         ExecutorService executor = Executors.newFixedThreadPool(5);
         for (String address : addresses) {
-            Message message = new Message(address, sender, subject, body);
-            Runnable transport = new Transport(message);
-            executor.execute(transport);
+            if(!address.trim().isEmpty()) {
+                Message message = new Message(address, sender, subject, body);
+                Runnable transport = new Transport(message);
+                executor.execute(transport);
+            }else{
+                System.out.println("Empty address row.");
+            }
         }
         executor.shutdown();
         while (!executor.isTerminated()) {
         }
         System.out.println("Finished all threads");
+
+
+
 
     }
 
